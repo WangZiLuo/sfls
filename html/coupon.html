@@ -1,0 +1,235 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>我的优惠券</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+        }
+        .header i{
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+    	.content ul{
+    		padding: 0 0.2rem;
+    	}
+    	.content ul li{
+    		list-style: none;
+    		width: 6.2rem;
+    		height: 1.8rem;
+    		background-image: url("../image/coupon_bg.png");
+    		background-size: 7rem 1.8rem;
+    		background-repeat: no-repeat;
+    		margin-top: 0.18rem;
+    		border-left: 0.06rem solid #2b2b2b;
+    		padding-left: 0.48rem;
+    		padding-right: 0.32rem;
+    		position: relative;
+    	}
+    	.content ul li.expire{
+    		opacity: 0.65;
+    	}
+    	.content ul li.expire .overdue{
+    		display: block;
+    	}
+    	.content ul li .overdue{
+    		position: absolute;
+    		width: 0.89rem;
+    		height: 0.89rem;
+    		background-image: url('../image/overdue.png');
+    		background-size: 0.89rem 0.89rem;
+    		background-repeat: no-repeat;
+    		left: 4.56rem;
+    		top: 0.45rem;
+    		display: none;
+    	}
+    	.detail{
+    		float: left;
+    	}
+    	.detail .name{
+    		font-size: 0.3rem;
+    		line-height: 0.3rem;
+    		margin-top: 0.2rem;
+    		color: #e52828;
+    		font-weight: 900;
+    	}
+    	.detail .effect{
+    		font-size: 0.22rem;
+    		line-height: 0.54rem;
+    		color: #333;
+    		font-weight: 900;
+    	}
+    	.detail .duration{
+    		font-size: 0.2rem;
+    		line-height: 0.5rem;
+    		color: #aeaeae;
+    		margin-top: 0.22rem;
+    		font-weight: 900;
+    	}
+    	.value{
+    		float: right;
+    		height: 1.8rem;
+    	}
+    	.value i{
+    		float: right;
+    		font-size: 0.24rem;
+    		line-height: 1.8rem;
+    		font-style: normal;
+    		color: #2b2b2b;
+    	}
+    	.value span{
+    		float: right;
+    		font-size: 0.48rem;
+    		line-height: 1.8rem;
+    		color: #2b2b2b;
+    		font-weight: 900;
+    	}
+    	.no-record img{
+    		display: block;
+    		width: 2.2rem;
+    		height: 1.74rem;
+    		margin: 0 auto;
+    		margin-top: 3.24rem;
+    	}
+    	.no-record p{
+    		font-size: 0.3rem;
+    		line-height: 0.7rem;
+    		color: #9f9e9e;
+    		text-align: center;
+    	}
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <header>
+            <div class="header">
+    			<i @click="goBack"></i>
+    			<h4>我的优惠劵</h4>
+    		</div>
+        </header>
+        <div id="main">
+            <div class="content">
+    			<ul v-if="onOff">
+    				<li v-for="(item,index) in couponList" :key="index" :class="{'list':true,'clearfix':true,'expire':item.status=='0'?true:false}">
+    					<div class="detail">
+    						<p class="name">{{item.name}}</p>
+    						<p class="effect">新用户满{{item.meetmoney}}元可用{{item.breamoney}}元优惠券</p>
+    						<p class="duration">有效期{{item.starttime}}到{{item.endtime}}</p>
+    					</div>
+    					<div class="value clearfix">
+    						<span>{{item.breamoney}}</span>
+    						<i>￥</i>
+    					</div>
+    					<div class="overdue"></div>
+    				</li>
+    			</ul>
+    			<div class="no-record" v-if="!onOff">
+    				<img src="../image/coupon.png">
+    				<p>暂无优惠券</p>
+    			</div>
+    		</div>
+        </div>
+
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    //加载动画
+
+    //vue.js
+    var myapp = new Vue({
+        el :"#wrap",
+        data(){
+            return{
+                onOff: true,
+				title: "我的优惠券",
+				value: 80,
+				expire: false,
+				signature:'',
+				login_status:false,
+				couponList:[]
+            }
+        },
+        mounted(){
+
+        },
+        methods :{
+            goBack() {
+                api.closeWin({
+                    animation:{
+                        type:"none",
+                    },
+              })
+            },
+            init() {
+                var _this = this;
+    			//登录凭证
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        _this.login_status = true;
+                        _this.signature = ret.value;
+                    } else {
+                        //未登录
+                        _this.login_status = false;
+                        _this.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    };
+                    //获取地址列表
+                    var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=docoupon'+_this.signature;
+                    axios.post(url)
+                        .then(function(res) {
+                    	 	if(res.data.msg=='19'){
+                    	 		_this.couponList = res.data.list;
+                    	 		if(_this.couponList.length==0){
+                    	 			_this.onOff = false
+                    	 		}
+                    	 	}
+                    	})
+                })
+
+
+            }
+        },
+        created() {
+
+        }
+    });
+    //APICloud
+    apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        myapp.init()
+    }
+
+
+</script>
+</html>

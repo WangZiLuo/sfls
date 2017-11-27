@@ -1,0 +1,747 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>我的</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            position: relative;
+        }
+        .header p{
+            height: 0.88rem;
+            font-size: 0.32rem;
+            font-weight: 900;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+        .header i{
+            display: block;
+            width: 0.45rem;
+            height: 0.88rem;
+            background-image: url(../image/set_icon.png);
+            background-size: 0.45rem 0.43rem;
+            background-repeat: no-repeat;
+            background-position: right center;
+            position: absolute;
+            right: 0.2rem;
+            bottom: 0;
+        }
+        .portrait{
+    		width: 100%;
+    		height: 2.92rem;
+    		background-image: url("../image/portrait_bg.png");
+    		background-size: 7.5rem 2.92rem;
+    		background-repeat: no-repeat;
+    		position: relative;
+    	}
+        .portrait .invitationCode{
+            position: absolute;
+            left: 50%;
+    		bottom: 0.2rem;
+            transform: translateX(-50%);
+    		font-size: 0.26rem;
+    		line-height: 0.26rem;
+    		color: #333;
+    		padding: 0 0.28rem;
+        }
+    	.portrait .userInfo{
+    		width: 1.4rem;
+    		position: absolute;
+    		left: 50%;
+    		margin-left: -0.7rem;
+    		top: 0.6rem;
+    	}
+    	.portrait .userInfo img{
+    		display: block;
+    		margin: 0 auto;
+    		width: 1.4rem;
+    		height: 1.4rem;
+    		border-radius: 50%;
+    	}
+    	.portrait .userInfo .userName{
+    	    width: 100%;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+    		font-size: 0.22rem;
+    		line-height: 0.62rem;
+    		color: #000;
+    		text-align: center;
+    	}
+    	.portrait .identity{
+    		position: absolute;
+    		right: 0.2rem;
+    		bottom: 0.33rem;
+    		height: 0.54rem;
+    		font-size: 0.26rem;
+    		line-height: 0.54rem;
+    		color: #2375c2;
+    		padding: 0 0.28rem;
+    		border: 1px solid #151515;
+    	}
+        .order{
+    		width: 100%;
+    		height: 2.2rem;
+    		padding: 0.2rem 0;
+    		background: #f6f6f6;
+    	}
+    	.order .order_con{
+    		padding: 0 0.2rem;
+    		height: 2.2rem;
+    		background: #fff;
+    	}
+    	.order_head{
+    		width: 100%;
+    	}
+    	.order_head .myOrder{
+    		float: left;
+    	}
+    	.order_head .myOrder i{
+    		float: left;
+    		display: block;
+    		width: 0.37rem;
+    		height: 0.37rem;
+    		background-image: url("../image/order_icon.png");
+    		background-size: 0.37rem 0.37rem;
+    		background-repeat: no-repeat;
+    		margin-top: 0.2rem;
+    	}
+    	.order_head .myOrder span{
+    		float: left;
+    		display: block;
+    		font-size: 0.28rem;
+    		line-height: 0.76rem;
+    		color: #333;
+    		margin-left: 0.17rem;
+    	}
+    	.order_head .allOrder{
+    		float: right;
+    	}
+    	.order_head .allOrder span{
+    		float: left;
+    		font-size: 0.22rem;
+    		line-height: 0.76rem;
+    		color: #333;
+    	}
+    	.order_head .allOrder i{
+    		float: left;
+    		display: block;
+    		width: 0.12rem;
+    		height: 0.22rem;
+    		background-image: url(../image/arrow_r.png);
+    		background-size: 0.12rem 0.22rem;
+    		background-repeat: no-repeat;
+    		margin-top: 0.27rem;
+    		margin-left: 0.08rem;
+    	}
+    	.order_list{
+    		width: 100%;
+    		padding-top: 0.24rem;
+    	}
+    	.order_list ul{
+    		display: flex;
+    		justify-content: space-around;
+    	}
+    	.order_list ul li{
+    		list-style: none;
+    		width: 1.77rem;
+    	}
+        .order_list ul li i{
+            position: relative;
+        }
+    	.order_list ul li.nopay i{
+    		display: block;
+    		margin: 0 auto;
+    		width: 0.38rem;
+    		height: 0.4rem;
+    		background-image: url(../image/nopay.png);
+    		background-size: 0.38rem 0.36rem;
+    		background-repeat: no-repeat;
+    	}
+    	.order_list ul li.nosend i{
+    		display: block;
+    		margin: 0 auto;
+    		width: 0.52rem;
+    		height: 0.40rem;
+    		background-image: url(../image/nosend.png);
+    		background-size: 0.52rem 0.40rem;
+    		background-repeat: no-repeat;
+    	}
+    	.order_list ul li.noaccept i{
+    		display: block;
+    		margin: 0 auto;
+    		width: 0.37rem;
+    		height: 0.4rem;
+    		background-image: url(../image/noaccept.png);
+    		background-size: 0.37rem 0.36rem;
+    		background-repeat: no-repeat;
+    	}
+    	.order_list ul li.refund i{
+    		display: block;
+    		margin: 0 auto;
+    		width: 0.36rem;
+    		height: 0.4rem;
+    		background-image: url(../image/refund.png);
+    		background-size: 0.36rem 0.41rem;
+    		background-repeat: no-repeat;
+    	}
+    	.order_list ul li p{
+    		font-size: 0.26rem;
+    		line-height: 0.58rem;
+    		color: #333;
+    		text-align: center;
+    	}
+        .choices {
+    		padding-bottom: 0.1rem;
+    		background: #f6f6f6;
+    	}
+    	.choices ul li{
+    		list-style: none;
+    		height: 0.94rem;
+    		padding: 0 0.2rem;
+    		border-bottom: 1px solid #dddddd;
+    		background: #fff;
+    	}
+    	.choices ul li i.icon{
+    		float: left;
+    		display: block;
+    	}
+        .choices ul li.performance i.icon{
+            width: 0.4rem;
+    		height: 0.4rem;
+    		background-image: url(../image/performance_icon.png);
+    		background-size: 0.4rem 0.4rem;
+    		background-repeat: no-repeat;
+    		margin-top: 0.27rem;
+        }
+    	.choices ul li.income i.icon{
+    		width: 0.4rem;
+    		height: 0.4rem;
+    		background-image: url(../image/income_icon.png);
+    		background-size: 0.4rem 0.4rem;
+    		background-repeat: no-repeat;
+    		margin-top: 0.27rem;
+    	}
+    	.choices ul li.collection i.icon{
+    		width: 0.4rem;
+    		height: 0.36rem;
+    		background-image: url(../image/collection_icon.png);
+    		background-size: 0.4rem 0.36rem;
+    		background-repeat: no-repeat;
+    		margin-top: 0.27rem;
+    	}
+    	.choices ul li.coupon{
+    		margin-bottom: 0.2rem;
+    	}
+    	.choices ul li.coupon i.icon{
+    		width: 0.4rem;
+    		height: 0.36rem;
+    		background-image: url(../image/coupon_icon.png);
+    		background-size: 0.4rem 0.36rem;
+    		background-repeat: no-repeat;
+    		margin-top: 0.27rem;
+    	}
+    	.choices ul li.recommend{
+    		margin-bottom: 0.2rem;
+    	}
+    	.choices ul li.recommend i.icon{
+    		width: 0.4rem;
+    		height: 0.41rem;
+    		background-image: url(../image/recommend_icon.png);
+    		background-size: 0.4rem 0.41rem;
+    		background-repeat: no-repeat;
+    		margin-top: 0.27rem;
+    	}
+    	.choices ul li.server i.icon{
+    		width: 0.4rem;
+    		height: 0.43rem;
+    		background-image: url(../image/server_icon.png);
+    		background-size: 0.4rem 0.43rem;
+    		background-repeat: no-repeat;
+    		margin-top: 0.27rem;
+    	}
+    	.choices ul li.share{
+    		margin-bottom: 0.2rem;
+    	}
+    	.choices ul li.share i.icon{
+    		width: 0.4rem;
+    		height: 0.36rem;
+    		background-image: url(../image/share_icon.png);
+    		background-size: 0.4rem 0.36rem;
+    		background-repeat: no-repeat;
+    		margin-top: 0.27rem;
+    	}
+    	.choices ul li.address i.icon{
+    		width: 0.4rem;
+    		height: 0.45rem;
+    		background-image: url(../image/address_icon.png);
+    		background-size: 0.4rem 0.45rem;
+    		background-repeat: no-repeat;
+    		margin-top: 0.27rem;
+    	}
+    	.choices ul li span{
+    		float: left;
+    		font-size: 0.28rem;
+    		line-height: 0.94rem;
+    		color: #333;
+    		margin-left: 0.22rem;
+    	}
+    	.choices ul li i.arrow{
+    		float: right;
+    		display: block;
+    		width: 0.18rem;
+    		height: 0.3rem;
+    		background-image: url(../image/arrow_r.png);
+    		background-size: 0.18rem 0.3rem;
+    		background-repeat: no-repeat;
+    		margin-top: 0.32rem;
+    	}
+        .loadingCover{
+    		width: 100%;
+    		height: 100%;
+    		position: absolute;
+    		left: 0;
+    		top: 0;
+    		background: #fff;
+    		z-index: 2;
+    	}
+        span.num{
+    		position: absolute;
+    		display: block;
+    		width: .34rem;
+    		height: .34rem;
+    		background: #f92222;
+    		border-radius: 50%;
+    		text-align: center;
+    		font-size: .2rem;
+    		/*font-weight:bold;*/
+    		line-height: .34rem;
+    		color: #fff;
+    		left: .3rem;
+    		top: -0.1rem;
+    	}
+        .mint-popup {
+            width: 100%;
+            text-align: center;
+            background-color: #2c88de;
+            backface-visibility: hidden;
+        }
+        .mint-popup p {
+            margin: auto;
+            width: 4rem;
+            padding-top: .3rem;
+            padding-bottom: .2rem;
+            font-size: .28rem;
+            line-height: .4rem;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap">
+
+        <div class="header">
+            <p>我的</p>
+            <i @click="toJump('setting')" tapmode=""></i>
+        </div>
+        <div id="main">
+            <div class="loadingCover" v-show="loadingCover"></div>
+            <div class="portrait">
+                <div class="userInfo">
+                    <img :src="userImg">
+                    <p class="userName" v-text="userName"></p>
+                </div>
+                <p class="invitationCode" v-text="invitationCode"></p>
+                <p class="identity" v-text="identityStatus" @click="toIdentity()" tapmode></p>
+            </div>
+            <div class="order">
+    			<div class="order_con">
+    				<div class="order_head clearfix">
+    					<div class="myOrder clearfix">
+    						<i></i>
+    						<span>我的订单</span>
+    					</div>
+    					<div class="allOrder clearfix" @click="toOrder('order',0)" tapmode="">
+    						<span>我的全部订单</span>
+    						<i>
+
+    						</i>
+    					</div>
+    				</div>
+    				<div class="order_list">
+    					<ul>
+    						<li class="nopay" @click="toOrder('order',1)" tapmode="">
+
+    							<i>
+    							    <span class="num" v-show='orderNum.nopay!=0' v-text="maxTo(orderNum.nopay)"></span>
+    							</i>
+    							<p>待付款</p>
+    						</li>
+
+    						<li class="nosend" @click="toOrder('order',2)" tapmode="">
+
+    							<i>
+    							    <span class="num" v-show='orderNum.nosend!=0' v-text="maxTo(orderNum.nosend)"></span>
+    							</i>
+    							<p>待发货</p>
+    						</li>
+
+    						<li class="noaccept" @click="toOrder('order',3)" tapmode="">
+
+    							<i>
+    							    <span class="num" v-show='orderNum.noaccept!=0' v-text="maxTo(orderNum.noaccept)"></span>
+    							</i>
+    							<p>待收货</p>
+    						</li>
+
+    						<li class="refund" @click="toOrder('order',5)" tapmode="">
+
+    							<i>
+    							    <span class="num" v-show='orderNum.refund!=0' v-text="maxTo(orderNum.refund)"></span>
+    							</i>
+    							<p>退款/售后</p>
+    						</li>
+    					</ul>
+    				</div>
+    			</div>
+        	</div>
+            <div class="choices">
+    			<ul>
+                    <li class="performance clearfix" @click="toJump('myPerformance')" tapmode="" v-if="isStaff">
+    					<i class="icon"></i>
+    					<span>我的业绩</span>
+    					<i class="arrow"></i>
+    				</li>
+
+    				<li class="income clearfix" @click="toJump('income')" tapmode="" v-if="!isStaff">
+    					<i class="icon"></i>
+    					<span>我的收入</span>
+    					<i class="arrow"></i>
+    				</li>
+
+    				<li class="collection clearfix" @click="toJump('collection')" tapmode="">
+    					<i class="icon"></i>
+    					<span>我的收藏</span>
+    					<i class="arrow"></i>
+    				</li>
+
+    				<li class="coupon clearfix" @click="toJump('coupon')" tapmode="">
+    					<i class="icon"></i>
+    					<span>我的优惠券</span>
+    					<i class="arrow"></i>
+    				</li>
+
+    				<li class="recommend clearfix" @click="toJump('recommend')" tapmode="">
+    					<i class="icon"></i>
+    					<span>推客中心</span>
+    					<i class="arrow"></i>
+    				</li>
+
+    				<li class="server clearfix" @click="toJump('service')" tapmode="">
+    					<i class="icon"></i>
+    					<span>在线客服</span>
+    					<i class="arrow"></i>
+    				</li>
+
+    				<li class="share clearfix" @click="toJump('share')" tapmode="">
+    					<i class="icon"></i>
+    					<span>分享私服旅舍</span>
+    					<i class="arrow"></i>
+    				</li>
+
+    				<li class="address clearfix" @click="toJump('manageaddress')" tapmode="">
+    					<i class="icon"></i>
+    					<span>收货地址</span>
+    					<i class="arrow"></i>
+    				</li>
+    			</ul>
+            </div>
+        </div>
+        <mt-popup v-model="popupVisible" position="top" class="mint-popup" :modal="false">
+            <p v-text="ajPushContent"></p>
+        </mt-popup>
+  </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    //加载动画
+    var ajpush;
+    //vue.js
+    var myapp = new Vue({
+        el :"#wrap",
+        data :{
+            loadingCover: true,
+            userImg: '../image/photo.png',
+            userName: '',
+            identityState: '',
+            identityStatus: '',
+            orderNum: {
+                nopay: 0,
+                nosend: 0,
+                noaccept: 0,
+                refund: 0
+            },
+            invitationCode: '',
+            popupVisible: false,
+            ajPushContent: ''
+        },
+        watch: {
+            identityState: function(val,oldVal) {
+                if (val==5) {
+                    this.isStaff = true
+                } else {
+                    this.isStaff = false
+                }
+            },
+            popupVisible(val) {
+                if (val) {
+                    setTimeout(function() {
+                        myapp.popupVisible = false
+                    }, 3000)
+                }
+            }
+        },
+        mounted(){
+
+        },
+        methods: {
+            init() {
+                var _this = this;
+                //检测是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        _this.signature = ret.value;
+                       var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=doordercount'+_this.signature;
+                       axios.post(url)
+                            .then(function(res){
+
+                                _this.orderNum.nopay = Number(res.data.daifukuan);
+                                _this.orderNum.nosend = Number(res.data.daifahuo);
+                                _this.orderNum.noaccept = Number(res.data.daishouhuo);
+                                _this.orderNum.refund = Number(res.data.tuikuan)
+
+                           })
+                    } else {
+                        //未登录
+                        _this.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    }
+                })
+            },
+            toJump(pageName){
+                api.openWin({
+                    name: pageName,
+                    url: 'widget://html/' + pageName + '.html',
+                    animation:{
+                        type:"none",
+                    },
+                    reload: true
+                })
+            },
+            Jump(pageName) {
+                //判断是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if ( ret.value && ret.value != "" ) {
+                        //已登录
+                        api.openWin({
+                            name: pageName,
+                            url: 'widget://html/' + pageName + '.html',
+                            animation:{
+                                type:"none",
+                            },
+                        })
+                    } else {
+                        //未登录
+                        api.openWin({
+                           name: 'login',
+                           url: 'Login.html',
+                           animation:{
+                               type:"none",
+                           },
+                           reload:true ,
+                           slidBackEnabled:false
+                       });
+                    }
+                });
+
+            },
+            toOrder(pageName,_type) {
+                this.init();
+                api.openWin({
+                    name: pageName,
+                    url: 'widget://html/' + pageName + '.html',
+                    pageParam: {
+                        type: _type
+                    },
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            getUserInfo() {
+                var _this = this;
+                //检测是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        _this.signature = ret.value;
+                       var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=douserinfo'+_this.signature;
+
+                       axios.post(url)
+                            .then(function(res){
+                                if(res.data.msg=='1'){
+                                    if (res.data.userimg !=''&&res.data.userimg!=null) {
+                                        _this.userImg = res.data.userimg;
+                                    }
+                                    _this.userName = res.data.username;
+                                    _this.invitationCode = res.data.yqm;
+
+                                    if(res.data.isdl=='1') {
+                        	 			_this.identityStatus ='去认证'
+                        	 			_this.identityState = 1
+                        	 		} else if(res.data.isdl=='2') {
+                        	 			_this.identityStatus = '已认证'
+                        	 			_this.identityState = 2
+                        	 		} else if(res.data.isdl=='3') {
+                        	 			_this.identityStatus = '认证中'
+                        	 			_this.identityState = 3
+                        	 		} else if(res.data.isdl=='4') {
+                        	 			_this.identityStatus = '认证未通过'
+                        	 			_this.identityState = 4
+                        	 		} else if (res.data.isdl=='5') {
+                                        _this.identityStatus = '已认证员工'
+                        	 			_this.identityState = 5
+                        	 		}
+
+                               };
+                                _this.loadingCover = false;
+
+                           })
+                    } else {
+                        //未登录
+                        _this.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    }
+                })
+            },
+            toIdentity(){
+                var _this = this;
+                var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=douserinfo'+_this.signature;
+
+                axios.post(url)
+                     .then(function(res) {
+                        if(res.data.msg=='1') {
+                             if(res.data.isdl=='1') {
+                                 _this.identityStatus ='去认证'
+                                 _this.identityState = 1
+                             } else if(res.data.isdl=='2') {
+                                 _this.identityStatus = '已认证'
+                                 _this.identityState = 2
+                             } else if(res.data.isdl=='3') {
+                                 _this.identityStatus = '认证中'
+                                 _this.identityState = 3
+                             } else if(res.data.isdl=='4') {
+                                 _this.identityStatus = '认证未通过'
+                                 _this.identityState = 4
+                             } else if (res.data.isdl=='5') {
+                                 _this.identityStatus = '已认证员工'
+                                 _this.identityState = 5
+                             }
+
+                        };
+                        if(_this.identityState==1 ||_this.identityState==4){
+                            api.openWin({
+                                name: 'identity',
+                                url: 'widget://html/identity.html',
+                                animation:{
+                                    type:"none",
+                                },
+                                pageParam: {
+                                    identitystate: _this.identityState
+
+                                },
+
+                            })
+        				} else if (_this.identityState==5) {
+        				    return false
+        				} else {
+                            api.openWin({
+                                name: 'identity-info',
+                                url: 'widget://html/identityinfo.html',
+                                animation: {
+                                    type:"none",
+                                }
+                            })
+        				}
+                    })
+			},
+            maxTo(num) {
+                if (Number(num)>100) {
+                    return '···'
+                } else {
+                    return Number(num)
+                }
+            }
+
+        },
+        created() {
+
+        }
+    });
+    //APICloud
+    apiready = function(){
+
+        $api.fixStatusBar($api.dom('.header'));
+        myapp.getUserInfo();
+        myapp.init();
+        ajpush = api.require('ajpush');
+        api.addEventListener({
+            name: 'my'
+        }, function(ret, err) {
+            if (ret) {
+
+                myapp.getUserInfo()
+
+            }
+        });
+        api.addEventListener({
+            name: 'orderNum'
+        }, function(ret, err) {
+            if (ret) {
+
+                myapp.init()
+
+            }
+        });
+        ajpush.setListener(
+            function(ret) {
+                myapp.popupVisible = true;
+                myapp.ajPushContent = ret.content
+            }
+        );
+
+
+    }
+
+
+</script>
+</html>

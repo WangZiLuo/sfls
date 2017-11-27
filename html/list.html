@@ -1,0 +1,467 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>列表</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header {
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+            background: #fff;
+            z-index: 9;
+        }
+
+        .header i {
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1.5rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left 0.2rem center;
+        }
+
+        .header h4 {
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+
+        #main ul li img[lazy=loading] {
+            width: 3.45rem;
+            height: 3.45rem;
+            margin: auto;
+        }
+
+        #main ul {
+            padding: 0.24rem 0.2rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            background: #fff;
+        }
+
+        #main ul li {
+            width: 3.45rem;
+            padding-bottom: 0.17rem;
+            border: 1px solid #000;
+            margin-bottom: 0.28rem;
+        }
+
+        #main ul li .list-items-img {
+            display: block;
+            overflow: hidden;
+            width: 3.45rem;
+            height: 3.45rem;
+            background-color: rgba(0, 0, 0, .1)
+        }
+        /*#main ul li .list-items-img>img{*/
+        /*position: absolute;
+           top: 0;
+           bottom: 0;
+           left: 0;
+           right: 0;
+           margin: auto;*/
+        /*width:100%;
+           height: 100%;
+       }*/
+
+        image[lazy=loading] {
+            width: .8rem;
+            height: 6rem;
+            margin: auto;
+        }
+
+        .detail p {
+            width: 100%;
+            font-size: 0.28rem;
+            line-height: 0.56rem;
+            color: #000;
+            text-align: center;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .bottom {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 0.07rem;
+        }
+
+        .price {
+            font-size: 0.32rem;
+            line-height: 0.48rem;
+            color: #000;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+
+        .price .rmb {
+            font-size: 0.2rem;
+            line-height: 0.48rem;
+            color: #333;
+            font-style: normal;
+            vertical-align: middle;
+        }
+
+        .line {
+            font-size: 0.48rem;
+            line-height: 0.48rem;
+            color: #000;
+        }
+
+        .collect {
+            font-size: 0.26rem;
+            line-height: 0.48rem;
+            color: #333;
+            vertical-align: middle;
+        }
+
+        .collect i {
+            display: inline-block;
+            -webkit-appearance: none;
+            width: 0.33rem;
+            height: 0.29rem;
+            background-image: url('../image/collection_icon1.png');
+            background-size: 0.33rem 0.29rem;
+            background-repeat: no-repeat;
+            vertical-align: middle;
+            margin-right: 0.14rem;
+        }
+
+        .collect i.checked {
+            background-image: url('../image/collection_icon2.png');
+        }
+
+        .page-infinite-loading {
+            text-align: center;
+            line-height: 1.4rem;
+            font-size: .28rem;
+        }
+
+        .empty {
+            margin-top: 2.9rem;
+        }
+
+        .empty img {
+            width: 1.82rem;
+            height: 1.76rem;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .empty p {
+            font-size: 0.3rem;
+            color: #969696;
+            line-height: 0.55rem;
+            text-align: center;
+            margin-top: 0.16rem;
+        }
+
+        .mint-popup {
+            width: 100%;
+            text-align: center;
+            background-color: #2c88de;
+            backface-visibility: hidden;
+        }
+
+        .mint-popup p {
+            margin: auto;
+            width: 4rem;
+            padding-top: .3rem;
+            padding-bottom: .2rem;
+            font-size: .28rem;
+            line-height: .4rem;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="wrap">
+        <div id="list_header">
+            <div class="header">
+                <i @click="goBack()" tapmode></i>
+                <h4>{{title}}</h4>
+            </div>
+        </div>
+        <div class="loadingCover" v-show="loadingCover">
+
+        </div>
+
+
+        <div id="main" v-show="!loadingCover">
+            <div class="empty" v-if="result">
+                <img src="../image/result.png" alt="">
+                <p>无搜索结果</p>
+            </div>
+            <ul id="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10" infinite-scroll-immediate-check="loadingCheck">
+                <li v-for="(item,index) in list">
+                    <!-- <div class="list-items-img"> -->
+                    <img class="list-items-img" v-lazy.container="unescape(item.listimg)" @click="toDetail($event,item.listid,item.listoldpre)" tapmode/>
+                    <!-- </div> -->
+                    <div class="detail">
+                        <p>{{unescape(item.listtit)}}</p>
+                        <div class="bottom">
+                            <span class="price"><i class="rmb">￥</i>{{showPrice(item)}}</span>
+                            <span class="line">|</span>
+                            <span class="collect"><i :class="{ checked: item.isshoucang==1 }" @click="collection(item.listid,item)"></i>收藏</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <p class="page-infinite-loading" v-show="loading">
+                {{loadingText}}
+            </p>
+        </div>
+        <mt-popup v-model="popupVisible" position="top" class="mint-popup" :modal="false">
+            <p v-text="ajPushContent"></p>
+        </mt-popup>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var ajpush;
+    var myapp = new Vue({
+        el: "#wrap",
+        data() {
+            return {
+                loadingCover: true,
+                dealer: false,
+                title: '',
+                list: [],
+                num: 1,
+                status: '',
+                type: '',
+                mark: '',
+                signature: '',
+                loginSuccess: false,
+                loading: false,
+                loadingCheck: false,
+                loadingText: '加载中...',
+                result: false,
+                popupVisible: false,
+                ajPushContent: '',
+                old: false
+            }
+        },
+        watch: {
+            popupVisible(val) {
+                if (val) {
+                    setTimeout(function() {
+                        myapp.popupVisible = false
+                    }, 3000)
+                }
+            }
+        },
+        methods: {
+            goBack() {
+                api.closeWin({
+                    animation: {
+                        type: "none",
+                    }
+                })
+            },
+            loadMore() {
+                this.loading = true;
+                this.getList(this.type, this.mark, this.num)
+            },
+            init() {
+                var type = api.pageParam.query.type;
+                var mark = api.pageParam.query.mark;
+                var name = api.pageParam.query.name;
+                this.type = type;
+                this.mark = mark;
+                this.title = name;
+                var _this = this;
+                //登陆状态
+                //登陆后的访问口令
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    if (ret.value && ret.value != "") {
+                        _this.signature = ret.value;
+                        _this.loginSuccess = true;
+                        _this.getList(_this.type, _this.mark, _this.num)
+                    } else {
+                        //未登录
+                        _this.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f';
+                        _this.getList(_this.type, _this.mark, _this.num)
+                    }
+                })
+            },
+            showPrice(item) {
+                if (this.old) {
+                    return item.listoldpre
+                } else {
+                    return item.listpre
+                }
+            },
+            getList(type, mark, num) {
+                var that = this;
+                var url = null;
+                switch (type) {
+                    case 'twotype':
+                        url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=domalllist&token=ajiuqian&wxapp=2' + '&twotype=' + mark + '&p=' + num + this.signature;
+                        break;
+                    case 'search':
+                        url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=domalllist&token=ajiuqian&wxapp=2' + '&sousuotype=1' + '&txtkey=' + mark + '&p=' + num + this.signature;
+                        break;
+                    case 'isnewtype':
+                        url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=domalllist&token=ajiuqian&wxapp=2' + '&isnewtype=1' + '&p=' + num + this.signature;
+                        break;
+                    case 'ishottype':
+                        url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=domalllist&token=ajiuqian&wxapp=2' + '&ishottype=1' + '&p=' + num + this.signature;
+                        break;
+                    case 'isrealtype':
+                        url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=domalllist&token=ajiuqian&wxapp=2' + '&isrealtype=1' + '&p=' + num + this.signature;
+                        break;
+                    case 'isalltype':
+                        url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=domalllist&token=ajiuqian&wxapp=2' + '&isalltype=1' + '&p=' + num + this.signature;
+                        break;
+                };
+
+                axios.post(url)
+                    .then(function(res) {
+                        if (res.data.msg == '5') {
+                            if (res.data.isdl == 2 || res.data.isdl == 5) {
+                                that.old = true;
+                            } else {
+                                that.old = false;
+                            }
+                            if (res.data.list.length == 0) {
+                                if (type == 'search' && that.num == 1) {
+                                    that.result = true
+                                };
+                                if (that.loadingText != '没有更多了...') {
+                                    that.loadingText = '没有更多了...'
+                                };
+
+                            } else {
+                                if (that.loadingText != '加载中...') {
+                                    that.loadingText = '加载中...'
+                                };
+                                that.list = that.list.concat(res.data.list);
+                                that.loading = false;
+                                that.num = that.num + 1;
+                            };
+                            if (that.loadingCover == true) {
+                                setTimeout(function() {
+                                    that.loadingCover = false;
+                                    that.$indicator.close();
+                                }, 500)
+                            }
+
+                        } else {}
+                    });
+            },
+            unescape(str) {
+                return unescape(str)
+            },
+            toDetail(ev, id, price) {
+                api.removePrefs({
+                    key: 'goods_order_couponid'
+                });
+                api.openWin({
+                    name: 'goods-detail',
+                    url: 'goods-detail.html',
+                    animation: {
+                        type: "none",
+                    },
+                    pageParam: {
+                        query: {
+                            uid: id,
+                        },
+                    },
+                    // reload:true,
+                })
+            },
+            collection(goodsid, isshoucang) {
+                if (this.loginSuccess == false) {
+                    api.openFrame({
+                        name: 'login',
+                        url: 'widget://html/login.html',
+                        bounces: false,
+                        animation: {
+                            type: "none",
+                        },
+                        pageParam: {
+                            goodsId: goodsid
+                        }
+                    })
+                } else {
+                    this.collect(goodsid, isshoucang)
+                }
+
+            },
+            collect(goodsid, isshoucang) {
+                var _this = this;
+                var url_collection = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=shoucang&token=ajiuqian&wpid=' + goodsid + this.signature;
+                axios.post(url_collection)
+                    .then(function(res) {
+
+                        if (res.data.msg == '13') {
+                            // _this.getList(_this.type,_this.mark,_this.num);
+                            // isshoucang = 1;
+                            Vue.set(isshoucang, "isshoucang", 1);
+                            _this.$toast({
+                                message: '收藏成功',
+                                position: "middle",
+                                duration: 2000
+                            })
+                        } else if (res.data.msg == '-13') {
+
+                            // _this.getList(_this.type,_this.mark,_this.num);
+                            Vue.set(isshoucang, "isshoucang", !1);
+                            _this.$toast({
+                                message: '取消收藏',
+                                position: "middle",
+                                duration: 2000
+                            })
+                        }
+                    })
+            }
+        },
+        mounted() {
+
+        }
+    });
+    apiready = function() {
+        $api.fixStatusBar($api.dom('#list_header'));
+        myapp.$indicator.open('加载中...');
+        myapp.init();
+        ajpush = api.require('ajpush');
+        api.addEventListener({
+            name: 'collect'
+        }, function(ret, err) {
+            myapp.init();
+        });
+        ajpush.setListener(
+            function(ret) {
+                myapp.popupVisible = true;
+                myapp.ajPushContent = ret.content
+            }
+        );
+    }
+</script>
+
+</html>

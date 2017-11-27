@@ -1,0 +1,351 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>退款详情</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+            background: #fff;
+        }
+        .header i{
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+        .content{
+		flex: 1;
+		overflow: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+	.state{
+		padding: 0.48rem 0.2rem 0.4rem 0.2rem;
+		background: #b5e7fe;
+		background-image: url(../image/goback.png);
+		background-size: 0.93rem 0.94rem;
+		background-repeat: no-repeat;
+		background-position: 5.92rem center;
+		height: 0.92rem;
+	}
+	.state h4{
+		font-size: 0.3rem;
+		line-height: 0.5rem;
+		color: #333;
+	}
+	.introduce p{
+		padding-left: 0.2rem;
+		font-size: 0.28rem;
+		line-height: 0.8rem;
+		color: #808080;
+		background: #fff;
+	}
+	.refund-info{
+		padding: 0 0.2rem;
+		padding-bottom: 0.5rem;
+		background: #fff;
+	}
+	.refund-info .title{
+		font-size: 0.28rem;
+		line-height: 1rem;
+		color: #333;
+	}
+	.goods-info{
+		display: flex;
+		justify-content: space-between;
+		padding-bottom: 0.32rem;
+		border-bottom: 1px solid #e3e3e3;
+	}
+	.goods-info img{
+		display: block;
+		width: 1.8rem;
+		height: 1.8rem;
+	}
+	.goods-info .goods-name{
+		width: 5rem;
+	}
+	.goods-info .goods-name p{
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.28rem;
+		line-height: 0.48rem;
+		color: #333;
+	}
+	.refund-cause{
+		display: flex;
+		justify-content: space-between;
+		padding-top: 0.15rem;
+		padding-bottom: 0.18rem;
+	}
+	.refund-cause span{
+		font-size: 0.28rem;
+		line-height: 0.68rem;
+		color: #808080;
+		width: 1.3rem;
+	}
+	.refund-cause ul{
+		width: 5.5rem;
+	}
+	.refund-cause ul li{
+		font-size: 0.28rem;
+		line-height: 0.68rem;
+		color: #808080;
+	}
+	.refund-number{
+		display: flex;
+		justify-content: space-between;
+	}
+	.refund-number span{
+		width: 1.3rem;
+		font-size: 0.28rem;
+		line-height: 0.68rem;
+		color: #808080;
+	}
+	.refund-number i{
+		width: 5.5rem;
+		font-size: 0.28rem;
+		line-height: 0.68rem;
+		color: #808080;
+		font-style: normal;
+	}
+	.upload-img{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.upload-img span{
+		width: 1.3rem;
+		font-size: 0.28rem;
+		line-height: 0.68rem;
+		color: #808080;
+	}
+	.upload-img i{
+		width: 5.5rem;
+		font-size: 0.28rem;
+		line-height: 0.68rem;
+		color: #808080;
+		font-style: normal;
+	}
+	.upload-img ul{
+		width: 5.5rem;
+		display: flex;
+		justify-content: flex-start;
+	}
+	.upload-img ul li{
+		margin-right: 0.1rem;
+	}
+	.upload-img ul li img{
+		width: 0.87rem;
+		height: 0.87rem;
+	}
+	.apply-time{
+		display: flex;
+		justify-content: space-between;
+	}
+	.apply-time span{
+		width: 1.3rem;
+		font-size: 0.28rem;
+		line-height: 0.68rem;
+		color: #808080;
+	}
+	.apply-time i{
+		width: 5.5rem;
+		font-size: 0.28rem;
+		line-height: 0.68rem;
+		color: #808080;
+		font-style: normal;
+	}
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <header>
+            <div class="header">
+                <i @click="goBack" tapmode></i>
+                <h4>退款申请</h4>
+            </div>
+        </header>
+        <div id="main">
+            <div class="content">
+    			<div class="state">
+    				<h4>{{orderStatus}}</h4>
+    			</div>
+    			<div class="introduce">
+    				<p>您已成功提交退款申请,耐心等待处理</p>
+    			</div>
+    			<div class="refund-info">
+    				<p class="title">退款信息</p>
+    				<div class="goods-info">
+    					<img v-lazy="imgSrc">
+    					<div class="goods-name">
+    						<p><span>{{unescape(orderTitle)}}</span></p>
+    						<p><span>共{{orderNum}}件</span></p>
+    					</div>
+    				</div>
+    				<div class="refund-cause">
+    					<span>退款原因:</span>
+    					<ul>
+    						<li v-for="(list,inde) in reasons" :key="inde">{{list}}</li>
+    					</ul>
+    				</div>
+    				<div class="refund-number">
+    					<span>退款金额:</span>
+    					<i>￥{{refundMoney}}</i>
+    				</div>
+    				<div class="upload-img">
+    					<span>上传图片:</span>
+    					<ul v-if="onOff">
+    						<li v-for="(item,index) in imgList" :key="index"><img :src="unescape(item)"></li>
+    					</ul>
+    					<i v-if="!onOff">无</i>
+    				</div>
+    				<div class="apply-time">
+    					<span>申请时间:</span>
+    					<i>{{applyTime}}</i>
+    				</div>
+    			</div>
+    		</div>
+        </div>
+
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+
+    //vue.js
+    var myapp = new Vue({
+        el: "#wrap",
+        data() {
+			return{
+				onOff: false,
+				signature:'',
+				orderid:'',
+				orderStatus:'',
+				orderInfo:{},
+				imgSrc:'',
+				orderTitle:'',
+				orderNum:0,
+				reasons:[],
+				refundMoney:'',
+				imgList:[],
+				applyTime:''
+			}
+		},
+        mounted() {
+
+        },
+        methods: {
+            init() {
+                var that = this;
+    			this.orderid = api.pageParam.orderId;
+                //检测是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        that.signature = ret.value;
+                        //登录凭证
+            			var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=myorderlist&orderid='+that.orderid+that.signature;
+            			axios.post(url)
+            				 .then(function(res) {
+            				 	if(res.data.msg=='23') {
+            				 		that.orderInfo = res.data.list[0]
+            				 		if(that.orderInfo.orderstatus=='3') {
+            				 			that.orderStatus = '等待退款中...'
+            				 		} else if(that.orderInfo.orderstatus=='4') {
+            				 			that.orderStatus = '已退款'
+            				 		} else if(that.orderInfo.orderstatus=='6') {
+                                        that.orderStatus = '审核未通过'
+                                    }
+            				 		//获取图片，标题
+            				 		that.imgSrc = that.orderInfo.list[0].listimg
+            				 		that.orderTitle = that.orderInfo.list[0].listtit
+            				 		//获取商品总数
+            				 		for(var i=0;i<that.orderInfo.list.length;i++){
+            				 			that.orderNum+=parseInt(that.orderInfo.list[i].counter)
+            				 		}
+            				 		//获取退款金额
+            				 		that.refundMoney = that.orderInfo.orderrefundfee
+            				 		//获取退款详情
+            				 		var arr = that.orderInfo.orderremark.split('∑')
+            				 		//退款原因
+            				 		var reasonsStr = arr[1]
+            				 		var reasonArr = reasonsStr.split('№')
+            				 		that.reasons.push(arr[0])
+            				 		that.reasons = that.reasons.concat(reasonArr)
+            				 		//退款图片
+            				 		var imgListStr = arr[3];
+                                    imgListStr=='' ? that.onOff = false : that.onOff = true;
+            				 		that.imgList = imgListStr.split(',');
+            				 		//申请退款时间
+            				 		that.applyTime = arr[4];
+
+            				 	}
+            				 })
+
+
+                    } else {
+                        //未登录
+                        _this.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    }
+                })
+            },
+            goBack() {
+                api.closeWin({
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            toJump(pageName) {
+                api.openWin({
+                    name: pageName,
+                    url: pageName + '.html',
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            unescape(str){
+                return unescape(str)
+            }
+
+        },
+        created() {
+
+        }
+    });
+
+    //APICloud
+    apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        myapp.init()
+    }
+</script>
+</html>

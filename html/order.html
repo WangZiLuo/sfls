@@ -1,0 +1,369 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>我的订单</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/mintui.css">
+
+    <style>
+        .container{
+            width: 100%;
+            height: 100%;
+            background: #f6f6f6;
+        }
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+            background: #fff;
+        }
+        .header i{
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+        .nav{
+            overflow-x: auto;
+            background: #fff;
+        }
+        .nav ul{
+            width: 8.25rem;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid #0b0b0c;
+        }
+        .nav ul a{
+            display: block;
+            width: 18.5%;
+        }
+        .nav ul li{
+            font-size: 0.3rem;
+            line-height: 0.83rem;
+            text-align: center;
+            color: #707070;
+            font-weight: 900;
+        }
+        .nav ul li.actived{
+            color: #333;
+            font-weight: 900;
+        }
+        .mint-popup {
+            width: 100%;
+            text-align: center;
+            background-color: #2c88de;
+            backface-visibility: hidden;
+        }
+        .mint-popup p {
+            margin: auto;
+            width: 4rem;
+            padding-top: .3rem;
+            padding-bottom: .2rem;
+            font-size: .28rem;
+            line-height: .4rem;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <!-- 头部 -->
+        <header>
+            <div class="header">
+                <i @click="goBack" tapmode=""></i>
+                <h4>我的订单</h4>
+            </div>
+            <div class="content">
+    			<div class="nav">
+    				<ul>
+                        <li v-for="(item,index) in liList" :key="index" @click="switchframe(index)" tapmode="" :class="{'actived':isActive==index}">{{item}}</li>
+    				</ul>
+    			</div>
+    		</div>
+        </header>
+
+
+
+        <div id="main">
+
+        </div>
+        <mt-popup v-model="popupVisible" position="top" class="mint-popup" :modal="false">
+            <p v-text="ajPushContent"></p>
+        </mt-popup>
+    </div>
+  </body>
+
+    <script type="text/javascript" src="../script/rem.js"></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="../script/vue.js"></script>
+    <script type="text/javascript" src="../script/mintui.js"></script>
+    <script type="text/javascript">
+
+
+        //vue.js
+        var myapp = new Vue({
+            el :"#wrap",
+            data() {
+    			return{
+                    isActive: 0,
+    				onOff:false,
+    				state:"待付款",
+    				goods_title: "韩欣佳怡连衣裙",
+    				goods_num: "2",
+    				goods_color: "黄色",
+    				goods_size: "L",
+    				goods_price: "300",
+    				mail_fare_price: "20",
+    				total_price: "320",
+                    gFrameIndex: 0,
+                    headerOffset: {},
+                    liList: ['全部','待付款','待发货','待收货','已完成','退款/售后'],
+                    pageType: {},
+                    popupVisible: false,
+                    ajPushContent: ''
+    			}
+    		},
+            watch: {
+                popupVisible(val) {
+                    if (val) {
+                        setTimeout(function() {
+                            myapp.popupVisible = false
+                        }, 3000)
+                    }
+                }
+            },
+            mounted() {
+
+            },
+            methods :{
+
+                goBack() {
+                    api.sendEvent({
+                        name: 'orderNum',
+                        extra: {
+                           success: 'true'
+                        }
+                    });
+                    api.closeWin({
+                        animation:{
+                            type:"none",
+                        },
+                    })
+                },
+                openNewWindow(type) {
+                    api.openWin({
+                        name: type,
+                        url: './html/'+type+'.html',
+                        pageParam: {},
+                        bounces: false,
+                        opaque: false
+                    });
+                },
+                // 随意切换按钮
+                randomSwitchBtn(name, index) {
+                    var lis = $api.domAll('.bottom_btn');
+                    var i = 0, len = lis.length;
+                    var curLi = lis[index];
+
+                    for(i; i<len; i++){
+                       var thisLi = lis[i];
+                       if(thisLi === curLi){
+                           $api.addCls(thisLi,'activebtn');
+                           $api.addCls(thisLi,'activebtn'+index);
+                           continue;
+                       }else{
+                           if($api.hasCls(thisLi,'activebtn')){
+                               $api.removeCls(thisLi,'activebtn');
+                               $api.removeCls(thisLi,'activebtn'+i);
+                           }
+                       }
+                    }
+
+                    // 切换头部
+                    var lis = $api.domAll('.titlebar');
+                    var i = 0, len = lis.length;
+                    var curLi = lis[index];
+
+                    for(i; i<len; i++){
+                        var thisLi = lis[i];
+                        if(thisLi === curLi){
+                            $api.addCls(thisLi,'activebar');
+                            $api.addCls(thisLi,'activebar'+index);
+                            continue;
+                        }else{
+                            if($api.hasCls(thisLi,'activebar')){
+                                    $api.removeCls(thisLi,'activebar');
+                                    $api.removeCls(thisLi,'activebar'+i);
+                                }
+                            }
+                    }
+                },
+
+                // 隐藏所有的一级frame
+                hideAllFrame() {
+                    api.setFrameAttr({
+                        name: 'order_all',
+                        hidden:true
+                    });
+                    api.setFrameAttr({
+                        name: 'order_nopay',
+                        hidden:true
+                    });
+                    api.setFrameAttr({
+                        name: 'order_nosend',
+                        hidden:true
+                    });
+                    api.setFrameAttr({
+                        name: 'order_noaccept',
+                        hidden:true
+                    });
+                    api.setFrameAttr({
+                        name: 'order_complete',
+                        hidden:true
+                    });
+                    api.setFrameAttr({
+                        name: 'order_refund',
+                        hidden:true
+                    });
+                },
+
+                // 自己修复ios显示frame的时候bug
+                // ios自己主动隐藏后，再open就不显示了
+                showgroup(type) {
+                    api.setFrameGroupAttr({
+                        name: type + 'group',
+                        hidden:false
+                    });
+                },
+
+
+                // 移动滑动块
+                sliderbarCallback(id, num) {
+
+                    // 得到背景元素的宽度
+                    // var width=parseInt(window.getComputedStyle($api.byId('matchwidth'),null).width);
+                    var width = parseInt(api.frameWidth / 2);
+                    if(num!=0){
+                    num=width;
+                    }
+                    // 移动背景元素的宽度  在index.html不能获得 forth_frame.html上面的dom，虽然是在同一个手机屏幕上
+                    $api.css($api.byId(id),"-webkit-transform:translate(" + num + "px,0)");
+                },
+
+                // ===================================
+                // 响应底部按钮的切换frame
+                // ===================================
+                switchframe(_index) {
+
+                    api.setFrameGroupIndex({
+                        name: 'group',
+                        index: _index
+                    });
+                    this.isActive = _index
+
+                },
+                funIniGroup(){
+                    var frames = [
+                        {
+                            name: 'order_all',
+                            url: 'widget://html/order_all.html',
+                            bgColor: 'rgba(0,0,0,.2)',
+                            bounces: false
+                        },
+                        {
+                            name: 'order_nopay',
+                            url: 'widget://html/order_nopay.html',
+                            bgColor: 'rgba(0,0,0,.2)',
+                            bounces: false
+                        },
+                        {
+                            name: 'order_nosend',
+                            url: 'widget://html/order_nosend.html',
+                            bgColor: 'rgba(0,0,0,.2)',
+                            bounces: false
+                        },
+                        {
+                            name: 'order_noaccept',
+                            url: 'widget://html/order_noaccept.html',
+                            bgColor: 'rgba(0,0,0,.2)',
+                            bounces: false
+                        },
+                        {
+                            name: 'order_complete',
+                            url: 'widget://html/order_complete.html',
+                            bgColor: 'rgba(0,0,0,.2)',
+                            bounces: false
+                        },
+                        {
+                            name: 'order_refund',
+                            url: 'widget://html/order_refund.html',
+                            bgColor: 'rgba(0,0,0,.2)',
+                            bounces: false
+                        }
+                    ];
+                    var _this = this;
+
+                    api.openFrameGroup({
+                        name: 'group',
+                        scrollEnabled: false,
+                        rect: {
+                            x: 0,
+                            y: this.headerOffset.h,
+                            w: api.winWidth,
+                            h: api.frameHeight-this.headerOffset.h
+                        },
+                        index: _this.pageType.type,
+                        frames: frames
+                    }, function (ret, err) {
+
+                    })
+                }
+
+
+            },
+            created() {
+
+
+
+            }
+        });
+        apiready = function(){
+            // 完成首页初始化
+            var _this = this;
+            $api.fixStatusBar($api.dom('header'));
+            myapp.headerOffset = $api.offset($api.dom('header'));
+            myapp.pageType   = api.pageParam;
+            myapp.isActive = api.pageParam.type;
+            var header = $api.dom('header');
+            myapp.funIniGroup();
+            var ajpush = api.require('ajpush');
+            ajpush.setListener(
+                function(ret) {
+                    myapp.popupVisible = true;
+                    myapp.ajPushContent = ret.content
+                }
+            );
+
+
+        }
+
+  </script>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>个人资料</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+        }
+        .header i{
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            display: block;
+            width: 0.2rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+        .header span{
+            display: block;
+            position: absolute;
+            right: 0.2rem;
+            top: 0;
+            font-size: 0.28rem;
+            line-height: 0.88rem;
+            color: #333;
+        }
+        .content ul li{
+            height: 0.9rem;
+            padding: 0 0.2rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .content ul li.portrait{
+            height: 1rem;
+            position: relative;
+            padding: 0.15rem 0.2rem;
+        }
+        .content ul li.portrait span{
+            line-height: 1rem;
+        }
+        .content ul li.portrait img{
+            float: right;
+            width: 0.9rem;
+            height: 0.9rem;
+            display: block;
+
+    		border-radius: 50%;
+        }
+        .content ul li.nickname input{
+            float: right;
+            width: 30%;
+            font-size: 0.36rem;
+            line-height: 0.4rem;
+            padding: 0.2rem 0 ;
+            color: #808080;
+            font-weight: 100;
+            margin-right: 0.18rem;
+            text-align: center;
+        }
+        .content ul li span{
+            float: left;
+            font-size: 0.36rem;
+            line-height: 0.9rem;
+            color: #333333;
+        }
+        .content ul li i.arrow{
+            float: right;
+            display: block;
+            width: 0.16rem;
+            height: 0.3rem;
+            background-image: url(../image/arrow_r.png);
+            background-size: 0.16rem 0.3rem;
+            background-repeat: no-repeat;
+            margin-top: 0.3rem;
+        }
+        .content ul li.portrait i.arrow{
+            margin-top: 0.33rem;
+        }
+        .content ul li i.number{
+            float: right;
+            font-size: 0.36rem;
+            line-height: 0.9rem;
+            color: #808080;
+            font-style: normal;
+        }
+        .upload-wrapper{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        /**头像剪截操作区***/
+        .imageClipBox {
+                padding-bottom: 0.2rem;
+                background-color: #fff;
+                height: 1.2rem;
+                line-height: 1.2rem;
+                width: 100%;
+                position: fixed;
+                left: 0;
+                bottom: -2.12rem;
+                -webkit-transform: translate3d(0px,-2.12rem,0px);
+                -moz-transform: translate3d(0px,-2.12rem,0px);
+                transform: translate3d(0px,-2.12rem,0px);
+                transition: all 0.3s;
+                visibility: hidden;
+        }
+        .imageClipBox .btn {
+                /*margin-top: 0.1rem;
+                margin-bottom: 2rem;*/
+                text-align: center
+        }
+        .imageClipBox .btn button {
+                width: 40%;
+                outline: none;
+                border: none;
+                margin: 0 0.2rem 0.2rem;
+                background: #000;
+                color: #fff;
+                height: 0.8rem;
+                display: inline-block;
+                border-radius: 0.4rem;
+                font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <header>
+            <div class="header">
+    			<i @click="goBack"></i>
+    			<h4>个人资料</h4>
+    			<span @click="upImg()">保存</span>
+    		</div>
+        </header>
+
+		<div class="content">
+			<ul>
+				<li class="portrait clearfix">
+					<span>我的头像</span>
+					<i class="arrow"></i>
+                    <div style="width:1rem;float:right;margin-right: 0.18rem;">
+                        <img  :src="userImg" id="head_pic" style="width: 1rem;height: 1rem;" ref="myImg"/>
+                        <input type="hidden" name="headPic" id="headPic" value=""/>
+                    </div>
+
+				</li>
+				<li class="nickname clearfix">
+					<span>昵称</span>
+					<i class="arrow"></i>
+                    <input type="text" v-model="userName">
+				</li>
+				<li class="phone clearfix">
+					<span>手机号</span>
+					<i class="number" v-text="phone"></i>
+				</li>
+			</ul>
+		</div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript" src="../script/upImage.js"></script>
+
+<script type="text/javascript">
+    //加载动画
+    //vue.js
+    var myapp = new Vue({
+        el :"#wrap",
+        data(){
+		    return{
+                userName: '',
+                phone: '',
+                userImg: '../image/photo.png',
+                signature: ''
+		    }
+		},
+        mounted(){
+
+        },
+        methods :{
+            goBack() {
+              api.closeWin({
+                  animation:{
+                      type:"none",
+                  },
+              })
+            },
+            init() {
+                var _this = this;
+                //检测是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        _this.signature = ret.value;
+                       var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=douserinfo'+_this.signature;
+                       axios.post(url)
+                            .then(function(res) {
+                               if(res.data.msg=='1'){
+
+
+                                   _this.userName = res.data.username;
+                                   _this.phone = res.data.phone;
+                                   _this.userImg = res.data.userimg;
+                               }
+                           })
+                    } else {
+                        //未登录
+                        that.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    }
+                })
+            },
+            getBase64Image(img) {
+                var canvas = document.createElement("canvas");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                var ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, img.width, img.height);
+                var ext = img.src.substring(img.src.lastIndexOf(".")+1).toLowerCase();
+                // var dataURL = canvas.toDataURL("image/jpeg"+ext);
+                var dataURL = canvas.toDataURL("image/jpeg",0.5);
+                return dataURL;
+            },
+            upImg() {
+                var _this = this;
+                var imgUrl = this.$refs.myImg.src;
+                var image = new Image();
+                image.src = imgUrl;
+                image.onload = function() {
+                    var base64 = _this.getBase64Image(image);
+                    api.ajax({
+                        url: 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=uppersonaldata' + _this.signature,
+                        method: 'post',
+                        data: {
+                            values: {
+                                photo: base64,
+                                name:  _this.userName
+                            }
+                        }
+                    }, function(ret, err) {
+                        if (ret.msg==35) {
+                            _this.$toast({
+                              message: '修改成功',
+                              duration: 2000
+                            });
+                            _this.goBack()
+                        } else {
+                            _this.$toast({
+                              message: '修改失败',
+                              duration: 2000
+                            });
+                        };
+                        api.sendEvent({
+                            name: 'my',
+                            extra: {
+                                value: true
+                            }
+                        });
+                    });
+                }
+            },
+            save() {
+                var _this = this;
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        _this.signature = ret.value;
+                        _this.upImg();
+
+                    } else {
+                        //未登录
+                        that.login_status = false;
+                        that.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    }
+                });
+            }
+        }
+    });
+
+    //APICloud
+    apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        myapp.init();
+        $("#head_pic").upImage({"valueDom":$("#headPic")});
+
+    };
+</script>
+</html>

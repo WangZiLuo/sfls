@@ -1,0 +1,389 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>提现</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header {
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+        }
+
+        .header i {
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+
+        .header h4 {
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            background: #f6f6f6;
+        }
+
+        .content {
+            padding: 0.3rem 0.2rem 0 0.2rem;
+        }
+
+        .withdraw {
+            padding: 0.1rem 0.39rem 0 0.39rem;
+            height: 3.48rem;
+            background: #fff;
+        }
+
+        .withdraw .head span {
+            float: left;
+            font-size: 0.28rem;
+            line-height: 1.03rem;
+            color: #333;
+            margin-left: 0.08rem;
+        }
+
+        .withdraw .head i {
+            float: left;
+            font-size: 0.28rem;
+            line-height: 1.03rem;
+            color: #2375c2;
+            margin-left: 0.4rem;
+            font-style: normal;
+        }
+
+        .withdraw h4 {
+            font-size: 0.28rem;
+            line-height: 0.85rem;
+            text-align: center;
+            color: #333;
+        }
+
+        .withdraw input {
+            display: block;
+            padding-left: 2rem;
+            width: 4.32rem;
+            height: 0.7rem;
+            font-size: 0.3rem;
+            border: 0;
+            border-bottom: 1px solid #a7a7a7;
+        }
+
+        .withdraw p {
+            font-size: 0.22rem;
+            line-height: 0.9rem;
+            color: #9f9f9f;
+        }
+
+        .withdraw p span {
+            color: #333;
+            font-weight: 900;
+        }
+
+        .content button {
+            display: block;
+            width: 100%;
+            height: 0.9rem;
+            font-size: 0.28rem;
+            line-height: 0.9rem;
+            text-align: center;
+            color: #fff;
+            background: #161616;
+            border: 0;
+            margin-top: 1.15rem;
+        }
+
+        .link {
+            padding-right: .26rem;
+            background: url(../image/link.png) no-repeat right .38rem/.12rem .22rem;
+        }
+
+        .cardInfo {
+            padding-top: .12rem;
+            padding-left: .32rem;
+        }
+
+        .cardInfo span {
+            font-size: .3rem;
+            line-height: .92rem;
+            color: #808080;
+        }
+
+        .cardInfo i {
+            padding-left: .22rem;
+            width: 4.8rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: .3rem;
+            font-style: normal;
+            line-height: .92rem;
+            color: #333;
+        }
+        div.explanation{
+            position: fixed;
+            left: 50%;
+            bottom: .5rem;
+            transform: translateX(-50%);
+            width: 2rem;
+            font-size: .3rem;
+            line-height: .68rem;
+            color: #808080;
+            text-align: center;
+            border: 1px solid #6f6f6f;
+            border-radius: .28rem/50%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrap">
+        <header>
+            <div class="header">
+                <i @click="goBack"></i>
+                <h4>提现</h4>
+            </div>
+        </header>
+        <div class="content">
+            <div class="withdraw">
+                <div class="head clearfix">
+                    <span>填写银行卡信息:</span>
+                    <i class="link" @click="toJump('bankCard')">{{infoType}}</i>
+                </div>
+                <h4>提现金额</h4>
+                <input type="number" placeholder="请输入您提现的金额" v-model="money">
+                <p>可提现金额<span>{{available}}</span>元</p>
+            </div>
+            <div class="cardInfo" v-if="isCard">
+                <div class="cardName">
+                    <span>银行卡户名:</span><i v-text="card.cardName"></i>
+                </div>
+                <div class="cardNum">
+                    <span>银行卡卡号:</span><i v-text="card.cardNum"></i>
+                </div>
+                <div class="bank">
+                    <span>开&nbsp;&nbsp;&nbsp;户&nbsp;&nbsp;&nbsp;行:</span><i v-text="card.bank"></i>
+                </div>
+            </div>
+            <button @click="submit()">提现</button>
+            <div class="explanation" @click="toJump('explanation')">提现说明</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    //加载动画
+
+    //vue.js
+    var myapp = new Vue({
+        el: "#wrap",
+        data() {
+            return {
+                infoType: '未填写',
+                available: 0, //可提现金额
+                signature: '', //身份凭证
+                withdrawMoney: '', //提现金额
+                isCard: false,
+                card: {
+                    cardName: '',
+                    cardNum: '',
+                    bank: ''
+                },
+                money: ''
+            }
+        },
+        watch: {
+            isCard: function(val,oldVal) {
+                if (val) {
+                    this.infoType = '修改'
+                } else {
+                    this.infoType = '未填写'
+                }
+            }
+        },
+        created: {
+
+        },
+        mounted() {
+
+        },
+        methods: {
+            goBack() {
+                api.closeWin({
+                    animation: {
+                        type: "none",
+                    },
+                })
+            },
+            toJump(pageName) {
+                api.openWin({
+                    name: pageName,
+                    url: pageName + '.html',
+                    animation: {
+                        type: "none",
+                    }
+                })
+            },
+            toIdentity() {
+                api.openWin({
+                    name: 'widthdraw',
+                    url: 'widthdraw.html',
+                    animation: {
+                        type: "none",
+                    },
+                })
+            },
+            init() {
+                this.available = api.pageParam.sum;
+                var _this = this;
+                //检测是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        _this.signature = ret.value;
+                        var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=douserbankinfo' + _this.signature;
+                        axios.post(url)
+                            .then(function(res) {
+                                if (res.data.msg == "63") {
+                                    _this.isCard = true;
+                                    _this.card.cardName = res.data.name;
+                                    _this.card.cardNum = res.data.card;
+                                    _this.card.bank = res.data.address;
+                                } else {
+                                    _this.isCard = false;
+                                }
+                            })
+                    } else {
+                        //未登录
+                        _this.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    }
+                })
+            },
+            submit() {
+                var _this = this;
+                if (!this.isCard) {
+                    this.$messagebox.confirm('去填写银行卡信息?').then( function(action) {
+                        api.openWin({
+                            name: 'bankCard',
+                            url: 'bankCard.html',
+                            animation: {
+                                type: "none",
+                            }
+                        })
+                    }).catch( function(action) {
+
+    				})
+                    return false
+                };
+                if ( Number(this.money)*100<=Number(this.available*100)&&Number(this.money)*100>=100&&Number(this.money)*100<=5000000 ) {
+                    var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=dousertixian&name='+this.card.cardName+'&bankcard='+this.card.cardNum+'&bankaddress='+this.card.cardName+'&money='+this.card.bank+ _this.signature;
+                    axios.post(url)
+                        .then(function(res) {
+                            if (res.data.msg == "64") {
+                                _this.$toast({
+            					    message: '提交成功',
+            					    position: 'middle',
+            					    duration: 1000
+            					});
+                                api.sendEvent({
+                                    name: 'income',
+                                    extra: {
+                                        init: true
+                                    }
+                                });
+                                setTimeout(function() {
+                                    _this.goBack()
+                                },1000)
+                            } else {
+                                _this.$toast({
+            					    message: '请重新提交',
+            					    position: 'middle',
+            					    duration: 1000
+            					});
+                            }
+                        })
+                } else {
+                    this.$toast({
+					    message: '输入正确金额',
+					    position: 'middle',
+					    duration: 2000
+					})
+                }
+
+            }
+            // withdraw() {
+            //     var _this = this;
+            // 	if(this.withdrawMoney){
+            // 		if(parseFloat(this.withdrawMoney)<parseFloat(this.available)) {
+            // 			var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=forwithdrawals&money='+this.withdrawMoney+this.signature
+            // 			axios.post(url)
+            // 				 .then(function(res) {
+            // 				 	if(res.data.msg=='39'){
+            // 				 		_this.$toast({
+            // 						  message: '已成功提现',
+            // 						  position: 'middle',
+            // 						  duration: 2000
+            // 						})
+            // 				 	}
+            // 				 })
+            // 		} else {
+            // 			_this.$toast({
+            // 			  message: '请输入正确金额',
+            // 			  position: 'middle',
+            // 			  duration: 2000
+            // 			})
+            // 		}
+            //
+            // 	} else {
+            // 		_this.$toast({
+            // 		  message: '输入不能为空',
+            // 		  position: 'middle',
+            // 		  duration: 2000
+            // 		})
+            // 	}
+            //
+            //
+            // }
+        }
+    });
+
+    //APICloud
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        myapp.init();
+        api.addEventListener({
+            name: 'widthdraw'
+        }, function(ret, err) {
+            if (ret) {
+                myapp.init()
+            }
+        });
+    };
+</script>
+
+</html>

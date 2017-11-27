@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>在线客服</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+        }
+        .header i{
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+        .container{
+		width: 100%;
+		height: 100%;
+		background: #f6f6f6;
+    	}
+    	.order-pro{
+    		background: #fff;
+    		margin-top: 0.18rem;
+    	}
+    	.order-pro p{
+    		padding-left: 0.2rem;
+    		font-size: 0.3rem;
+    		line-height: 0.66rem;
+    		color: #333;
+    		border-bottom: 1px solid #e3e3e3;
+    		font-weight: bold;
+    	}
+    	.order-pro ul{
+    		display: flex;
+    		justify-content: flex-start;
+    	}
+    	.order-pro ul li{
+    		padding-left: 1.63rem;
+    		font-size: 0.3rem;
+    		line-height: 1.4rem;
+    		color: #333333;
+    	}
+    	.order-pro ul li.modify{
+    		width: 2.1rem;
+    		border-right: 1px solid #e3e3e3;
+    		background-image: url('../image/order_modify.png');
+    		background-size: 0.67rem 0.73rem;
+    		background-repeat: no-repeat;
+    		background-position: 0.83rem center;
+    	}
+    	.order-pro ul li.cancel{
+    		flex: 1;
+    		background-image: url('../image/order_cancel.png');
+    		background-size: 0.73rem 0.73rem;
+    		background-repeat: no-repeat;
+    		background-position: 0.83rem center;
+    	}
+    	.sold-pro{
+    		background: #fff;
+    		margin-top: 0.18rem;
+    	}
+    	.sold-pro p{
+    		padding-left: 0.2rem;
+    		font-size: 0.3rem;
+    		line-height: 0.66rem;
+    		color: #333;
+    		border-bottom: 1px solid #e3e3e3;
+    		font-weight: bold;
+    	}
+    	.sold-pro ul{
+    		display: flex;
+    		justify-content: flex-start;
+    		flex-wrap: wrap;
+    	}
+    	.sold-pro ul li{
+    		padding-left: 1.63rem;
+    		font-size: 0.3rem;
+    		line-height: 1.4rem;
+    		color: #333333;
+    		width: 2.1rem;
+    	}
+    	.sold-pro ul li.about-return{
+    		border-right: 1px solid #e3e3e3;
+    		border-bottom: 1px solid #e3e3e3;
+    		background-image: url('../image/about_return.png');
+    		background-size: 0.73rem 0.73rem;
+    		background-repeat: no-repeat;
+    		background-position: 0.83rem center;
+    	}
+    	.sold-pro ul li.find-return{
+    		border-bottom: 1px solid #e3e3e3;
+    		background-image: url('../image/find_return.png');
+    		background-size: 0.73rem 0.73rem;
+    		background-repeat: no-repeat;
+    		background-position: 0.83rem center;
+    	}
+    	.sold-pro ul li.noreason-return{
+    		border-right: 1px solid #e3e3e3;
+    		background-image: url('../image/noreason_return.png');
+    		background-size: 0.73rem 0.73rem;
+    		background-repeat: no-repeat;
+    		background-position: 0.83rem center;
+    	}
+    	.sold-pro ul li.orient-return{
+    		background-image: url('../image/direction_return.png');
+    		background-size: 0.73rem 0.73rem;
+    		background-repeat: no-repeat;
+    		background-position: 0.83rem center;
+    	}
+    	.content .button{
+    		display: block;
+    		width: 5.35rem;
+    		font-size: 0.3rem;
+    		line-height: 0.9rem;
+    		color: #fff;
+    		background: #000;
+    		font-weight: bold;
+    		margin: 0 auto;
+    		margin-top: 0.46rem;
+    		padding-left: 1.75rem;
+    	}
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <header>
+            <div class="header">
+    			<i @click="goBack"></i>
+    			<h4>在线客服</h4>
+    		</div>
+        </header>
+        <div id="main">
+            <div class="content">
+			<div class="order-pro">
+				<p>订单问题</p>
+				<ul>
+					<li class="modify" @click="toJump('talking')" tapmode>修改订单</li>
+					<li class="cancel" @click="toJump('talking')" tapmode>取消订单</li>
+				</ul>
+			</div>
+			<div class="sold-pro">
+				<p>售后问题</p>
+				<ul>
+					<li class="about-return" @click="toJump('talking')" tapmode>关于退货</li>
+					<li class="find-return" @click="toJump('talking')" tapmode>发现退货</li>
+					<li class="noreason-return" @click="toJump('talking')" tapmode>无理由退货</li>
+					<li class="orient-return" @click="toJump('talking')" tapmode>退货去向</li>
+				</ul>
+			</div>
+			<div class="consult button">客服咨询&nbsp;(8:30-22:00)</div>
+			<div class="phone button" @click="toCall('(0571)88229995')" tapmode>拨打电话&nbsp;(0571-88229995)</div>
+		</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    //加载动画
+
+    //vue.js
+    var myapp = new Vue({
+        el :"#wrap",
+        data(){
+            return{
+
+            }
+        },
+        mounted(){
+
+        },
+        methods :{
+            goBack() {
+                api.closeWin({
+                    animation:{
+                        type:"none",
+                    },
+              })
+            },
+            toJump(pageName) {
+                api.openWin({
+                    name: pageName,
+                    url: pageName + '.html',
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            toCall(tel) {
+                api.call({
+                    type: 'tel_prompt',
+                    number: tel
+                });
+            }
+        },
+        created() {
+            //APICloud
+            apiready = function(){
+                $api.fixStatusBar($api.dom('header'));
+            }
+        }
+
+    });
+
+
+
+</script>
+</html>

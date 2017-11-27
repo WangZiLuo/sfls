@@ -1,0 +1,614 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>登录</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .h25{
+          height: 25px;
+        }
+      .header{
+    		width: 100%;
+    		height: 0.88rem;
+    		position: relative;
+    		box-shadow: 0 5px 10px #eee;
+    		background: #fff;
+    	}
+    	.header i{
+    		display: block;
+    		position: absolute;
+    		left: 0.2rem;
+    		top: 0;
+    		width: 0.3rem;
+    		height: 0.88rem;
+    		background-image: url("../image/arrow_l.png");
+    		background-size: 0.2rem 0.3rem;
+    		background-repeat: no-repeat;
+    		background-position: left center;
+    	}
+    	.header h4{
+    		font-size: 0.32rem;
+    		line-height: 0.88rem;
+    		color: #333;
+    		text-align: center;
+    	}
+        .container{
+    		width: 100%;
+    		height: 100%;
+    		display: flex;
+    		justify-content: space-between;
+    		flex-direction: column;
+    	}
+    	.content{
+    		flex: 1;
+    		overflow: auto;
+    		padding: 0.36rem 0 0 0;
+    	}
+    	.content .main{
+    		padding: 0 0.77rem;
+    	}
+    	.content .logo{
+    		font-size: 0.6rem;
+    		line-height: 1.57rem;
+    		color: #333;
+    		text-align: center;
+    	}
+    	.content input{
+    		display: block;
+    		width: 5.72rem;
+    		height: 0.88rem;
+    		font-size: 0.28rem;
+    		line-height: normal;
+    		color: #333;
+    		margin: 0 auto;
+    		margin-bottom: 0.47rem;
+    		border: 1px solid #333;
+    		padding-left: 0.2rem;
+            -webkit-appearance : none ;/*解决ios上按钮的圆角问题*/
+            border-radius: 0;/*解决ios上输入框圆角问题*/
+    	}
+    	.choices{
+    		font-size: 0.28rem;
+    		line-height: 0.66rem;
+    	}
+    	.choices span{
+    		color: #333;
+    	}
+    	.choices .register{
+    		float: left;
+    	}
+    	.choices .forget{
+    		float: right;
+    	}
+    	.content button{
+    		display: block;
+    		width: 100%;
+    		height: 0.94rem;
+    		font-size: 0.28rem;
+    		line-height: 0.94rem;
+    		color: #fff;
+    		background: #000;
+    		border: 0;
+    	}
+    	.footer{
+    		width: 100%;
+    	}
+    	.footer .way{
+    		width: 6.36rem;
+    		height: 1px;
+    		position: relative;
+    		background: #b1b1b1;
+    		margin: 0 auto;
+    		margin-top: 2.3rem;
+    	}
+    	.footer .way span{
+    		font-size: 0.28rem;
+    		line-height: 0.28rem;
+    		color: #333;
+    		padding: 0 0.18rem;
+    		position: absolute;
+    		left: 50%;
+    		margin-left: -0.74rem;
+    		top: -0.14rem;
+    		background: #fff;
+    	}
+    	.third{
+    		width: 100%;
+    		height: 1.26rem;
+    		background-image: url('../image/login_bg.png');
+    		background-size: 7.5rem 1.26rem;
+    		background-repeat: no-repeat;
+    		margin-top: 0.44rem;
+    		position: relative;
+    	}
+    	.third img{
+    		width: 0.9rem;
+    		height: 0.9rem;
+    		position: absolute;
+    		left: 50%;
+    		top: 50%;
+    		margin-left: -0.45rem;
+    		margin-top: -0.45rem;
+    	}
+    </style>
+
+</head>
+<body>
+  <div id="container">
+
+    <div id="login_header">
+        <div class="header">
+            <i @click="goBack()" tapmode></i>
+            <h4>登录</h4>
+        </div>
+    </div>
+    <div class="content">
+        <div class="main">
+        	<div class="logo">
+        		私服旅舍
+        	</div>
+        	<input type="tel" placeholder="请输入手机号" class="phone" v-model="phone">
+        	<input type="password" placeholder="请输入密码" class="pwd" v-model="pwd">
+        	<div class="choices clearfix">
+        		<span class="register" @click="toJump('signup')">立即注册</span>
+        		<span class="forget" @click="toJump('bindphone')">忘记密码?</span>
+        	</div>
+        	<button @click="submit">登录</button>
+        </div>
+        <div class="footer" v-show="wxIsIns">
+        	<div class="way"><span>登录方式</span></div>
+        	<div class="third" tapmode @click="wxLogin()"><img src="../image/logo_wx.png"></div>
+        </div>
+    </div>
+  </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/sha1.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    var wx;
+    var ajpush;
+    //vueJS
+    var myapp = new Vue({
+        el :"#container",
+        data() {
+            return {
+        		phone: '',
+        		pwd: '',
+        		entrance: '',
+                changeID: '',
+                signature: '',
+                wxIsIns: false
+            }
+
+        },
+        mounted(){
+
+
+
+
+		},
+        methods :{
+            init() {
+                var _this = this;
+                this.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f';
+                this.changeID = api.pageParam.changeID;
+                if (api.pageParam.changeID == '') {
+                    this.changeID = 0
+                };
+                wx.isInstalled(function(ret, err) {
+                    if (ret.installed) {
+                        _this.wxIsIns = true
+                    } else {
+                        _this.wxIsIns = false
+                    }
+                });
+            },
+            goBack() {
+                this.phone = '';
+                this.pwd = '';
+                api.closeFrame({
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            toJump(pageName) {
+                api.openFrame({
+                    name: pageName,
+                    url: 'widget://html/' + pageName + '.html',
+                    bounces: false,
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            submit(){
+				var that = this;
+				var reg_phone = /^1[34578]\d{9}$/;
+				var reg_pwd = /^[a-zA-Z0-9]{6,16}$/;
+				var phone = this.phone;
+				var pwd = this.pwd;
+				if(phone&&pwd){
+					if(reg_phone.test(phone)){
+						if(reg_pwd.test(pwd)){
+							var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?'+'ak=denglu&token=ajiuqian&phone='+phone+'&password='+pwd+'&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+
+							axios.post(url)
+								.then(function(res){
+									if(res.data.msg=='-2'){
+										that.$toast({
+										  message: '账号或密码错误',
+										  duration: 2000
+										});
+									}else if(res.data.msg=='1'){
+
+        			                    var goodsid = api.pageParam.goodsId;
+                                        var detail = api.pageParam.detail;
+        			                    //signature
+        			                    var apptoken = "123456";
+        			                    var usertoken = res.data.utoken;
+        			                    var timestamp = "123456";
+        			                    var sign = hex_sha1(apptoken+timestamp+usertoken);
+                                        //sign
+        						       	api.setPrefs({
+        				                    key:'lsb_sign',
+        				                    value: '&nonce='+ usertoken +'&timestamp=123456&signature=' + sign
+        			                    });
+                                        api.setPrefs({
+                                            key: 'lsb_loginStatus',
+                                            value: 'loginSuccess'
+                                        });
+                                        // localStorage.setItem('userID',res.data.userid);
+
+
+                                        var param = {alias:res.data.userid};
+                                        // ajpush.bindAliasAndTags(param,function(ret) {
+                                        //     var statusCode = ret.statusCode;
+                                        // });
+
+        								//api.sendEvent广播登录成功事件
+        								api.sendEvent({
+        								    name: 'login',
+                                            extra: {
+                                                changeID: that.changeID
+                                            }
+        								});
+                                        that.goBack();
+									}
+								})
+						}else{
+							this.$toast({
+							  message: '密码需6-16位字母和数字组合',
+							  duration: 2000
+							});
+						}
+					}else{
+						this.$toast({
+						  message: '请输入正确的手机号',
+						  duration: 2000
+						});
+					}
+				}else{
+					this.$toast({
+					  message: '输入不能为空',
+					  duration: 2000
+					})
+				}
+			},
+            bindPhone() {
+                _this.$toast({
+                  message: '修改失败',
+                  duration: 2000
+                });
+                axios.post(url)
+                     .then(function(res){
+                        if(res.data.msg=='1') {
+                            _this.userName = res.data.username;
+                            _this.userImg = res.data.userimg;
+                        }
+                    })
+            },
+            wxLogin() {
+                var _this = this;
+                myapp.$indicator.open({spinnerType: 'fading-circle'});
+                wx.auth({
+                    apiKey: 'wx0f725aa402687082'
+                }, function(ret, err) {
+                    myapp.$indicator.close();
+                    if (ret.status) {
+                        wx.getToken({
+                            apiKey: 'wx0f725aa402687082',
+                            apiSecret: 'd27e9eddf088eece092143a31d4c4327',
+                            code: ret.code
+                        }, function(retA, errA) {
+                            if (retA.status) {
+                                wx.getUserInfo({
+                                    accessToken: retA.accessToken,
+                                    openId: retA.openId
+                                }, function(retB, errB) {
+                                    if (retB.status) {
+                                        api.ajax({
+                                            url: 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=wxloginbinduserinfo' + myapp.signature,
+                                            method: 'post',
+                                            data: {
+                                                values: {
+                                                    openid: retB.openid,
+                                                    nickname:  retB.nickname,
+                                                    sex: retB.sex,
+                                                    headimgurl: retB.headimgurl,
+                                                    unionid: retB.unionid,
+                                                }
+                                            }
+                                        }, function(retC, errC) {
+                                            if (retC.msg==55) {
+                                                myapp.$toast({
+                                                  message: '登录成功',
+                                                  duration: 2000
+                                                });
+                                                var param = {alias:retC.userid};
+                                                ajpush.bindAliasAndTags(param,function(ret) {
+                                                    var statusCode = ret.statusCode;
+                                                });
+
+
+
+
+                                                //signature
+                			                    var apptoken = "123456";
+                			                    var usertoken = retC.utoken;
+                			                    var timestamp = "123456";
+                			                    var sign = hex_sha1(apptoken+timestamp+usertoken);
+                                                //sign
+                						       	api.setPrefs({
+                				                    key:'lsb_sign',
+                				                    value: '&nonce='+ usertoken +'&timestamp=123456&signature=' + sign
+                			                    });
+                                                api.setPrefs({
+                                                    key: 'lsb_loginStatus',
+                                                    value: 'loginSuccess'
+                                                });
+                								//api.sendEvent广播登录成功事件
+                								api.sendEvent({
+                								    name: 'login',
+                                                    extra: {
+                                                        changeID: myapp.changeID
+                                                    }
+                								});
+                                                _this.goBack();
+                                            } else if (retC.msg==-55) {
+                                                api.openFrame({
+                    	                            name: 'wxphone',
+                    	                            url: 'widget://html/wxphone.html',
+                                                    bounces: false,
+                                                    animation:{
+                                                        type:"none",
+                                                    },
+                                                    pageParam: {
+                                                        userId: retC.userid,
+                                                        changeID: myapp.changeID
+                                                    },
+                    	                           slidBackEnabled:false
+                                                });
+                                            };
+                                            myapp.indicator.close()
+                                        })
+                                    } else if(errB.code == 1) {
+                                        wx.refreshToken({
+                                            apiKey: '',
+                                            dynamicToken: ''
+                                        }, function(ret, err) {
+                                            if (ret.status) {
+
+                                            } else {
+
+                                            }
+                                        })
+                                    }
+                                })
+
+                            } else {
+                            }
+                        })
+                    } else {
+                        if (err.code==3) {
+                            myapp.$toast({
+                                message: '当前设备未安装微信客户端',
+                                duration: 2000
+                            })
+                        }
+                    }
+                })
+            }
+
+        }
+    });
+    //APICloud
+    apiready = function(){
+        $api.fixStatusBar($api.dom('#login_header'));
+        ajpush = api.require('ajpush');
+
+        wx = api.require('wx');
+        myapp.init();
+    };
+    function wxLogin() {
+        wx = api.require('wx');
+
+        var _this = this;
+        wx.auth({
+            apiKey: 'wx0f725aa402687082'
+        }, function(ret, err) {
+            axios.post('http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=addopinion&yy=auth&nonce=28Dp2NVJCtFa7w8nqjgi8uTNE2FCimq2jX&timestamp=123456&signature=bd83c1092035dfd28546e615cfb0ab758dd83c5b')
+                 .then(function(res) {
+                 });
+            if (ret.status) {
+                wx.getToken({
+                    apiKey: 'wx0f725aa402687082',
+                    apiSecret: 'd27e9eddf088eece092143a31d4c4327',
+                    code: ret.code
+                }, function(retA, errA) {
+                    axios.post('http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=addopinion&yy=Token&nonce=28Dp2NVJCtFa7w8nqjgi8uTNE2FCimq2jX&timestamp=123456&signature=bd83c1092035dfd28546e615cfb0ab758dd83c5b')
+                         .then(function(res) {
+                         });
+
+                    if (retA.status) {
+                        wx.getUserInfo({
+                            accessToken: retA.accessToken,
+                            openId: retA.openId
+                        }, function(retB, errB) {
+                            if (retB.status) {
+                                api.ajax({
+                                    url: 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=wxloginbinduserinfo' + myapp.signature,
+                                    method: 'post',
+                                    data: {
+                                        values: {
+                                            openid: retB.openid,
+                                            nickname:  retB.nickname,
+                                            sex: retB.sex,
+                                            headimgurl: retB.headimgurl,
+                                            unionid: retB.unionid,
+                                        }
+                                    }
+                                }, function(retC, errC) {
+
+                                    if (retC.msg==55) {
+                                        myapp.$toast({
+                                          message: '绑定手机号',
+                                          duration: 2000
+                                        });
+
+                                        //signature
+        			                    var apptoken = "123456";
+        			                    var usertoken = retC.utoken;
+        			                    var timestamp = "123456";
+        			                    var sign = hex_sha1(apptoken+timestamp+usertoken);
+                                        //sign
+        						       	api.setPrefs({
+        				                    key:'lsb_sign',
+        				                    value: '&nonce='+ usertoken +'&timestamp=123456&signature=' + sign
+        			                    });
+                                        api.setPrefs({
+                                            key: 'lsb_loginStatus',
+                                            value: 'loginSuccess'
+                                        });
+        								//api.sendEvent广播登录成功事件
+        								api.sendEvent({
+        								    name: 'login',
+                                            extra: {
+                                                changeID: myapp.changeID
+                                            }
+        								});
+
+                                        myapp.goBack();
+
+                                    } else if (retC.msg==-55) {
+                                        api.openFrame({
+            	                            name: 'wxphone',
+            	                            url: 'widget://html/wxphone.html',
+                                            bounces: false,
+                                            animation:{
+                                                type:"none",
+                                            },
+                                            pageParam: {
+                                                userId: retC.userid,
+                                                changeID: myapp.changeID
+                                            },
+            	                           slidBackEnabled:false
+                                        });
+                                    }
+                                })
+                            } else if(errB.code == 1) {
+                                wx.refreshToken({
+                                    apiKey: '',
+                                    dynamicToken: ''
+                                }, function(ret, err) {
+                                    if (ret.status) {
+                                    } else {
+                                    }
+                                });
+                            }
+                        });
+
+                    } else {
+                    }
+                })
+            } else {
+                if (err.code==3) {
+                    myapp.$toast({
+                        message: '当前设备未安装微信客户端',
+                        duration: 2000
+                    })
+                }
+            }
+        })
+    };
+    function getWxToken(_code) {
+        // var _this = this;
+        wx.getToken({
+            apiKey: 'wx0f725aa402687082',
+            apiSecret: 'd27e9eddf088eece092143a31d4c4327',
+            code: _code
+        }, function(ret, err) {
+            if (ret.status) {
+                getWxUserInfo(ret.accessToken,ret.openId);
+            } else {
+            }
+        })
+    };
+    function getWxUserInfo(token,openid) {
+        var _this = this;
+        wx.getUserInfo({
+            accessToken: token,
+            openId: openid
+        }, function(ret, err) {
+            if (ret.status) {
+                api.ajax({
+                    url: 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=wxloginbinduserinfo' + _this.signature,
+                    method: 'post',
+                    data: {
+                        values: {
+                            openid: ret.openid,
+                            nickname:  ret.nickname,
+                            sex: ret.sex,
+                            headimgurl: ret.headimgurl,
+                            unionid: ret.unionid,
+                        }
+                    }
+                }, function(ret, err) {
+                    setTimeout(function(){
+                    },3000);
+
+                    if (ret.msg==55) {
+                        myapp.$toast({
+                          message: '绑定手机号',
+                          duration: 2000
+                        });
+                    } else {
+
+                    }
+                });
+            } else {
+            }
+        });
+    };
+    function refreshWxToken() {
+        wx.refreshToken({
+            apiKey: '',
+            dynamicToken: ''
+        }, function(ret, err) {
+            if (ret.status) {
+            } else {
+
+            }
+        })
+    }
+</script>
+</html>

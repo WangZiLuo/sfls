@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>修改密码</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+        }
+        .header i{
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+        .content{
+    		padding: 0.75rem 0.75rem 0 0.75rem;
+    	}
+    	.content input{
+    		display: block;
+    		width: 5.75rem;
+    		height: 0.88rem;
+    		padding-left: 0.2rem;
+    		font-size: 0.36rem;
+    		line-height: 0.36rem;
+    		margin-bottom: 0.47rem;
+    		border: 1px solid #333;
+    	}
+    	.content button{
+    		display: block;
+    		width: 100%;
+    		height: 0.94rem;
+    		font-size: 0.28rem;
+    		line-height: 0.94rem;
+    		color: #fff;
+    		text-align: center;
+    		border: 0;
+    		background: #000;
+    		margin-top: 0.87rem;
+    	}
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <header>
+            <div class="header">
+    			<i @click="goBack"></i>
+    			<h4>重置密码</h4>
+    		</div>
+        </header>
+        <div id="main">
+            <div class="content">
+    			<input type="password" placeholder="请设置新密码" v-model="set_pwd">
+    			<input type="password" placeholder="请再次输入密码" v-model="confirm_pwd">
+    			<button class="submit" @click="submit">确认</button>
+    		</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+
+
+    //vue.js
+    var myapp = new Vue({
+        el :"#wrap",
+        data(){
+		    return{
+                set_pwd: '',
+				confirm_pwd: '',
+                phone: '',
+                userId: ''
+		    }
+		},
+        mounted(){
+
+  		},
+        methods :{
+            goBack() {
+                api.closeFrame({
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            submit(){
+                var _this = this;
+				var set_pwd_reg = /^[a-zA-Z0-9]{6,16}$/;
+				var set_pwd = this.set_pwd
+				var confirm_pwd = this.confirm_pwd
+				if(set_pwd&&confirm_pwd){
+					if(set_pwd_reg.test(set_pwd)){
+						if(set_pwd_reg.test(confirm_pwd)){
+							if(set_pwd===confirm_pwd){
+                                _this.phone = api.pageParam.phone;
+                                _this.userId = api.pageParam.userid;
+                                var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=forgotpwd&phone='+_this.phone+ '&userid=' + _this.userId +'&password=' + confirm_pwd+'&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f';
+                                axios.post(url)
+                                    .then(function(res){
+
+
+                                        if(res.data.msg=='33'){
+                                            _this.$toast({
+                                                message: '修改成功',
+                                                duration: 2000
+                                            });
+                                            api.openWin({
+                                                name: 'login',
+                                                url: 'widget://html/login.html',
+                                                animation:{
+                                                    type:"none",
+                                                },
+                                            });
+                                            api.closeFrame({
+                                                name: 'resetpwd'
+                                            });
+                                            api.closeFrame({
+                                                name: 'bindphone'
+                                            });
+
+
+                                        } else if (res.data.msg=='-33') {
+                                            _this.$toast({
+                                                message: '未找到用户',
+                                                duration: 2000
+                                            })
+                                        }
+                                    })
+							}else{
+								this.$toast({
+								  message: '两次密码输入不一致',
+								  duration: 2000
+								});
+							}
+						}else{
+							this.$toast({
+							  message: '密码需6-16位字母和数字组合',
+							  duration: 2000
+							});
+						}
+					}else{
+						this.$toast({
+						  message: '密码需6-16位字母和数字组合',
+						  duration: 2000
+						});
+					}
+				}else{
+				    this.$toast({
+					  message: '输入不能为空',
+					  duration: 2000
+					});
+				}
+			}
+        }
+    });
+
+    //APICloud
+    apiready = function(){
+
+        $api.fixStatusBar($api.dom('header'))
+
+    }
+</script>
+</html>

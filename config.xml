@@ -1,0 +1,82 @@
+ <widget id="A6059773981956"  version="0.0.1">
+
+    <name>私服旅舍</name>
+
+    <description>
+
+        Example For APICloud.
+
+    </description>
+
+    <author email="developer@apicloud.com" href="http://www.apicloud.com">
+
+        Developer
+
+    </author>
+
+    <feature name="wx">
+        <param name="urlScheme" value="wx0f725aa402687082"/>
+        <param name="apiKey" value="wx0f725aa402687082"/>
+        <param name="apiSecret" value="d27e9eddf088eece092143a31d4c4327"/>
+    </feature>
+
+    <feature name="wxPay">
+        <param name="urlScheme" value="wx0f725aa402687082"/>
+        <param name="apiKey" value="wx0f725aa402687082"/>
+        <param name="apiSecret" value="d27e9eddf088eece092143a31d4c4327"/>
+    </feature>
+
+    <feature name="aliPayPlus">
+        <param name="urlScheme" value="AliPayPlusA6059773981956"/>
+    </feature>
+
+    <feature name="ajpush">
+        <param name="app_key" value="8be7b1163f5220475981fcb8" />
+        <param name="channel" value="123456" />
+    </feature>
+
+    <content src="index.html" />
+
+    <access origin="*" />
+
+    <preference name="pageBounce" value="false"/>
+
+	<preference name="appBackground" value="rgba(0,0,0,0.0)"/>
+
+	<preference name="windowBackground" value="rgba(0,0,0,0.0)"/>
+
+	<preference name="frameBackgroundColor" value="rgba(0,0,0,0.0)"/>
+
+	<preference name="hScrollBarEnabled" value="true"/>
+
+	<preference name="vScrollBarEnabled" value="true"/>
+
+	<preference name="autoLaunch" value="true"/>
+
+	<preference name="fullScreen" value="false"/>
+
+	<preference name="autoUpdate" value="true" />
+
+	<preference name="smartUpdate" value="false" />
+
+	<preference name="debug" value="true"/>
+
+	<preference name="statusBarAppearance" value="true"/>
+
+	<permission name="readPhoneState" />
+
+	<permission name="camera" />
+
+	<permission name="record" />
+
+	<permission name="location" />
+
+	<permission name="fileSystem" />
+
+	<permission name="internet" />
+
+	<permission name="bootCompleted" />
+
+	<permission name="hardware" />
+
+</widget>

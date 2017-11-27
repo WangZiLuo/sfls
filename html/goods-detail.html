@@ -1,0 +1,1582 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>产品详情</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <link rel="stylesheet" href="../swiper/swiper.css">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        #main{
+            position: relative;
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+            overflow: auto;
+            -webkit-overflow-scrolling: auto;
+        }
+        .swiper-container {
+           width: 100%;
+           height: 100%;
+        }
+        .swiper-slide {
+           text-align: center;
+           font-size: 18px;
+           background: #fff;
+           /* Center slide text vertically */
+           display: -webkit-box;
+           display: -ms-flexbox;
+           display: -webkit-flex;
+           display: flex;
+           -webkit-box-pack: center;
+           -ms-flex-pack: center;
+           -webkit-justify-content: center;
+           justify-content: center;
+           -webkit-box-align: center;
+           -ms-flex-align: center;
+           -webkit-align-items: center;
+           align-items: center;
+           background-color: rgba(0, 0, 0, .1);
+       }
+       .swiper-container-vertical>.swiper-pagination-bullets{
+            left: 10px;
+            top: 50%;
+       }
+    	.mask-pop{
+    		width: 100%;
+    		height: 100%;
+    		position: absolute;
+    		left: 0;
+    		top: 0;
+    		background: rgba(0,0,0,0.5);
+    		z-index: 998;
+    	}
+    	.mask-share{
+    		width: 100%;
+    		height: 100%;
+    		position: absolute;
+    		left: 0;
+    		top: 0;
+    		background: rgba(0,0,0,0.5);
+    		z-index: 2;
+    	}
+    	.header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            background: #fff;
+            z-index: 9;
+    	}
+        .header i{
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1.5rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left 0.2rem center;
+        }
+    	.header h4{
+    		font-size: 0.32rem;
+    		line-height: 0.88rem;
+    		color: #333;
+    		text-align: center;
+    	}
+        image[lazy=loading] {
+           width: 60%;
+           height: 60%;
+         }
+    	.switch{
+    		width: 100%;
+    		height: 7.5rem;
+    		background: #fff;
+            position: relative;
+    	}
+    	.switch img{
+    		width: 100%;
+    		height: 7.5rem;
+    	}
+        .switch .goods-info-detail{
+    		position: absolute;
+    		width: 7.1rem;
+    		padding: 0 0.2rem;
+    		bottom: 0.6rem;
+    		z-index: 1;
+	    }
+    	.switch .goods-info-detail-switch{
+    		display: flex;
+    		justify-content: flex-end;
+    		margin-bottom: 0.18rem;
+    	}
+    	.switch .goods-info-detail-switch span{
+    		padding: 0 0.35rem;
+    		font-size: 0.26rem;
+    		line-height: 0.6rem;
+    		color: #333333;
+    		background: #fff;
+    	}
+    	.switch .goods-info-detail-content{
+    		background: #fff;
+    		padding: 0 0.2rem;
+    	}
+    	.switch .goods-info-detail-content .goods-info-detail-head{
+    		font-size: 0.26rem;
+    		line-height: 0.7rem;
+    		color: #000;
+    		font-weight: bold;
+    		text-align: center;
+    	}
+    	.switch .goods-info-detail-intro p{
+    		padding: 0 0.2rem;
+    		font-size: 0.24rem;
+    		line-height: 0.44rem;
+    		color: #333;
+    	}
+    	.switch .goods-info-detail-number{
+    		padding: 0 0.2rem;
+    		font-size: 0.24rem;
+    		line-height: 0.64rem;
+    		color: #333;
+    		border-top: 1px solid #d0d0d0;
+    	}
+    	.switch .goods-info-detail-fabric{
+    		padding: 0 0.2rem;
+    		font-size: 0.24rem;
+    		line-height: 0.64rem;
+    		color: #333;
+    		border-top: 1px solid #d0d0d0;
+    	}
+    	.switch .goods-info-detail-fabric span{
+    		margin-right: 0.5rem;
+    	}
+    	.goods-name p{
+    		font-size: 0.28rem;
+    		line-height: 0.78rem;
+    		color: #000;
+    		text-align: center;
+    	}
+    	.goods-price{
+    		display: flex;
+    		justify-content: center;
+            position: relative;
+    	}
+        .goods-price .dealer{
+    		width: 0.48rem;
+    		height: 0.48rem;
+    		display: block;
+    		margin-right: 0.12rem;
+    	}
+    	.goods-price i{
+    		font-size: 0.2rem;
+    		line-height: 0.48rem;
+    		color: #000;
+    		font-style: normal;
+    	}
+    	.goods-price span{
+    		font-size: 0.36rem;
+    		line-height: 0.48rem;
+    		color: #000;
+    		font-weight: 900;
+    	}
+        .goods-price .old-price{
+    		position: absolute;
+    		right: 0.2rem;
+    		top: 0;
+    		font-size: 0.24rem;
+    		line-height: 0.48rem;
+    		background: #dbdbdb;
+    		color: #333;
+    		border-radius: 0.24rem;
+    		padding: 0 0.24rem;
+    	}
+    	.goods-price .old-pr{
+    		font-size: 0.24rem;
+    		line-height: 0.48rem;
+    		color: #333;
+    	}
+    	.goods-price .old-pr i{
+    		font-style: normal;
+    		font-size: 0.2rem;
+    		color: #333;
+    	}
+    	.sundry{
+    		display: flex;
+    		justify-content: space-between;
+    		padding: 0 0.38rem;
+    	}
+    	.sundry span{
+    		font-size: 0.26rem;
+    		line-height: 1rem;
+    		color: #333;
+    	}
+        .sundry span.collection i{
+            display: inline-block;
+    		-webkit-appearance:none;
+    		width: 0.35rem;
+    		height: 0.31rem;
+    		background-image: url('../image/collection_icon1.png');
+    		background-size: 0.35rem 0.31rem;
+    		background-repeat: no-repeat;
+    		vertical-align: middle;
+    		margin-right: 0.1rem;
+    	}
+    	.sundry span.collection i.checked{
+    		background-image: url('../image/collection_icon2.png');
+    	}
+    	.guarantee{
+    		padding: 0.1rem 1.4rem;
+    		display: flex;
+    		justify-content: space-between;
+    	}
+    	.guarantee span{
+    		font-size: 0.22rem;
+    		line-height: 0.46rem;
+    		color: #333;
+    		padding-left: 0.38rem;
+    	}
+    	.guarantee span.send{
+    		background-image: url('../image/flash.png');
+    		background-size: 0.27rem 0.3rem;
+    		background-repeat: no-repeat;
+    		background-position: left center;
+    	}
+    	.guarantee span.change{
+    		background-image: url('../image/return.png');
+    		background-size: 0.27rem 0.3rem;
+    		background-repeat: no-repeat;
+    		background-position: left center;
+    	}
+    	.guarantee span.real{
+    		background-image: url('../image/real.png');
+    		background-size: 0.27rem 0.3rem;
+    		background-repeat: no-repeat;
+    		background-position: left center;
+    	}
+    	.action{
+    		display: flex;
+    		padding: 0.34rem 0.2rem 0.34rem 0.2rem;
+    		justify-content: space-between;
+    	}
+    	.action button{
+    		font-size: 0.28rem;
+    		line-height: 0.8rem;
+    		color: #333;
+    		padding: 0 0.74rem;
+    		border: 1px solid #151515;
+    		background: #fff;
+    	}
+    	.action button.buy{
+    		background: #000;
+    		color: #fff;
+    	}
+
+    	.pop_buy{
+    		width: 100%;
+    		position: fixed;
+    		left: 0;
+    		bottom: 0;
+    		background: #fff;
+    		z-index: 999;
+    	}
+    	.pop-title{
+    		padding-left: 0.2rem;
+    		font-size: 0.3rem;
+    		line-height: 0.7rem;
+    		color: #333;
+    		border-bottom: 1px solid #e3e3e3;
+    		font-weight: bold;
+    	}
+    	.goods-info{
+    		padding: 0.1rem 0.2rem 0 0.2rem;
+    	}
+    	.goods-info .color p{
+    		font-size: 0.3rem;
+    		line-height: 0.9rem;
+    		color: #333;
+    		font-weight: bold;
+    	}
+    	.goods-info .color ul{
+    		display: flex;
+    		justify-content: flex-start;
+    	}
+    	.goods-info .color ul li{
+    		font-size: 0.3rem;
+    		line-height: 0.5rem;
+    		color: #000;
+    		padding: 0 0.3rem;
+    		border: 1px solid #000;
+    		margin-right: 0.32rem;
+    		font-weight: bold;
+    		opacity: 0.6;
+    	}
+    	.goods-info .color ul li.actived{
+    	    background-color: #000;
+            color: #fff;
+    		opacity: 1;
+    	}
+
+    	.goods-info .size p{
+    		font-size: 0.3rem;
+    		line-height: 0.9rem;
+    		color: #333;
+    		font-weight: bold;
+    	}
+    	.goods-info .size ul{
+    		display: flex;
+    		justify-content: flex-start;
+    	}
+    	.goods-info .size ul li{
+    		font-size: 0.3rem;
+    		line-height: 0.5rem;
+    		color: #000;
+    		padding: 0 0.3rem;
+    		border: 1px solid #000;
+    		margin-right: 0.32rem;
+    		font-weight: bold;
+    		opacity: 0.6;
+    	}
+    	.goods-info .size ul li.actived{
+            background-color: #000;
+            color: #fff;
+    		opacity: 1;
+    	}
+    	.choose{
+    		display: flex;
+    		justify-content: space-between;
+    		padding: 0.94rem 0
+    	}
+    	.choose .stock{
+    		flex: 1;
+    		font-size: 0.3rem;
+    		line-height: 0.5rem;
+    		color: #000;
+    		font-weight: bold;
+    	}
+    	.choose .number{
+    		width: 1.9rem;
+    	}
+    	.choose .number span.minus{
+    		display: block;
+    		width: 0.5rem;
+    		border: 1px solid #000;
+    		float: left;
+    		font-size: 0.4rem;
+    		padding: 0.05rem 0.05rem;
+    		text-align: center;
+    	}
+    	.choose .number input{
+    		display: block;
+    		float: left;
+    		width: 0.6rem;
+    		font-size: 0.32rem;
+    		padding-top: 0.15rem;
+    		border: 0;
+    		text-align: center;
+    	}
+    	.choose .number span.add{
+    		display: block;
+    		width: 0.5rem;
+    		border: 1px solid #000;
+    		float: right;
+    		font-size: 0.4rem;
+    		padding: 0.05rem 0.05rem;
+    		text-align: center;
+    	}
+    	.bottom{
+    		border-top: 1px solid #000;
+    		height: 0.94rem;
+    	}
+    	.bottom .total{
+    		float: left;
+    		padding-left: 0.2rem;
+    		width: 2.1rem;
+    		font-size: 0.3rem;
+    		line-height: 0.94rem;
+    		font-weight: 900;
+    		border-right: 1px solid #000;
+    	}
+    	.bottom .total i{
+    		font-size: 0.2rem;
+    		line-height: 0.94rem;
+    		color: #000;
+    		font-style: normal;
+    	}
+    	.bottom .cartNum{
+    		float: left;
+    		width: 1.18rem;
+    		height: 0.94rem;
+    		position: relative;
+    	}
+    	.bottom .cartNum img{
+    		display: block;
+    		width: 0.5rem;
+    		height: 0.5rem;
+    		margin: 0 auto;
+    		margin-top: 0.22rem;
+    	}
+    	.bottom .cartNum span{
+    		position: absolute;
+    		left: 0.66rem;
+    		top: 0.1rem;
+    		width: 0.34rem;
+    		height: 0.34rem;
+    		border: 1px solid #ff1e30;
+    		border-radius: 50%;
+    		font-size: 0.14rem;
+    		line-height: 0.34rem;
+    		color: #ff1e30;
+    		text-align: center;
+    		background: #fff;
+    	}
+    	.bottom .cart{
+    		float: left;
+    		font-size: 0.3rem;
+    		line-height: 0.94rem;
+    		color: #000;
+    		padding: 0 0.2rem;
+    		font-weight: 900;
+    		border-left: 1px solid #000;
+    	}
+    	.bottom .purchase{
+    		height: 0.98rem;
+    		float: right;
+    		font-size: 0.3rem;
+    		line-height: 0.94rem;
+    		color: #fff;
+    		background: #000;
+    		text-align: center;
+    		padding: 0 0.7rem;
+    		font-weight: 900;
+    	}
+    	.pop_share{
+    		width: 6rem;
+    		padding: 0 0.1rem;
+    		position: fixed;
+    		left: 50%;
+    		margin-left: -3.1rem;
+    		top: 50%;
+    		margin-top: -3.9rem;
+    		background: #fff;
+    		z-index: 999;
+    	}
+    	.share-title p{
+    		font-size: 0.28rem;
+    		line-height: 1rem;
+    		color: #333;
+    		text-align: center;
+    	}
+    	.share-type{
+    		padding-bottom: 0.25rem;
+    		border-bottom: 1px solid #dadada;
+    	}
+    	.share-type ul{
+    		display: flex;
+    		justify-content: space-around;
+    	}
+    	.share-type ul li{
+    		display: flex;
+    		justify-content: center;
+    		align-items: center;
+    	}
+    	.share-type ul li input{
+    		-webkit-appearance: none;
+    		width: 0.46rem;
+    		height: 0.46rem;
+    		background-image: url('../image/no_checked.png');
+    		background-size: 0.46rem 0.46rem;
+    		background-repeat: no-repeat;
+    	}
+    	.share-type ul li input:checked{
+    		background-image: url('../image/checked.png');
+    	}
+    	.share-type ul li label{
+    		font-size: 0.28rem;
+    		line-height: 0.96rem;
+    		color: #333;
+    		margin-left: 0.14rem;
+    	}
+    	.share-to .share-to-title{
+    		font-size: 0.24rem;
+    		line-height: 0.82rem;
+    		color: #333;
+    		padding-left: 0.1rem;
+    	}
+    	.share-to ul{
+    		display: flex;
+    		justify-content: space-around;
+    		flex-wrap: wrap;
+    	}
+    	.share-to ul li{
+    		width: 2rem;
+    		padding-top: 0.17rem;
+    	}
+    	.share-to ul li img{
+    		display: block;
+    		margin: 0 auto;
+    		width: 0.92rem;
+    		height: 0.92rem;
+    	}
+    	.share-to ul li p{
+    		font-size: 0.28rem;
+    		line-height: 0.8rem;
+    		color: #333;
+    		text-align: center;
+    	}
+    	.close{
+    		padding-top: 0.16rem;
+    		padding-bottom: 0.3rem;
+    	}
+    	.close img{
+    		display: block;
+    		width: 0.55rem;
+    		height: 0.55rem;
+    		margin: 0 auto;
+    	}
+        .pop{
+    		padding: 0 0.32rem;
+    		width: 5.4rem;
+    		height: 3.58rem;
+    		background: #fff;
+    		border-radius: 0.05rem;
+    		position: absolute;
+    		left: 50%;
+    		top: 50%;
+    		margin-left: -3.02rem;
+    		margin-top: -1.79rem;
+    		z-index:10;
+    	}
+    	.pop .nick{
+    		font-size: 0.34rem;
+    		line-height: 1.44rem;
+    		color: #333;
+    	}
+    	.pop input{
+    		/*width: 5.26rem;*/
+    		display: block;
+    		padding-left: 0.14rem;
+    		font-size: 0.3rem;
+    		height: 0.64rem;
+    		color: #6f6f6f;
+    		border-bottom: 1px solid #4e4e4e;
+    	}
+    	.pop .choice{
+    		display: flex;
+    		justify-content: space-between;
+    		font-size: 0.3rem;
+    		line-height: 0.3rem;
+    		color: #6f6f6f;
+    		padding-top: 0.72rem;
+    		padding-bottom: 0.48rem;
+    	}
+    	.pop .choice .cancel.actived{
+    		color: #333;
+    	}
+    	.pop .choice .confirm.actived{
+    		color: #333;
+    	}
+        .loadingCover{
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+        }
+        .video{
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        #playbtn{
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            width: 1.6rem;
+            height: 1.6rem;
+            background-image: url(../image/play.png);
+            background-size: 1.6rem;
+            background-repeat: no-repeat;
+            z-index: 999;
+        }
+        .swiper-pagination{
+            width: .24rem;
+        }
+        .mint-popup {
+            width: 100%;
+            text-align: center;
+            background-color: #2c88de;
+            backface-visibility: hidden;
+        }
+        .mint-popup p {
+            margin: auto;
+            width: 4rem;
+            padding-top: .3rem;
+            padding-bottom: .2rem;
+            font-size: .28rem;
+            line-height: .4rem;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <div id="goods_header">
+            <div class="header">
+        		<i @click="goBack()" tapmode></i>
+        		<h4></h4>
+        	</div>
+        </div>
+        <div class="loadingCover" v-show="loadingCover">
+
+        </div>
+        <div id="mod_player" style="display:none;"></div>
+        <div id="main" v-cloak>
+            <mt-popup v-model="popupVisible" position="top" class="mint-popup" :modal="false">
+                <p v-text="ajPushContent"></p>
+            </mt-popup>
+			<div class="switch">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper" id="container">
+                        <div class="swiper-slide"  v-for="(item,index) in listbanimg">
+                            <div class="video" :style="{ background: 'url('+ unescape(item.img) +') no-repeat center/cover'  }" v-if="index==0">
+                                <div id="playbtn" @click="stopAutoplay()" v-if="isVideoShow"></div>
+                            </div>
+                            <img v-lazy.container="unescape(item.img)" v-else-if="index!=0">
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+                <div class="goods-info-detail">
+					<div class="goods-info-detail-switch" @click="goodsInfoSwitch"><span>{{goods_detail_info_switch}}</span></div>
+					<div class="goods-info-detail-content" v-if="infoShow">
+						<p class="goods-info-detail-head">{{unescape(goods_name)}}</p>
+						<div class="goods-info-detail-intro">
+							<p>产品介绍:&nbsp;{{unescape(goods_info_detail_intro)}}</p>
+						</div>
+						<div class="goods-info-detail-number">货号:&nbsp;&nbsp;<span>{{goods_info_detail_number}}</span></div>
+						<div class="goods-info-detail-fabric">布料:&nbsp;&nbsp;<span>{{goods_info_detail_fabric}}</span></div>
+					</div>
+				</div>
+			</div>
+			<div class="goods-name">
+				<p>{{unescape(goods_name)}}</p>
+			</div>
+			<div class="goods-price">
+                <img src="../image/dealer.png" class="dealer" v-if="onOff_dealer"><i>￥</i><span>{{goods_price}}</span>
+				<span class="old-price" v-if="onOff_dealer" @click="unMask">原价<span class="old-pr" v-show="unmask">&nbsp;<i>￥</i>{{old_price}}</span></span>
+			</div>
+			<div class="sundry">
+				<span class="saled">销量{{saled}}件</span>
+				<span class="repeat">转发{{repeat}}次</span>
+				<span class="collection"><i :class="{ checked: collectionStatus==1 }" @click="collection(goods_id)"></i>收藏</span>
+			</div>
+			<div class="guarantee">
+				<span class="send">闪电发货</span>
+				<span class="change">七天退换</span>
+				<span class="real">正品保证</span>
+			</div>
+			<div class="action">
+				<button class="service" @click="service()" tapmode>客服</button>
+				<button class="transmit" @click="share()" tapmode>转发</button>
+				<button class="buy" @click="popUp" tapmode>购买</button>
+			</div>
+
+            <!-- 点击购买后弹出的遮罩层 -->
+    		<div class="mask-pop" @click="popDown" ref="mask_buy" v-if="onOff_pop_buy"></div>
+    		<!-- 点击分享后弹出的遮罩层 -->
+            <div class="mask-share" ref="mask_share" v-if="onOff_share_cover"></div>
+    		<!-- 点击购买后弹出的产品信息 -->
+    		<div class="pop_buy" ref="pop_buy" v-if="onOff_pop_buy">
+    			<div class="pop-title">
+    				<p>产品信息</p>
+    			</div>
+    			<div class="goods-info">
+    				<div class="color">
+    					<p>颜色</p>
+    					<ul>
+    						<li v-for="(item,index) in colorList" :class="{'actived':isActive_color==index}" @click="chooseColor(index)" tapmode>{{item}}</li>
+    					</ul>
+    				</div>
+    				<div class="size" v-if="onOff_size">
+    					<p>尺码</p>
+    					<ul>
+    						<li v-for="(item,index) in sizeList" :class="{'actived':isActive_size==index}" @click="chooseSize(index)" tapmode>{{item}}</li>
+    					</ul>
+    				</div>
+    				<div class="choose">
+    					<div class="stock">购买数量&nbsp;(库存{{stock}}件)</div>
+    					<div class="number clearfix">
+    						<span class="minus" @touchstart="minus">&minus;</span>
+    						<input type="number" v-model="num_purchase" @keyup="inputNum">
+    						<span class="add" @touchstart="add">+</span>
+    					</div>
+    				</div>
+    			</div>
+    			<div class="bottom clearfix">
+    				<div class="total"><i>￥</i>{{total_price}}</div>
+    				<div class="cartNum" @click="goCart" tapmode>
+    					<img src="../image/cart_normal.png">
+    					<span v-if="hasCart">{{cartNum}}</span>
+    				</div>
+    				<div class="cart" @click="addCart" tapmode>加入购物车</div>
+    				<div class="purchase" @click="purchase" tapmode>购买</div>
+    			</div>
+    		</div>
+    		<!-- 点击分享后弹出的信息 -->
+    		<div class="pop_share" ref="pop_share" v-if="onOff_pop_share">
+    			<div class="share-title">
+    				<p>分享</p>
+    			</div>
+    			<div class="share-type">
+    				<ul>
+    					<li>
+    						<input type="radio" id="link" name="type" checked="checked" @click="shareType ='link'"><label for="link">链接</label>
+    					</li>
+    					<li>
+    						<input type="radio" id="image" name="type" @click="shareType ='image'"><label for="image">图片</label>
+    					</li>
+    				</ul>
+    			</div>
+    			<div class="share-to">
+    				<p class="share-to-title">转发到</p>
+    				<ul>
+    					<li>
+    						<img src="../image/share_friend.png" tapm0ode @click="chooseShare('timeline')">
+    						<p>朋友圈</p>
+    					</li>
+    					<li>
+    						<img src="../image/share_wx.png" tapmode @click="chooseShare('session')">
+    						<p>微信好友</p>
+    					</li>
+    				</ul>
+    				<div class="close">
+    					<img src="../image/close.png" @click="close" tapmode>
+    				</div>
+    			</div>
+    		</div>
+
+            <!-- 点击分享后弹出的信息 -->
+    		<div class="pop" v-if="onOff_change_share">
+    			<p class="nick">调价转发</p>
+    			<input type="number" :placeholder="shareRange" v-model="sharePriceNum">
+    			<div class="choice">
+    				<span :class="{cancel:true,actived:!actived}" @click="sharePriceCancel" tapmode>取消</span>
+    				<span :class="{confirm:true,actived:actived}" @click="sharePriceConfirm" tapmode>确定</span>
+    			</div>
+    		</div>
+		</div>
+
+
+    </div>
+</body>
+<!-- <script type="text/javascript" src="../script/jquery.min.js"></script> -->
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript" src="../swiper/swiper.min.js"></script>
+<script src="https://imgcache.qq.com/tencentvideo_v1/tvp/js/tvp.player_v2.js" type="text/javascript" ></script>
+
+
+<script type="text/javascript">
+    //微信实例
+    var wx;
+    var voiceMag;
+    var swiper;
+    var ajpush;
+
+    var myapp = new Vue({
+        el :"#wrap",
+        data(){
+            return{
+                loadingCover: true,
+                goods_name: "",
+    			goods_price: "",
+                sharePriceNum: '',
+    			saled: "",
+    			repeat: "",
+    			stock: "",
+    			total_price: "",
+    			onOff_pop_buy:false,
+    			onOff_pop_share:false,
+                onOff_change_share: false,
+                onOff_share_cover: false,
+    			goods_id:'',
+    			colorList:[],
+    			sizeList:[],
+    			onOff_size:false,
+    			isActive_color:0,
+    			isActive_size:0,
+    			singlePrice_target:'',
+    			prop_target_num:'',
+    			num_purchase:1,
+    			cartNum: 0,
+    			hasCart:false,
+    			signature:'',
+    			actived:true,
+                listbanimg:[],
+                listimg: '',
+                tabbanimg:[],
+                collectionStatus:'',
+                old_price:'',
+				onOff_dealer:false,
+				unmask:false,
+				goods_detail_info_switch:'更多+',
+				goods_info_detail_intro:'',
+				goods_info_detail_number:'',
+				goods_info_detail_fabric:'',
+				infoShow:false,
+                dealerPrice: '',
+                normalPrice: '',
+                shareType: 'link',
+                merchant: '',
+                SCene: '',
+                thumb: '',
+                video: '',
+                isVideoShow: false,
+                popupVisible: false,
+                ajPushContent: ''
+            }
+        },
+        computed: {
+			shareRange() {
+				return "￥"+this.dealerPrice+"~"+this.normalPrice
+			}
+		},
+        watch: {
+            popupVisible(val) {
+                if (val) {
+                    setTimeout(function() {
+                        myapp.popupVisible = false
+                    }, 3000)
+                }
+            }
+        },
+        mounted() {
+            this.$indicator.open('加载中...');
+
+
+		},
+		methods: {
+            stopAutoplay() {
+                var video=document.getElementById("video");
+                video.controls=true;
+                swiper.stopAutoplay();
+            },
+            goBack() {
+                api.closeWin({
+                    animation:{
+                        type:"none",
+                    }
+                })
+            },
+            init() {
+                var that = this;
+                //登陆状态
+
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err){
+                    if( ret.value && ret.value != "" ){
+                        //已登录
+                        that.signature = ret.value;
+            			      //获取购物车条数
+            			      that.getCartNum();
+                        //页面初始化,获取产品详情
+                        that.getGoods();
+                    }else{
+                        //未登录
+                        that.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f';
+                        //页面初始化,获取产品详情
+                        that.getGoods();
+                    }
+                })
+            },
+            getGoods() {
+                var that = this;
+    			this.goods_id = api.pageParam.query.uid;
+                var istype = api.pageParam.query.type;
+                //获取产品详情
+                var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?'+'ak=domalllist&token=ajiuqian&listid='+that.goods_id+that.signature
+                axios.post(url)
+                    .then(function(res){
+
+                        if(res.data.msg=='5'){
+    						if(res.data.isdl=='2') {
+                                that.merchant = true;
+    							that.goods_price = res.data.list[0].listoldpre;
+    							that.onOff_dealer = true
+    						} else if(res.data.isdl=='5') {
+                                that.merchant = false;
+    							that.goods_price = res.data.list[0].listoldpre;
+    							that.onOff_dealer = true
+                            } else {
+                                that.merchant = false;
+    							that.goods_price = res.data.list[0].listpre;
+                                that.onOff_dealer = false
+    						};
+    						var data_detail = res.data.list[0];
+                            that.goods_name = data_detail.listtit
+    						that.saled = data_detail.listpeos;
+    						that.repeat = data_detail.listwphits;
+    						that.collectionStatus = data_detail.isshoucang;
+    						that.old_price = data_detail.listpre;
+    						that.goods_info_detail_fabric = data_detail.buliao;
+    						that.goods_info_detail_number = data_detail.huohao;
+    						that.goods_info_detail_intro = data_detail.listinfo;
+                            that.dealerPrice = res.data.list[0].listoldpre;
+    						that.normalPrice = res.data.list[0].listpre;
+                            that.video = res.data.list[0].shipin;
+                            if (that.video!=''&&that.video!=null) {
+                                that.isVideoShow = true
+                            }
+                            that.listbanimg = data_detail.listbanimg;
+
+                            that.listimg = unescape(res.data.list[0].listimg);
+
+                            setTimeout(function() {
+                                that.loadingCover = false;
+                                that.$indicator.close();
+                                Vue.nextTick(function() {
+                                    if (that.video!=''&&that.video!=null) {
+                                        var config = {
+                                            vid: that.video,
+                                            modId: "mod_player",
+                                            onpause: function() {swiper.startAutoplay()},
+                                            onallended: function() {swiper.startAutoplay()}
+                                        };
+                                        var settings = {
+                                            btn: "#playbtn",
+                                        };
+                                        tvp.modeHide(settings, config);
+                                    }
+                                    swiper = new Swiper('.swiper-container', {
+                                        pagination: '.swiper-pagination',
+                                        observer:true,
+                                        observeParents:true,
+                                        paginationClickable: false,
+                                        autoplayDisableOnInteraction: false,
+                                        preventClicksPropagation:false,
+                                        autoplay: 4000,
+                                        direction: 'vertical'
+                                    })
+                                })
+                            },200);
+
+    				    }
+                })
+                //获取产品类别详情，颜色，尺码
+                var url_attr = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?'+'ak=shopattribute&token=ajiuqian&wpid='+that.goods_id+that.signature
+                axios.post(url_attr)
+                    .then(function(res){
+                        that.colorList = res.data.onevalue.split(",")
+                        if(res.data.twoname!=""){
+                            that.sizeList = res.data.twovalue.split(",")
+                            that.onOff_size = true
+                        }else{
+                            that.onOff_size = false
+                        }
+                        that.getTarget(that.colorList[that.isActive_color],that.sizeList[that.isActive_size])
+                    })
+            },
+			popUp() {
+                var that = this;
+                //登陆状态
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        that.onOff_pop_buy = true;
+                    } else {
+                        //未登录
+                        api.openFrame({
+                            name: 'login',
+                            url: 'widget://html/login.html',
+                            bounces: false,
+                            animation:{
+                                type:"none",
+                            },
+                            pageParam: {
+                                detail: true
+                            },
+                            slidBackEnabled:false
+                        })
+                    }
+                })
+			},
+			popDown() {
+				this.onOff_pop_buy = !this.onOff_pop_buy
+			},
+            donwloadPng(imgUrl) {
+                var _this = this;
+                function base64Img2Blob(code){
+                    var parts = code.split(';base64,');
+                    var contentType = parts[0].split(':')[1];
+                    var raw = window.atob(parts[1]);
+                    var rawLength = raw.length;
+                    var uInt8Array = new Uint8Array(rawLength);
+                    for (var i = 0; i < rawLength; ++i) {
+                        uInt8Array[i] = raw.charCodeAt(i);
+                    }
+                    return new Blob([uInt8Array], {type: contentType});
+                };
+                function getBase64Image(img) {
+                    var canvas = document.createElement("canvas");
+                    canvas.width = 20;
+                    canvas.height = 20;
+                    var ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0, img.width, img.height);
+                    var ext = img.src.substring(img.src.lastIndexOf(".")+1).toLowerCase();
+                    // var dataURL = canvas.toDataURL("image/jpeg"+ext);
+                    var dataURL = canvas.toDataURL("image/png");
+                    return dataURL;
+                };
+                function downloadPng(thumbUrl) {
+                    var timestamp = new Date().getTime();
+                    api.download({
+                        url: thumbUrl,
+                        savePath: 'fs://lsb'+ timestamp +'.png',
+                        report: true,
+                        cache: true,
+                        allowResume: true,
+                    }, function(ret, err) {
+                        if (ret.state == 1) {
+                            _this.thumb = ret.savePath;
+                        }
+                    })
+                };
+                downloadPng(imgUrl)
+                var image = new Image();
+                image.src = imgUrl;
+                image.onload = function() {
+                    var content = getBase64Image(image);
+                    var blob = base64Img2Blob(content);
+                    var thumbUrl = URL.createObjectURL(blob);
+                    downloadPng(content)
+                }
+            },
+			share() {
+                var that = this;
+                //登陆状态
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+
+
+
+                        //分享选择框
+                        that.onOff_pop_share = true;
+
+                        that.onOff_share_cover = true;
+                        that.donwloadPng(that.listimg)
+                    } else {
+                        //未登录
+                        api.openFrame({
+                            name: 'login',
+                            url: 'widget://html/login.html',
+                            bounces: false,
+                            animation:{
+                                type:"none",
+                            },
+                            pageParam: {
+                                detail: true
+                            },
+                            slidBackEnabled:false
+                        })
+                    }
+                })
+			},
+            service() {
+                var that = this;
+                //登陆状态
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        api.openWin({
+                            name: 'talking',
+                            url: 'widget://html/talking.html',
+                            animation:{
+                                type:"none",
+                            },
+                        })
+                    } else {
+                        //未登录
+                        api.openFrame({
+                            name: 'login',
+                            url: 'widget://html/login.html',
+                            bounces: false,
+                            animation:{
+                                type:"none",
+                            },
+                            pageParam: {
+                                detail: true
+                            },
+                            slidBackEnabled:false
+                        })
+                    }
+                })
+            },
+			close() {
+				this.onOff_pop_share = false;
+                this.onOff_share_cover = false;
+                this.shareType ='link'
+
+
+			},
+			unescape(str) {
+                return unescape(str)
+            },
+            chooseColor(index) {
+            	this.isActive_color = index
+            	this.getTarget(this.colorList[this.isActive_color],this.sizeList[this.isActive_size])
+            },
+            chooseSize(index) {
+            	this.isActive_size = index
+            	this.getTarget(this.colorList[this.isActive_color],this.sizeList[this.isActive_size])
+            },
+            getTarget(color,size) {
+            	//获取选中特定颜色尺寸商品的库存，单价
+            	var that = this
+            	var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?'+'ak=spsxvalue&token=ajiuqian&wpid='+this.goods_id+'&onevalue='+color+'&twovalue='+size+this.signature
+            	axios.post(url)
+            		.then(function(res){
+            			var data_target = res.data
+            			that.stock = data_target.stock
+            			that.singlePrice_target = data_target.price
+            			that.prop_target_num = data_target.wsid
+            			that.total_price = parseFloat(that.singlePrice_target)*parseFloat(that.num_purchase)
+            		})
+            },
+            minus() {
+            	if(this.num_purchase>1){
+            		this.num_purchase -=1
+            		this.total_price = parseFloat(this.singlePrice_target)*parseFloat(this.num_purchase)
+            	}
+            },
+            add() {
+            	if(this.num_purchase<this.stock){
+            		this.num_purchase+=1
+            		this.total_price = parseFloat(this.singlePrice_target)*parseFloat(this.num_purchase)
+            	}
+            },
+            inputNum() {
+            	if(parseInt(this.num_purchase)>parseInt(this.stock)){
+            		this.num_purchase = this.stock
+            		this.total_price = parseFloat(this.singlePrice_target)*parseFloat(this.num_purchase)
+            	}else if(this.num_purchase==''){
+            		this.total_price = 0
+            	}else{
+            		this.total_price = parseFloat(this.singlePrice_target)*parseFloat(this.num_purchase)
+            	}
+            },
+            addCart() {//加入购物车
+                var that = this
+                var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?'+'ak=joincar&token=ajiuqian&wpid='+this.goods_id+'&wsid='+this.prop_target_num+'&number='+this.num_purchase+this.signature
+
+                axios.post(url)
+                    .then(function(res){
+                        that.getCartNum();
+                        // 广播
+                        api.sendEvent({
+                            name: 'initCart',
+                                extra: {
+                                    success: 'true'
+                                }
+                        });
+                    })
+            },
+            getCartNum() {//计算购物车条数
+            	var that = this
+				var url_num_cart = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=showcar&token=ajiuqian'+this.signature
+				axios.post(url_num_cart)
+					 .then(function(res){
+					 	if(res.data.list.length!=0){
+					 		that.hasCart = true
+					 		var num = 0;
+					 		for(var i=0;i<res.data.list.length;i++){
+					 			num += parseInt(res.data.list[i].counter)
+					 		}
+					 		if(num>99){
+					 			that.cartNum = '99+'
+					 		}else{
+					 			that.cartNum = num
+					 		}
+					 	}
+					 })
+            },
+            goCart() {//进去购物车
+                api.sendEvent({
+                    name: 'toCart',
+                    extra: {
+                        changeID: 2
+                    }
+                });
+                api.closeToWin({
+                    name: 'root'
+                });
+                // api.openWin({
+                //     name: 'cart',
+                //     url: 'widget://index.html',
+                //     animation:{
+                //         type:"none",
+                //     },
+                //     // pageParam: {
+                //     //     changeID : 2
+                //     // },
+                //     slidBackEnabled: false
+                // });
+
+
+            },
+            purchase() {//选择属性后购买
+                var that = this;
+
+                api.setPrefs({//设置购买商品数量
+                    key: 'goods_order_num',
+                    value: that.num_purchase
+                });
+                api.setPrefs({//设置购买商品id
+                    key: 'goods_order_wsid',
+                    value: that.prop_target_num
+                });
+                api.setPrefs({
+                    key: 'goods_order_entrance',
+                    value: 'detail'
+                });
+                api.setPrefs({
+                    key: 'goods_detail_id',
+                    value: that.goods_id
+                });
+                api.removePrefs({
+                    key: 'goods_order_couponid'
+                });
+                api.openWin({
+                    name: 'order-confirm',
+                    url: 'widget://html/order-confirm.html',
+                    animation:{
+                        type:"none",
+                    },
+                });
+
+            },
+            collection(goodsid) {
+                var that = this;
+                //登陆状态
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        var url_collection = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=shoucang&token=ajiuqian&wpid='+goodsid+that.signature;
+                        axios.post(url_collection)
+                             .then(function(res){
+                                if(res.data.msg=='13'){
+                                    that.collectionStatus = 1;
+                                    that.$toast({
+                                        message: '收藏成功',
+                                        duration: 2000
+                                    })
+                                }else if(res.data.msg=='-13'){
+                                    that.collectionStatus = !1;
+                                    that.$toast({
+                                        message: '取消收藏',
+                                        duration: 2000
+                                    })
+                                }
+                             })
+                    } else {
+                        //未登录
+                        api.openFrame({
+                            name: 'login',
+                            url: 'widget://html/login.html',
+                            bounces: false,
+                            animation:{
+                                type:"none",
+                            },
+                            pageParam: {
+                                detail: true
+                            },
+                            slidBackEnabled:false
+                        })
+                    }
+                })
+            },
+            unMask() {
+            	this.unmask = !this.unmask
+            },
+            goodsInfoSwitch() {
+            	this.infoShow = !this.infoShow
+            	if(this.infoShow){
+            		this.goods_detail_info_switch = "更多-"
+            	}else{
+            		this.goods_detail_info_switch = "更多+"
+            	}
+
+            },
+            sharePriceCancel() {
+            	this.onOff_change_share = !this.onOff_change_share;
+                this.onOff_share_cover = false;
+                this.sharePriceNum = ''
+            },
+            sharePriceConfirm() {
+            	var that = this
+                if (this.sharePriceNum=='') {
+            	    return
+            	} else if(parseFloat(this.sharePriceNum)<parseFloat(this.dealerPrice)||parseFloat(this.sharePriceNum)>parseFloat(this.normalPrice)){
+             		this.$toast({
+ 					  message: '调整价格超出范围',
+ 					  position: 'middle',
+ 					  duration: 2000
+ 					})
+             	} else {
+            		this.sharePrice = this.sharePriceNum
+	            	//获取调价参数
+	            	var url_modify_price = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=doadjustprice&price='+this.sharePrice+'&wpid='+this.goods_id+this.signature
+	            	axios.post(url_modify_price)
+	            		 .then(function(res) {
+	            		 	if(res.data.msg=='27'){
+	            		 		that.shareCode = res.data.code
+	            		 		that.shareMpid = res.data.mpid
+                                //跳转分享
+
+                                var _contentUrl = 'http://lishenban.ajiuqian.com/index.aspx/?from=singlemessage#/share-detail?uid='+that.goods_id+'&code='+that.shareCode+'&mpid='+that.shareMpid;
+
+                                wx.shareWebpage({
+                                    apiKey: '',
+                                    scene: that.SCene,
+                                    title: '来自私服旅舍的分享',
+                                    description: '商品链接',
+                                    thumb: 'widget://image/thumb.png',
+                                    contentUrl: _contentUrl
+                                }, function(ret, err) {
+                                    if (ret.status) {
+                                        that.$toast({
+                                            message: '分享成功',
+                                            position: "middle",
+                                            duration: 2000
+                                        })
+                                    } else {
+                                        that.$toast({
+                                            message: '分享失败',
+                                            position: "middle",
+                                            duration: 2000
+                                        })
+                                    }
+                                });
+
+
+            	            	that.onOff_change_share = false;
+                                that.onOff_share_cover = false
+	            		 	} else {
+                                that.$toast({
+                                    message: '调价失败,请重试',
+                                    position: 'middle',
+                                    duration: 2000
+                                })
+                            }
+
+            		 	})
+            	};
+                this.sharePriceNum = ''
+            },
+            chooseShare(_scene) {
+                var _this = this;
+                if (_this.merchant==false) {
+                    if (this.shareType=='link') {
+                        var _contentUrl = 'http://lishenban.ajiuqian.com/index.aspx/#/goods-detail?uid='+this.goods_id;
+
+                        wx.shareWebpage({
+                            apiKey: '',
+                            scene: _scene,
+                            title: '来自私服旅舍的分享',
+                            description: '商品链接',
+                            thumb: 'widget://image/thumb.png',
+                            contentUrl: _contentUrl
+                        }, function(ret, err) {
+                            if (ret.status) {
+                                _this.$toast({
+                                    message: '分享成功',
+                                    position: "middle",
+                                    duration: 2000
+                                })
+                            } else {
+                                _this.$toast({
+                                    message: '分享失败',
+                                    position: "middle",
+                                    duration: 2000
+                                })
+                            }
+                        });
+                        _this.onOff_pop_share = false;
+                        _this.onOff_share_cover = false;
+                    } else if (_this.shareType=='image') {
+
+                            if (_scene=='timeline') {
+                                api.openWin({
+                                    name: 'shareImg',
+                                    url: 'widget://html/shareImg.html',
+                                    pageParam: {
+                                        uid: _this.goods_id
+                                    }
+                                });
+                            } else if (_scene=='session') {
+                                api.openWin({
+                                    name: 'shareSlImg',
+                                    url: 'widget://html/shareSlImg.html',
+                                    pageParam: {
+                                        uid: _this.goods_id
+                                    }
+                                });
+                            }
+
+
+
+                        _this.onOff_pop_share = false;
+                        _this.onOff_share_cover = false;
+                    } else if (_this.shareType=='video') {
+
+
+
+                    }
+
+
+                } else if (_this.merchant==true) {
+                    if (_this.shareType=='link') {
+
+                        //调价框
+                        _this.onOff_pop_share = false;
+                        _this.onOff_change_share =true;
+
+                        _this.SCene = _scene
+
+                    } else if (_this.shareType=='image') {
+                        if (_scene=='timeline') {
+                            api.openWin({
+                                name: 'shareImg',
+                                url: 'widget://html/shareImg.html',
+                                pageParam: {
+                                    uid: _this.goods_id
+                                }
+                            });
+
+                        } else if (_scene=='session') {
+                            api.openWin({
+                                name: 'shareSlImg',
+                                url: 'widget://html/shareSlImg.html',
+                                pageParam: {
+                                    uid: _this.goods_id
+                                }
+                            });
+                        };
+                        _this.onOff_pop_share = false;
+                        _this.onOff_share_cover = false;
+
+                    } else if (_this.shareType=='video') {
+
+
+
+                    }
+
+				}
+
+
+
+            },
+            shareImage(Vscene) {
+    			wx.shareImage({
+    				apiKey : '',
+    				scene : Vscene,
+    				thumb : 'widget://image/01.png',
+    			}, function(ret, err) {
+    				if (ret.status) {
+    				} else {
+    				}
+    			})
+    		},
+            isInstalled() {
+    			wx.isInstalled(function(ret, err) {
+    				if (!ret.installed) {
+                        alert('未安装微信')
+    				}
+    			});
+    		},
+            shareWebpage(_scene,type) {
+                var _this = this;
+                if (type=='merchant') {
+                    var _contentUrl = 'http://lishenban.ajiuqian.com/index.aspx/?from=singlemessage#/share-detail?uid='+this.goods_id+'&code='+this.shareCode+'&mpid='+this.shareMpid
+                } else if (type=='user') {
+                    var _contentUrl = ''
+                };
+                wx.shareWebpage({
+                    apiKey: '',
+                    scene: _scene,
+                    title: '来自私服旅舍的分享',
+                    description: '商品链接',
+                    thumb: 'widget://image/thumb.png',
+                    contentUrl: _contentUrl
+                }, function(ret, err) {
+                    if (ret.status) {
+                        _this.$toast({
+                            message: '分享成功',
+                            position: "middle",
+                            duration: 2000
+                        })
+                    } else {
+                        _this.$toast({
+                            message: '分享失败',
+                            position: "middle",
+                            duration: 2000
+                        })
+                    }
+                })
+            }
+
+		}
+    });
+    apiready = function(){
+
+        $api.fixStatusBar($api.dom('#goods_header'));
+        myapp.init();
+
+        wx = api.require('wx');
+        ajpush = api.require('ajpush');
+        voiceMag = api.require('voiceMag');
+        // voiceMag.onCall();
+        api.addEventListener({
+            name: 'login'
+        }, function(ret, err) {
+            if (ret) {
+                myapp.init()
+            }
+        });
+        ajpush.setListener(
+            function(ret) {
+                myapp.popupVisible = true;
+                myapp.ajPushContent = ret.content
+            }
+        );
+
+    }
+</script>
+</html>

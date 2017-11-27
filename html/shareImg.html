@@ -1,0 +1,578 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>选择分享图片</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .h25{
+          height: 25px;
+        }
+        .header{
+            position: relative;
+    		width: 100%;
+    		height: 0.88rem;
+    		position: relative;
+    		box-shadow: 0 5px 10px #eee;
+    		background: #fff;
+    	}
+    	.header i{
+    		display: block;
+    		position: absolute;
+    		left: 0.2rem;
+    		top: 0;
+    		width: 0.3rem;
+    		height: 0.88rem;
+    		background-image: url("../image/arrow_l.png");
+    		background-size: 0.2rem 0.3rem;
+    		background-repeat: no-repeat;
+    		background-position: left center;
+    	}
+    	.header h4{
+    	    display: block;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+    		font-size: 0.32rem;
+    		line-height: 0.88rem;
+    		color: #333;
+    		text-align: center;
+    	}
+        .header .shareimg-checkbox{
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 1.2rem;
+            height: .88rem;
+
+        }
+        .header .shareimg-checkbox>input{
+            position: absolute;
+            top: 0.22rem;
+            left: 0;
+        }
+        .header .shareimg-checkbox>label{
+            position: absolute;
+            top: 0;
+            right: .1rem;
+        }
+        #main ul{
+            padding-top: .1rem;
+            width: 100%;
+        }
+        #main ul li{
+            position: relative;
+            float: left;
+            box-sizing: border-box;
+            width: 33%;
+            height: 3.8rem;
+            border: .1rem solid #fff;
+        }
+        #main ul li>div{
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        #wrap input{
+    		-webkit-appearance: none;
+    		width: 0.46rem;
+    		height: 0.46rem;
+    		background-image: url('../image/no_checked.png');
+    		background-size: 0.46rem 0.46rem;
+    		background-repeat: no-repeat;
+    	}
+    	#wrap input:checked{
+    		background-image: url('../image/checked.png');
+    	}
+        #wrap label{
+    		font-size: 0.28rem;
+    		line-height: .88rem;
+    		color: #333;
+    		margin-left: 0.14rem;
+    	}
+        .footer{
+            width: 100%;
+    		height: 0.95rem;
+    		text-align: left;
+    		font-size: 0.28rem;
+    		line-height: 0.95rem;
+    		color: #fff;
+    		background: #161616;
+    		border: 0;
+    		left: 0;
+    		bottom: 0;
+        }
+        .footer div{
+            float: left;
+        }
+        .footer .download{
+            box-sizing: border-box;
+            width: 40%;
+            padding-left: 1.6rem;
+            background-color: #535252;
+            background-image: url(../image/download.png);
+            background-size: .53rem .4rem;
+            background-position: 1rem .25rem;
+            background-repeat: no-repeat;
+
+        }
+        .footer .retweet{
+            box-sizing: border-box;
+            width: 60%;
+            padding-left: 2.44rem;
+            background-color: #171717;
+            background-image: url(../image/retweet.png);
+            background-size: .4rem .4rem;
+            background-position: 1.8rem .25rem;
+            background-repeat: no-repeat;
+        }
+        .img-list-item>input{
+            position: absolute;
+            right: .16rem;
+            bottom: .16rem;
+        }
+        .loadingCover{
+    		width: 100%;
+    		height: 100%;
+    		position: absolute;
+    		left: 0;
+    		top: 0;
+    		background: #fff;
+    		z-index: 2;
+    	}
+    </style>
+
+</head>
+<body>
+    <div id="wrap">
+
+        <header>
+            <div class="header">
+                <i @click="goBack()" tapmode></i>
+                <h4>选择分享图片</h4>
+                <div class="shareimg-checkbox">
+                    <input type="checkbox" name="type" @click="selectAll($event)" ref="selectAll" tapmode><label for="image">全选</label>
+                </div>
+            </div>
+        </header>
+
+        <div id="main">
+
+        	<ul>
+        	    <li v-for="(item,index) in imgList" :key="index" class="img-list-item">
+                    <!-- <label :for="index"> -->
+                        <div class="image-item" :style="{ backgroundImage: unescape(item.img) }">
+                        </div>
+                    <!-- </label> -->
+                    <input type="checkbox" name="check" @click="singleSelect($event)" tapmode>
+        	    </li>
+        	</ul>
+        </div>
+        <div class="footer">
+        	<div class="download" @click="downloadImg(0)" tapmode>下载</div>
+        	<div class="retweet" @click="shareMutableImg(0)" tapmode>转发</div>
+        </div>
+
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/sha1.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    var wx
+        ,sharedModule;
+    var indicator;
+
+    //vueJS
+    var myapp = new Vue({
+        el :"#wrap",
+        data() {
+            return{
+                loadingCover: true,
+                imgList: [],
+                goodsName: '',
+                shareImgList: [],
+                checkList: [],
+                allList: [],
+                check: false,
+                checked: false,
+                imgArray: [],
+                systemType: '',
+                goodsId: '',
+            }
+        },
+        watch: {
+
+            // allList: {
+            //     handler() {
+            //             if (this.allList.length == this.imgList.length) {
+            //                 this.checked=true
+            //             }else{
+            //                 this.checked=false
+            //             }
+            //         },
+            //     deep: true
+            // }
+        },
+        mounted(){
+
+
+		},
+        methods :{
+            goBack() {
+                api.closeWin({
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            toJump(pageName) {
+                api.openFrame({
+                    name: pageName,
+                    url: 'widget://html/' + pageName + '.html',
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            init() {
+
+                var that = this;
+                //登陆状态
+                this.systemType = api.systemType;
+
+    			this.goodsId = api.pageParam.uid;
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err){
+                    if( ret.value && ret.value != "" ){
+                        //已登录
+                        that.signature = ret.value;
+                        //页面初始化,获取产品详情
+                        that.getGoods();
+                    }else{
+                        //未登录
+                        that.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f';
+                        //页面初始化,获取产品详情
+                        that.getGoods();
+                    }
+                })
+            },
+            getGoods() {
+
+                var that = this;
+                //获取产品详情
+                var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?'+'ak=domalllist&token=ajiuqian&listid='+that.goodsId+that.signature;
+                axios.post(url)
+                    .then(function(res){
+
+                        that.goods_name = res.data.list[0].listtit;
+                        that.imgList = res.data.list[0].listbanimg;
+                        // Vue.$indicator.close();
+                        // setTimeout(function() {
+                        //
+                        //     that.loadingCover = false;
+                        //     that.$indicator.close();
+                        // },500)
+				    })
+            },
+            checkimg(index) {
+                var flag = true;
+                if (this.checkList.length==0) {
+                    this.checkList.push(index)
+                } else {
+                    for (var i = 0; i < this.checkList.length; i++) {
+                        if (this.checkList[i] ==index) {
+                            this.checkList.splice(i,1);
+                            return
+                        }
+                    };
+                    this.checkList.push(index)
+
+                }
+            },
+            checkAllImg() {
+                this.allList = [];
+                this.checkList = [];
+                if (this.checked == true) {//实现全选
+                    for (var i = 0; i < this.imgList.length; i++) {
+                        this.allList.push(i);
+                        this.checkList.push(i)
+                    }
+                };
+                // this.$toast().close();
+            },
+            selectAll(ev){
+            	var checkbox = document.getElementsByName("check");
+            	if(ev.target.checked){
+            		for(var i=0;i<checkbox.length;i++) {
+            			checkbox[i].checked = true;
+
+            		}
+            	}else{
+            		for(var a=0;a<checkbox.length;a++){
+            			checkbox[a].checked = false
+
+            		}
+            	}
+            },
+            singleSelect(ev){
+            	var checkbox = document.getElementsByName("check")
+            	for(var i=0;i<checkbox.length;i++){
+            		if(!checkbox[i].checked){
+            			this.$refs.selectAll.checked = false
+            			break
+            		}else{
+            			this.$refs.selectAll.checked = true
+            		}
+            	}
+            },
+            unescape(str){
+                this.shareImgList.push(unescape(str));
+                return 'url(' + unescape(str) + ')'
+            },
+            shareMutableImg(i) {
+
+                this.checkList= [];
+                var checkbox = document.getElementsByName("check");
+            	for(var c=0;c<checkbox.length;c++){
+            		if(checkbox[c].checked==true){
+                        this.checkList.push(c)
+            		}else{
+
+            		}
+            	};
+                if (this.checkList=='') {
+                    return
+                }
+                if (this.systemType=='android') {
+                    this.shareAndroid(i)
+                } else if(this.systemType=='ios') {
+                    this.shareIos(i)
+                }
+            },
+            downloadImg(i) {
+                this.checkList= []
+                var checkbox = document.getElementsByName("check");
+            	for(var c=0;c<checkbox.length;c++){
+            		if(checkbox[c].checked==true){
+                        this.checkList.push(c)
+            		}else{
+
+            		}
+            	};
+                if (this.checkList=='') {
+                    return
+                };
+                if (this.systemType=='android') {
+                    this.downloadAndroid(i)
+                } else {
+                    this.downloadIos(i)
+                }
+            },
+            downloadIos(i) {
+                this.$indicator.open({spinnerType: 'fading-circle'});
+                var _this = this;
+                var sIndex = _this.checkList[i];
+                api.download({
+                    url: _this.shareImgList[sIndex],
+                    report: true,
+                    cache: true,
+                    allowResume: true
+                }, function(ret, err) {
+                    if (ret.state == 1) {
+                        //下载成功 添加下载路径
+                        _this.imgArray.push(ret.savePath);
+
+                        //判定是否全部下载
+                        if (_this.imgArray.length==_this.checkList.length) {
+                            _this.$indicator.close();
+
+                            sharedModule.share({
+                                text: '私服旅舍-' + _this.goodsName,
+                                type: 'image',
+                                images: _this.imgArray
+                            });
+
+                            setTimeout(function() {
+                                _this.goBack()
+                            },1000)
+                        } else {
+                            _this.shareIos(++i);
+                        }
+
+                    } else if(ret.state == 2) {
+                        _this.$indicator.close();
+                        _this.$toast({
+    					  	message: '请重新下载',
+    					  	position: 'middle',
+    					  	duration: 1000
+    					});
+                        setTimeout(function() {
+                            _this.goBack();
+                        },1000)
+                    };
+
+                })
+            },
+            downloadAndroid(i) {
+                var timestamp = new Date().getTime();
+                this.$indicator.open({spinnerType: 'fading-circle'});
+                var _this = this;
+                var sIndex = _this.checkList[i];
+                api.download({
+                    url: _this.shareImgList[sIndex],
+                    savePath: 'fs://lsb'+ timestamp +'.jpg',
+                    report: true,
+                    cache: true,
+                    allowResume: true,
+                }, function(ret, err) {
+                    if (ret.state == 1) {
+                        //下载成功 添加下载路径
+                        api.saveMediaToAlbum({
+                            path: ret.savePath
+                        }, function(ret, err) {
+                            if (ret && ret.status) {
+
+                            } else {
+
+                            }
+                        });
+                        if ( (i+1)==_this.checkList.length) {
+
+                            _this.$indicator.close();
+                            _this.$toast({
+                              message: '下载完成',
+                              duration: 1000
+                            });
+                            setTimeout(function() {
+                                _this.goBack();
+                            },1000)
+                        } else {
+                            _this.downloadAndroid(++i);
+                        }
+
+                    } else if(ret.state == 2) {
+                        _this.$indicator.close();
+                        _this.$toast({
+    					  	message: '请重新下载',
+    					  	position: 'middle',
+    					  	duration: 1000
+    					});
+                        setTimeout(function() {
+                            _this.goBack();
+                        },1000)
+                    };
+
+                })
+            },
+            shareAndroid(i) {
+                this.$indicator.open({spinnerType: 'fading-circle'});
+                var _this = this;
+                var sIndex = this.checkList[i];
+                api.download({
+                    url: _this.shareImgList[sIndex],
+                    report: true,
+                    cache: true,
+                    allowResume: true
+                }, function(ret, err) {
+                    if (ret.state == 1) {
+                        //下载成功 添加下载路径
+                        _this.imgArray.push(ret.savePath);
+
+                        //判定是否全部下载
+                        if (_this.imgArray.length==_this.checkList.length) {
+                            _this.$indicator.close();
+                            wx.shareMutableImg({
+                                description: '私服旅舍-' + _this.goodsName,
+                                imgs: _this.imgArray
+                            });
+                            setTimeout(function() {
+                                _this.goBack()
+                            },1000)
+                        } else {
+                            _this.shareAndroid(++i);
+                        }
+
+
+
+                    } else if(ret.state == 2) {
+                        _this.$indicator.close();
+                        _this.$toast({
+    					  	message: '请重新分享',
+    					  	position: 'middle',
+    					  	duration: 1000
+    					});
+                        setTimeout(function() {
+                            _this.goBack();
+                        },1000)
+                    };
+
+
+                })
+
+            },
+            shareIos(i) {
+                this.$indicator.open({spinnerType: 'fading-circle'});
+                var _this = this;
+                var sIndex = this.checkList[i];
+
+                api.download({
+                    url: _this.shareImgList[sIndex],
+                    report: true,
+                    cache: true,
+                    allowResume: true
+                }, function(ret, err) {
+                    if (ret.state == 1) {
+                        //下载成功 添加下载路径
+                        _this.imgArray.push(ret.savePath);
+
+                        // 判定是否全部下载
+                        if (_this.imgArray.length==_this.checkList.length) {
+                            _this.$indicator.close();
+
+                            sharedModule.share({
+                                text: '私服旅舍-' + _this.goodsName,
+                                type: 'image',
+                                images: _this.imgArray
+                            });
+                            setTimeout(function() {
+                                _this.goBack()
+                            },1000)
+                        } else {
+                            _this.shareIos(++i);
+                        }
+                    } else if(ret.state == 2) {
+                        _this.$indicator.close();
+                        _this.$toast({
+    					  	message: '请重新分享',
+    					  	position: 'middle',
+    					  	duration: 1000
+    					});
+                        setTimeout(function() {
+                            _this.goBack();
+                        },1000)
+                    }
+                })
+            }
+        }
+    });
+    //APICloud
+    apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+
+        myapp.init();
+        wx = api.require('wx');
+        sharedModule = api.require('shareAction');
+
+    }
+</script>
+</html>

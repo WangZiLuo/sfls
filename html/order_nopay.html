@@ -1,0 +1,459 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>待付款订单</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .no-order{
+            padding-top: 2.93rem;
+        }
+        .no-order img{
+            display: block;
+            width: 1.52rem;
+            height: 1.8rem;
+            margin: 0 auto;
+        }
+        .no-order p{
+            font-size: 0.3rem;
+            line-height: 1.06rem;
+            color: #bfbfbf;
+            text-align: center;
+        }
+        .list li{
+            background: #fff;
+            margin-top: 0.15rem;
+        }
+        .list .head{
+            padding: 0 0.2rem;
+            border-bottom: 1px solid #e3e3e3;
+        }
+        .list .head .brand{
+            float: left;
+            font-size: 0.28rem;
+            line-height: 0.68rem;
+            color: #333;
+        }
+        .list .head .state{
+            float: right;
+            font-size: 0.28rem;
+            line-height: 0.68rem;
+            color: #348eeb;
+        }
+        .main{
+            padding: 0.16rem 0.2rem 0 0.2rem;
+
+        }
+        .main .details-info{
+            border-bottom: 1px solid #e3e3e3;
+        }
+        .main .preview{
+            float: left;
+        }
+        .main .preview img{
+            display: block;
+            width: 1.8rem;
+            height: 1.8rem;
+        }
+        .main .info{
+            float: left;
+            width: 5rem;
+            margin-left: 0.3rem;
+        }
+        .main .info .info-top{
+            font-size: 0.28rem;
+            line-height: 0.46rem;
+            color: #000;
+        }
+        .main .info .info-top .title{
+            float: left;
+        }
+        .main .info .info-top .number{
+            float: right;
+        }
+        .main .info .info-middle{
+            font-size: 0.26rem;
+            line-height: 0.74rem;
+            color: #000;
+        }
+        .main .info .info-middle .format{
+            float: left;
+        }
+        .main .info .info-middle .color{
+            float: left;
+            margin-left: 0.54rem;
+        }
+        .main .info .info-middle .size{
+            float: left;
+            margin-left: 0.68rem;
+        }
+        .main .info .info-bottom{
+            font-size: 0.26rem;
+            line-height: 0.7rem;
+            color: #000;
+        }
+        .fare{
+            padding: 0 0.2rem;
+            font-size: 0.26rem;
+            line-height: 0.83rem;
+            color: #333;
+            border-bottom: 1px solid #e3e3e3;
+        }
+        .fare .mail{
+            float: right;
+            margin-right: 0.52rem;
+        }
+        .fare .total{
+            float: right;
+        }
+        .fare span i{
+            font-style: normal;
+            color: #000;
+        }
+        .choice{
+            padding: 0.12rem 0.2rem;
+        }
+        .choice span{
+            float: right;
+            font-size: 0.28rem;
+            line-height: 0.68rem;
+            padding: 0 0.27rem;
+            color: #333;
+            border: 1px solid #333;
+            margin-left: 0.29rem;
+        }
+        .page-infinite-loading{
+            text-align: center;
+            line-height: 1.4rem;
+            font-size: .28rem;
+        }
+        .loadingCover{
+    		width: 100%;
+    		height: 100%;
+    		position: absolute;
+    		left: 0;
+    		top: 0;
+    		background: #fff;
+    		z-index: 2;
+    	}
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <div id="main">
+            <div class="loadingCover" v-show="loadingCover"></div>
+            <div class="content">
+                <div class="list">
+                    <div class="no-order" v-if="onOff">
+                        <img src="../image/order_bg.png">
+                        <p>暂无订单</p>
+                    </div>
+        			<ul v-if="!onOff" id="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10" infinite-scroll-immediate-check="loadingCheck">
+        				<li v-for="(item,index) in orderList" :key='index' v-if="item.orderpaytype!=1">
+                            <div class="head clearfix">
+                                <span class="brand">丽身伴</span>
+                                <span class="state">{{statusConvert(item.orderstatus)}}</span>
+                            </div>
+        					<div class="detail">
+
+                                <div class="main" v-for="child in item.list" @click="goDetail(item.orderpaytype,item.orderid)">
+                                    <div class="details-info clearfix">
+                                        <div class="preview">
+                                            <img v-lazy="child.listimg">
+                                        </div>
+                                        <div class="info">
+                                            <div class="info-top clearfix">
+                                                <span class="title">{{unescape(child.listtit)}}</span>
+                                                <span class="number">x{{child.counter}}</span>
+                                            </div>
+                                            <div class="info-middle clearfix">
+                                                <span class="format">规格:</span>
+                                                <span class="color">{{child.onevalue}}</span>
+                                                <span class="size">{{child.twovalue}}</span>
+                                            </div>
+                                            <div class="info-bottom clearfix">
+                                                <span class="price">￥{{child.listamount}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="fare clearfix">
+                                    <span class="total">总计: <i>￥{{item.ordermoney}}</i></span>
+                                    <span class="mail">快递费用:<i>￥{{item.freightmoney}}</i></span>
+                                </div>
+                                <!-- 待付款 -->
+                                <div class="choice clearfix" v-if="item.orderstatus=='2'">
+                                    <span class="order-nopay" @click="goPay(item.ordernumber,item.orderpaytype)">待付款</span>
+                                    <span class="order-cancel" @click="cancelOrder(item.orderid)">取消订单</span>
+                                </div>
+        					</div>
+        				</li>
+        			</ul>
+                    <p class="page-infinite-loading" v-show="loading">
+                        {{loadingText}}
+                    </p>
+        		</div>
+            </div>
+        </div>
+
+
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    var wxPay;
+    var aliPayPlus;
+    //vue.js
+    var myapp = new Vue({
+        el :"#wrap",
+        data() {
+			return{
+                tabList: ['全部','待付款','待发货','待收货','已完成','退款/售后'],
+                loading: false,
+                loadingText: '加载中...',
+                loadingCheck: false,
+                loadingCover: true,
+				isActive: 0,
+				signature: '',
+				onOff: false,
+                isEmpty: true,
+				state: "待付款",
+				goods_title: "韩欣佳怡连衣裙",
+				order_status: true,
+				orderList: [],
+                num: 1
+			}
+		},
+        mounted(){
+
+        },
+        methods :{
+            init() {
+                var _this = this;
+                //检测是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        _this.signature = ret.value;
+                       var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=myorderlist&status='+2+'&p='+_this.num+_this.signature;
+
+                        axios.post(url)
+           				     .then(function(res) {
+        					 	 if(res.data.msg=='23'){
+                                     if (_this.num ==1) {
+                                         for (var i = 0; i < res.data.list.length; i++) {
+                                             if (res.data.list[i].orderpaytype!=1) {
+                                                 _this.isEmpty= false
+                                             }
+                                         };
+                                         if (_this.isEmpty==true) {
+                                             _this.onOff = true
+                                         }
+                                     };
+                                     if(res.data.list.length==0){
+
+                                         if (_this.num ==1) {
+                                             _this.onOff = true
+                                         };
+                                         if (_this.loadingText != '没有更多了...') {
+                                             _this.loadingText = '没有更多了...'
+                                         }
+                                     } else {
+                                         if (_this.loadingText != '加载中...') {
+                                             _this.loadingText = '加载中...'
+                                         };
+                                         _this.orderList = _this.orderList.concat(res.data.list);
+                                         _this.loading = false;
+                                         _this.num = _this.num + 1;
+                                     };
+                                     if (_this.loadingCover == true) {
+                                         setTimeout(function() {
+                                             _this.loadingCover = false;
+                                             _this.$indicator.close();
+                                         },500)
+                                     }
+                                } else {
+                                }
+           				     })
+                    } else {
+                        //未登录
+                        _this.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    }
+                })
+            },
+            loadMore() {
+                this.loading = true;
+                this.init()
+            },
+            statusConvert(status){
+				switch(status){
+					case '0':
+						return '已取消'
+						break;
+					case '1':
+						return '待发货'
+						break;
+					case '2':
+						return '待付款'
+						break;
+					case '3':
+						return '退款中'
+						break;
+					case '4':
+						return '已退款'
+						break;
+					case '5':
+						return '已完成'
+						break;
+					case '6':
+						return '拒绝退款'
+						break;
+					case '7':
+						return '待收货'
+						break;
+				}
+			},
+			unescape(str){
+                return unescape(str)
+            },
+            goDetail(type,orderid){
+                api.openWin({
+                    name: 'order-detail-nopay',
+                    url: 'widget://html/order-detail-nopay.html',
+                    animation:{
+                        type:"none",
+                    },
+                    pageParam: {
+                        orderId: orderid,
+                        payType: type
+                    }
+                })
+            },
+            goPay(orderId,payType) {
+                var _this = this;
+                if (payType==2) {
+                    axios.post('http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=dowxpay&order_no='+orderId+this.signature)
+                         .then(function(res) {
+                                wxPay.payOrder({
+                                    apiKey: 'wx0f725aa402687082',
+                                    orderId: res.data.prepayid,
+                                    mchId: res.data.mchid,
+                                    nonceStr: res.data.noncestr,
+                                    timeStamp: res.data.timestamp,
+                                    package: res.data.package,
+                                    sign: res.data.paysign
+                                }, function(ret, err) {
+                                    if (ret.status) {
+                                        //支付成功
+                                        // _this.init();
+                                        // _this.send()
+                                    } else {
+                                        _this.init()
+                                    };
+                                    _this.init();
+                                    _this.send()
+                                });
+                                setTimeout(function() {
+                                    _this.init()
+                                },1000)
+                        })
+                } else if(payType==3) {
+                    axios.post('http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=doalipay&order_no='+orderId+this.signature)
+                         .then(function(res) {
+
+                            aliPayPlus.payOrder({
+                                orderInfo: res.data.zhifubaosign
+                            }, function(ret, err) {
+                                if (ret.status) {
+                                    //支付成功
+                                    // _this.init();
+                                    // _this.send()
+                                } else {
+                                    _this.init()
+                                };
+                                _this.init();
+                                _this.send()
+                            });
+                            setTimeout(function() {
+                                _this.init()
+                            },1000)
+                        })
+                }
+            },
+            cancelOrder(orderid){
+            	var that = this
+            	this.$messagebox.confirm("确定取消订单吗？").then(function(action) {
+					var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=updateorderstatus&orderid='+orderid+'&status=0'+that.signature;
+		        	axios.post(url)
+		        		 .then(function(res) {
+		        		 	if(res.data.msg=='24'){
+		        		 		that.$toast({
+								    message: '已取消',
+								    position: 'middle',
+								    duration: 2000
+								});
+                                that.send()
+		        		 	}
+		        		 })
+				}).catch(function(action) {
+				})
+            },
+            send() {
+                api.sendEvent({
+                    name: 'order_nopay',
+                    extra: {
+                        value: true
+                    }
+                });
+                api.sendEvent({
+                    name: 'order_all',
+                    extra: {
+                        value: true
+                    }
+                });
+                api.sendEvent({
+                    name: 'order_nosend',
+                    extra: {
+                        value: true
+                    }
+                });
+            }
+
+
+
+        },
+        created() {
+
+        }
+    });
+
+    //APICloud
+    apiready = function(){
+        myapp.init();
+        wxPay = api.require('wxPay');
+        aliPayPlus = api.require('aliPayPlus');
+        api.addEventListener({
+            name: 'order_nopay'
+        }, function(ret, err) {
+            if (ret) {
+                myapp.num = 1;
+                myapp.orderList = [];
+                myapp.init();
+            }
+        });
+
+    }
+</script>
+</html>

@@ -1,0 +1,308 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>首页</title>
+    <link rel="stylesheet" href="../css/api.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            position: relative;
+        }
+        .header p{
+            height: 0.88rem;
+            font-size: 0.32rem;
+            font-weight: 900;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+    	.banner{
+    		width: 100%;
+            height: 7.5rem;
+            background-color: rgba(0,0,0,.1)
+    	}
+    	.banner img{
+    		display: block;
+    		width: 100%;
+    	}
+    	.content ul li{
+    		width: 100%;
+    		margin-top: 0.2rem;
+    	}
+    	.content ul li img{
+    		width: 100%;
+    	}
+        img[lazy=loading]{
+            width: .8rem;
+            height: 6rem;
+            margin: auto;
+        }
+        input[type="search"]::-webkit-search-cancel-button{
+            display: none;
+        }
+        .mint-popup {
+            width: 100%;
+            text-align: center;
+            background-color: #2c88de;
+            backface-visibility: hidden;
+        }
+        .mint-popup p {
+            margin: auto;
+            width: 4rem;
+            padding-top: .3rem;
+            padding-bottom: .2rem;
+            font-size: .28rem;
+            line-height: .4rem;
+            color: #fff;
+            text-align: center;
+        }
+</style>
+</head>
+<body>
+    <div id="wrap">
+        <div class="header">
+            <p>私服旅舍</p>
+        </div>
+        <div class="search">
+            <form action="" class="input-kw-form">
+                <input type="search" autocomplete="off" name="baike-search" placeholder="搜索您需要的商品" class="input-kw" v-model="keyword">
+                <button class="active" @click="search()" tapmode=""></button>
+            </form>
+        </div>
+        <div id="main" style="z-index: 10">
+            <div class="banner" id="container">
+              <mt-swipe :auto="4000">
+                  <mt-swipe-item v-for="item in bannerlist"><img v-lazy.container="unescape(item.bannerimg)" @click="toDetail($event,item.bannerurl)"></mt-swipe-item>
+              </mt-swipe>
+            </div>
+            <div class="content">
+              <ul>
+                <li @click="mrxk()" tapmode=""><img :src="newpic"></li>
+                <li @click="rmtj()" tapmode=""><img :src="tuijianpic"></li>
+                <li @click="dpsp()" tapmode=""><img :src="shipaipic"></li>
+                <li @click="qbsp()" tapmode=""><img :src="allpic"></li>
+              </ul>
+            </div>
+        </div>
+        <mt-popup v-model="popupVisible" position="top" class="mint-popup" :modal="false">
+            <p v-text="ajPushContent"></p>
+        </mt-popup>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    //VueJs
+    var ajpush;
+    var myapp = new Vue({
+        el :"#wrap",
+        data() {
+            return{
+                keyword:'',
+                bannerlist:[],
+                signature:'',
+                allpic:'',
+    		    newpic:'',
+    			shipaipic:'',
+    			tuijianpic:'',
+                popupVisible: false,
+                ajPushContent: ''
+            }
+        },
+        watch: {
+            popupVisible(val) {
+                if (val) {
+                    setTimeout(function() {
+                        myapp.popupVisible = false
+                    }, 3000)
+                }
+            }
+        },
+        mounted() {
+            alert('home')
+
+
+		},
+        methods: {
+            init() {
+                var that = this;
+                //登陆状态
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        that.signature = ret.value;
+                        that.getbanner();
+                        that.getIndexImg();
+                    } else {
+                        //未登录
+                        that.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f';
+                        that.getbanner();
+                        that.getIndexImg();
+                    }
+                })
+            },
+            getbanner() {
+                var that = this;
+                var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=doappbanner&token=ajiuqian'+this.signature
+                axios.get(url)
+                     .then(function(res) {
+                     that.bannerlist = res.data.list
+                })
+            },
+            getIndexImg() {
+                var that = this;
+                //获取首页类别图
+                var url_sort = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=doindexpic'+this.signature
+                axios.post(url_sort)
+                	 .then(function(res) {
+                        that.allpic = res.data.allpic;
+                        that.newpic = res.data.newpic;
+                        that.shipaipic = res.data.shipaipic;
+                        that.tuijianpic = res.data.tuijianpic;
+
+                        that.txtnew = res.data.txtnew;
+                        that.txttuijian = res.data.txttuijian;
+                        that.txtshipai = res.data.txtshipai;
+                        that.txtall = res.data.txtall;
+                	 })
+            },
+            imageCache(imgUrl) {
+                api.imageCache({
+                    url: imgUrl
+                }, function(ret, err) {
+                    // var url = ret.url;
+                    return ret.url
+                })
+            },
+          mrxk() {//每日更新
+              var that = this;
+              api.openWin({
+                  name: 'list',
+                  url: 'list.html',
+                  animation:{
+                      type:"none",
+                  },
+                  pageParam: {
+                      query:
+                      {
+                          type: 'isnewtype',
+                          mark: "home",
+                          name: that.txtnew
+                      },
+                  }
+              })
+          },
+          rmtj() {//热卖推荐
+              var that = this;
+              api.openWin({
+                  name: 'list',
+                  url: 'list.html',
+                  animation:{
+                      type:"none",
+                  },
+                  pageParam: {
+                      query:
+                      {
+                          type: 'ishottype',
+                          mark: "home",
+                          name: that.txttuijian
+                      },
+                  }
+              })
+          },
+          dpsp() {//店铺实拍
+              var that = this;
+              api.openWin({
+                  name: 'list',
+                  url: 'list.html',
+                  animation:{
+                      type:"none",
+                  },
+                  pageParam: {
+                      query:
+                      {
+                          type: 'isrealtype',
+                          mark: "home",
+                          name: that.txtshipai
+                      },
+                  }
+              })
+          },
+          qbsp() {//全部商品
+              var that = this;
+              api.openWin({
+                  name: 'list',
+                  url: 'list.html',
+                  animation:{
+                      type:"none",
+                  },
+                  pageParam: {
+                      query:
+                      {
+                          type: 'isalltype',
+                          mark: "home",
+                          name: that.txtall
+                      },
+                  }
+              })
+          },
+          unescape(str) {
+              return unescape(str)
+          },
+          toDetail(ev,id) {
+              api.openWin({
+                  name: 'goods-detail',
+                  url: 'goods-detail.html',
+                  animation:{
+                      type:"none",
+                  },
+                  pageParam: {
+                      query:
+                      {
+                          uid:id,
+                      },
+                  }
+              });
+          },
+          search(){
+              var keyword = this.keyword;
+              api.openWin({
+                  name: 'list',
+                  url: 'widget://html/list.html',
+                  pageParam: {
+                      query:
+                      {
+                          type:'search',
+                          mark:keyword,
+                          name:"搜索结果"
+                      },
+                  }
+              });
+              this.keyword = ''
+          }
+        }
+    });
+
+    apiready = function(){
+        ajpush = api.require('ajpush');
+        $api.fixStatusBar($api.dom('.header'));
+        myapp.init();
+        ajpush.setListener(
+            function(ret) {
+                myapp.popupVisible = true;
+                myapp.ajPushContent = ret.content
+            }
+        );
+    }
+</script>
+</html>

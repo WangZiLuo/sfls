@@ -1,0 +1,426 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>修改收货地址</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header {
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+            background: #fff;
+        }
+
+        .header i {
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            display: block;
+            width: 0.2rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+
+        .header h4 {
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .header span {
+            display: block;
+            position: absolute;
+            right: 0.2rem;
+            top: 0;
+            font-size: 0.28rem;
+            line-height: 0.88rem;
+            color: #333;
+            font-weight: 900;
+        }
+
+        .toolbar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            height: 0.8rem;
+        }
+
+        .toolbar_btn {
+            flex: 1;
+            font-size: 0.3rem;
+            line-height: 0.8rem;
+        }
+
+        .cancel {
+            text-align: left;
+            margin-left: 0.2rem;
+            color: #9d9d9d;
+        }
+
+        .confirm {
+            text-align: right;
+            margin-right: 0.2rem;
+            color: #333;
+        }
+    </style>
+    <style scoped>
+        .container {
+            width: 100%;
+            height: 100%;
+            background: #f6f6f6;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+        }
+
+        .header {
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+            background: #fff;
+        }
+
+        .header i {
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            display: block;
+            width: 0.2rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+
+        .header h4 {
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+
+        .header span {
+            display: block;
+            position: absolute;
+            right: 0.2rem;
+            top: 0;
+            font-size: 0.28rem;
+            line-height: 0.88rem;
+            color: #333;
+            font-weight: 900;
+        }
+
+        .content {
+            flex: 1;
+            overflow: auto;
+        }
+
+        .content ul {
+            background: #fff;
+        }
+
+        .content ul li {
+            padding: .325rem .2rem;
+            height: 0.28rem;
+            border-bottom: 1px solid #dfdfdf;
+        }
+
+        .content ul li span {
+            width: 1.2rem;
+            float: left;
+            font-size: 0.28rem;
+            color: #333333;
+        }
+
+        .content ul li input {
+            float: left;
+            font-size: 0.28rem;
+            color: #333333;
+            border: 0;
+            margin-left: 0.37rem;
+        }
+
+        .content .address {
+            background: #fff;
+            padding-left: 0.2rem;
+        }
+
+        .content .address span {
+            width: 1.2rem;
+            float: left;
+            font-size: 0.28rem;
+            line-height: 0.93rem;
+            color: #333333;
+        }
+
+        .content .address .detail {
+            float: left;
+            padding-left: 0.37rem;
+            width: 5.7rem;
+        }
+
+        .content .address .detail .area {
+            float: left;
+            font-size: 0.28rem;
+            line-height: 0.93rem;
+            border: 0;
+            height: 0.93rem;
+            width: 100%;
+            border-bottom: 1px solid #dfdfdf;
+            background-image: url('../image/arrow_r.png');
+            background-size: 0.16rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: 5.38rem center;
+        }
+
+        .content .address .detail textarea {
+            float: left;
+            width: 100%;
+            font-size: 0.28rem;
+            line-height: 0.74rem;
+            min-height: 1.85rem;
+            border: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrap">
+        <header>
+            <div class="header">
+                <i @click="goBack"></i>
+                <h4>填写收货地址</h4>
+                <span @click="save">保存</span>
+            </div>
+        </header>
+
+        <div class="content">
+            <ul>
+                <li class="contacter clearfix">
+                    <span>联系人</span>
+                    <input type="text" v-model="contacter">
+                </li>
+                <li class="phone clearfix">
+                    <span>手机号</span>
+                    <input type="number" v-model="phone">
+                </li>
+            </ul>
+            <div class="address clearfix">
+                <span>收货地址</span>
+                <div class="detail clearfix">
+                    <input type="text" placeholder="省/市/区" class="area" @click="showPopUp()" v-model="areas" readonly="readonly">
+                    <textarea placeholder="请输入详细地址" ref="detailAddress" v-model="detailedAddress"></textarea>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    //加载动画
+
+
+    // import s  from '../script/address3.json';
+    var myapp = new Vue({
+        el: "#wrap",
+        data() {
+            return {
+                msg: "填写收货地址",
+                searchPlace: '', // 地区
+                detailedAddress: '',
+                signature: '',
+                contacter: '',
+                phone: '',
+                areas: '',
+                sendAreas: ''
+
+            }
+        },
+        mounted() {
+
+        },
+        methods: {
+
+            goBack() {
+                api.closeFrame({
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            init() {
+
+                var that = this;
+                //检测是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        that.login_status = true;
+                        that.signature = ret.value;
+                        that.addressID = api.pageParam.addressid;
+
+                       //获取单条地址信息
+                       var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=doaddress&addressid='+that.addressID+that.signature;
+
+                       axios.post(url)
+                            .then(function(res) {
+                               if(res.data.msg=='16'){
+                                   that.contacter = res.data.list[0].name;
+                                   that.phone = res.data.list[0].phone;
+                                   that.areas = that.areaConvert(res.data.list[0].area);
+                                   that.sendArea = res.data.list[0].area;
+                                   that.detailedAddress = res.data.list[0].detaile;
+
+                               }
+                           })
+                    } else {
+                        //未登录
+                        that.login_status = false;
+                        that.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    }
+                });
+            },
+            save() {
+                var _this = this;
+                var reg_phone = /^1[34578]\d{9}$/;
+                if (this.contacter && this.phone && this.areas && this.detailedAddress) {
+                    if (reg_phone.test(this.phone)) {
+                        var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=updateinsertaddress&name=' + this.contacter + '&phone=' + this.phone + '&area=' + this.sendAreas + '&detaile=' + this.detailedAddress + '&addressid='+this.addressID + this.signature
+                        axios.post(url)
+                            .then(function(res) {
+                                if (res.data.msg == '17') {
+                                    api.sendEvent({
+                                        name: 'editress',
+                                        extra: {
+                                            success: 'true'
+                                        }
+                                    });
+                                    _this.goBack();
+                                }
+                            })
+                    } else {
+                        this.$toast({
+                          message: '手机号输入有误',
+                          duration: 2000
+                        })
+                    }
+                } else {
+                    this.$toast({
+                      message: '请填写完整',
+                      duration: 2000
+                    })
+                }
+
+            },
+            // 控制popup的显示隐藏
+            showPopUp() {
+
+                var _this = this;
+                var UIActionSelector = api.require('UIActionSelector');
+                UIActionSelector.open({
+                    datas: 'widget://res/china-picker.json',
+                    layout: {
+                        row: 5,
+                        col: 3,
+                        height: 30,
+                        size: 12,
+                        sizeActive: 14,
+                        rowSpacing: 5,
+                        colSpacing: 10,
+                        maskBg: 'rgba(0,0,0,0.2)',
+                        bg: '#fff',
+                        color: '#888',
+                        colorActive: '#333',
+                        colorSelected: '#333'
+                    },
+                    animation: true,
+                    cancel: {
+                        text: '取消',
+                        size: 12,
+                        w: 90,
+                        h: 35,
+                        bg: '#fff',
+                        bgActive: '#ccc',
+                        color: '#333',
+                        colorActive: '#fff'
+                    },
+                    ok: {
+                        text: '确定',
+                        size: 12,
+                        w: 90,
+                        h: 35,
+                        bg: '#fff',
+                        bgActive: '#ccc',
+                        color: '#333',
+                        colorActive: '#fff'
+                    },
+                    title: {
+                        text: '请选择',
+                        size: 12,
+                        h: 44,
+                        bg: '#eee',
+                        color: '#888'
+                    }
+                }, function(ret, err) {
+                    if (ret) {
+                        if (ret.eventType == 'cancel') {
+
+                            return
+                        };
+                        _this.areas = ret.level1 + ret.level2 + ret.level3;
+
+
+                        _this.sendAreas = ret.level1 + ',' + ret.level2 + ',' + ret.level3;
+                    } else {
+                        _this.searchPlace = "";
+                    }
+                });
+            },
+            areaConvert(area){
+				var arr = area.split(',');
+				var areaStr = '';
+				for(var i=0;i<arr.length;i++){
+					areaStr += arr[i]
+				};
+				return areaStr
+			}
+        },
+        created() {
+
+        }
+
+    });
+
+    // APICloud
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        myapp.init();
+
+
+
+    }
+</script>
+
+</html>

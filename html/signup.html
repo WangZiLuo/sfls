@@ -1,0 +1,353 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>登录</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .h25{
+          height: 25px;
+        }
+      .header{
+    		width: 100%;
+    		height: 0.88rem;
+    		position: relative;
+    		box-shadow: 0 5px 10px #eee;
+    		background: #fff;
+    	}
+    	.header i{
+    		display: block;
+    		position: absolute;
+    		left: 0.2rem;
+    		top: 0;
+    		width: 0.3rem;
+    		height: 0.88rem;
+    		background-image: url("../image/arrow_l.png");
+    		background-size: 0.2rem 0.3rem;
+    		background-repeat: no-repeat;
+    		background-position: left center;
+    	}
+    	.header h4{
+    		font-size: 0.32rem;
+    		line-height: 0.88rem;
+    		color: #333;
+    		text-align: center;
+    	}
+        .content{
+    		padding: 0.05rem 0.75rem 0 0.75rem;
+    		flex: 1;
+    		overflow: auto;
+    	}
+    	.content .logo{
+    		font-size: 0.6rem;
+    		line-height: 1.6rem;
+    		color: #000;
+    		text-align: center;
+    	}
+    	.content .main input{
+    		display: block;
+    		width: 5.75rem;
+    		height: 0.88rem;
+            font-size: 0.28rem;
+            line-height: normal;
+    		padding-left: 0.2rem;
+    		margin-bottom: 0.47rem;
+    		border: 1px solid #333;
+    	}
+    	.content .main .code{
+    		float: left;
+    		width: 3.5rem;
+    	}
+    	.content .main .getcode{
+    		height: 0.88rem;
+    		float: right;
+    		padding: 0 0.14rem;
+    		font-size: 0.28rem;
+    		line-height: 0.92rem;
+    		border: 1px solid #333;
+    		background: #fff;
+    	}
+    	.content .main .submit{
+    		display: block;
+    		width: 100%;
+    		height: 0.94rem;
+    		font-size: 0.28rem;
+    		line-height: 0.94rem;
+    		color: #fff;
+    		text-align: center;
+    		border: 0;
+    		background: #000;
+    		margin-top: 0.74rem;
+    	}
+    </style>
+
+</head>
+<body>
+  <div id="container">
+
+    <div id="login_header">
+        <div class="header">
+            <i @click="goBack()" tapmode></i>
+            <h4>注册</h4>
+        </div>
+    </div>
+    <div class="content">
+		<div class="logo">
+			私服旅舍
+		</div>
+		<div class="main">
+            <input type="text" placeholder="请输入昵称" class="normal nickname" v-model="nickname">
+			<input type="tel" placeholder="请输入手机号" class="normal phone" v-model="phone">
+			<div class="veryfication clearfix">
+				<input type="number" placeholder="请输入验证码" class="normal code" v-model="code">
+				<div @click="getCode" class="getcode" :disabled="!show">
+					<span v-show="show">获取验证码</span>
+					<span v-show="!show" class="count">{{count}}s后重新获取</span>
+				</div>
+			</div>
+			<input type="password" placeholder="6-16位字母和数字组合" class="normal set-pwd" v-model="set_pwd">
+			<input type="password" placeholder="请再次输入密码" class="normal confirm-pwd" v-model="confirm_pwd">
+			<input type="text" placeholder="请输入邀请码" class="normal invite" v-model="invite">
+			<button class="submit" @click="submit">注册</button>
+		</div>
+	</div>
+  </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/sha1.js"></script>
+<script type="text/javascript" src="../script/randomChar.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    var TIME_COUNT = 60;
+    //vueJS
+    var myapp = new Vue({
+        el :"#container",
+        data :{
+            title: "注册",
+            nickname: '',
+			phone:'',
+			code:'',
+			set_pwd:'',
+			confirm_pwd:'',
+			invite:'',
+			al_getCode:false,
+			show:true,
+			count:'',
+			timer:null,
+			re_getCode:true,
+			req_code:'',
+			req_phone:''
+        },
+        mounted(){
+            // if(this.$route.query.entrance){
+			// 	this.entrance = this.$route.query.entrance
+			// }
+		},
+        methods :{
+            goBack() {
+                this.nickname = '';
+                this.phone = '';
+                this.code = '';
+                this.set_pwd = '';
+                this.confirm_pwd = '';
+                this.invite = '';
+                api.closeFrame({
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            submit(){
+				var that = this;
+                var reg_nickname = /^[0-9a-zA-Z\u4e00-\u9fa5_]{2,8}$/;
+				var reg_phone = /^1[34578]\d{9}$/;
+				var set_pwd_reg = /^[a-zA-Z0-9]{6,16}$/;
+				var confirm_pwd_reg = /^[a-zA-Z0-9]{6,16}$/;
+                var nickname = this.nickname;
+				var phone = this.phone;
+				var code = this.code;
+				var set_pwd = this.set_pwd;
+				var confirm_pwd = this.confirm_pwd;
+				var invite = this.invite;
+				if(phone&&code&&set_pwd&&confirm_pwd&&nickname) {
+                    if (reg_nickname.test(nickname)) {
+    					if(reg_phone.test(phone)) {
+    						if(this.al_getCode) {
+    							if(set_pwd_reg.test(set_pwd)) {
+    								if(confirm_pwd_reg.test(confirm_pwd)) {
+    									if(set_pwd===confirm_pwd) {
+    										//判断验证码，手机号
+    										if(code==this.req_code&&phone==this.req_phone) {
+    											var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?'+'ak=registered&token=ajiuqian'+'&name='+nickname+'&phone='+phone+'&password='+confirm_pwd+'&yqm='+invite+'&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+
+                                                axios.post(url)
+                                                    .then(function(res) {
+    													if(res.data.msg=='3') {
+                                                            that.$toast({
+                    										  message: '注册成功',
+                    										  duration: 1000
+                    										});
+															//注册成功之后登录
+															setTimeout(function() {
+
+																api.closeFrame({
+																	animation:{
+																		type:"none",
+																	},
+																})
+															}, 1000)
+    													} else if(res.data.msg=='-3') {
+    														that.$toast({
+    															message:'没有找到邀请码',
+    															duration:'2000'
+    														})
+    													} else if(res.data.msg=='-3_1') {
+    														that.$toast({
+    															message:'当前账户已被注册',
+    															duration:'2000'
+    														});
+                                                            that.empty()
+    													}
+                                                    })
+    										} else {
+    											that.$toast({
+    												message:'验证码不正确',
+    												duration:'2000'
+    											});
+                                                that.code = ''
+    										}
+
+    									} else {
+    										that.$toast({
+    										    message: '两次密码输入不一致',
+    										    duration: 2000
+    										});
+                                            that.set_pwd = '';
+                                            that.confirm_pwd = '';
+    									}
+    								} else {
+    									that.$toast({
+    									    message: '密码需6-16位字母和数字组合',
+    									    duration: 2000
+    									});
+                                        that.set_pwd = '';
+                                        that.confirm_pwd = '';
+    								}
+    							} else {
+                                    that.$toast({
+    								    message: '密码需6-16位字母和数字组合',
+    								    duration: 2000
+    								});
+                                    that.set_pwd = '';
+                                    that.confirm_pwd = '';
+    							}
+    						} else {
+    							that.$toast({
+    							    message: '请先获取验证码',
+    							    duration: 2000
+    							});
+                                that.code = '';
+    						}
+    					} else {
+    						that.$toast({
+    						    message: '请输入正确的手机号',
+    						    duration: 2000
+    						});
+                            that.phone = '';
+                            that.code = ''
+    					}
+                    } else {
+                        that.$toast({
+                            message: '昵称由2-8位汉字字母数字下划线组成',
+                            duration: 2000
+                        });
+                        that.nickname = '';
+                    }
+				} else {
+					that.$toast({
+					    message: '输入不能为空',
+					    duration: 2000
+					})
+				}
+			},
+            empty() {
+                this.nickname = '';
+                this.phone = '';
+                this.code = '';
+                this.set_pwd = '';
+                this.confirm_pwd = '';
+                this.invite = ''
+            },
+			getCode() {
+				var that = this;
+				var reg_phone = /^1[34578]\d{9}$/;
+                var timestamp = parseInt(new Date().getTime()/1000)
+				    ,nonce = randomChar(6)
+				    ,signature = hex_sha1('e481f5273c07f8da8c27c934'+timestamp+nonce);
+				if(reg_phone.test(this.phone)){
+					this.al_getCode = true;
+					if(this.re_getCode){
+						this.re_getCode = false;
+                        api.ajax({
+							url:'http://lishenban.ajiuqian.com/api/apiAjax.aspx',
+                            method: 'post',
+							data:{
+                                values: {
+                                    ak: 'doduanxinyanzhengma',
+    								phone: that.phone,
+    								nonce: nonce,
+    								timestamp: timestamp,
+    								signature: signature
+                                }
+							}
+                        }, function(ret,err){
+								if(ret.msg=='30'){
+							 		that.req_phone = ret.phone
+							 		that.req_code = ret.yzm
+							 	}else if(ret.msg=='-30'){
+							 		that.$toast({
+									  message: '当前手机已注册',
+									  duration: 2000
+									});
+							 	}
+						});
+						if (!this.timer) {
+                            var _this = this;
+			                this.count = TIME_COUNT;
+			                this.show = false;
+			                this.timer = setInterval(function() {
+			                  if (_this.count > 0 && _this.count <= TIME_COUNT) {
+			                    _this.count--;
+			                  } else {
+			                    _this.show = true;
+			                    _this.re_getCode = true;
+			                    clearInterval(_this.timer);
+			                    _this.timer = null;
+			                  }
+			                }, 1000)
+			            }
+					}
+				}else{
+					this.$toast({
+					    message: '请输入正确的手机号',
+					    duration: 2000
+					});
+				}
+			}
+        }
+    });
+
+    //APICloud
+    apiready = function(){
+        $api.fixStatusBar($api.dom('#login_header'));
+
+    };
+</script>
+</html>

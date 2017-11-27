@@ -1,0 +1,414 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>待发货订单</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+            background: #fff;
+        }
+        .header i{
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+        .content{
+		flex:1;
+		overflow: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+	.state{
+		padding: 0.48rem 0.2rem 0.4rem 0.2rem;
+		background: #b5e7fe;
+		background-image: url(../image/complete.png);
+		background-size: 1.3rem 1.22rem;
+		background-repeat: no-repeat;
+		background-position: 5.48rem center;
+		height: 0.92rem;
+	}
+	.state h4{
+		font-size: 0.3rem;
+		line-height: 0.5rem;
+		color: #333;
+	}
+	.contact{
+		padding: 0.14rem 0.2rem;
+		background: #f6f6f6;
+		border-bottom: 1px solid #e3e3e3;
+	}
+	.contact p{
+		font-size: 0.26rem;
+		line-height: 0.56rem;
+		color: #333;
+	}
+	.contact .contacter{
+		float: left;
+	}
+	.contact .phone{
+		float: left;
+		margin-left: 0.48rem;
+	}
+
+	.main{
+		padding: 0.4rem 0.2rem 0 0.2rem;
+		border-bottom: 1px solid #e3e3e3;
+	}
+	.main .details-info{
+		border-bottom: 1px solid #e3e3e3;
+		padding-bottom: 0.25rem;
+	}
+	.main .preview{
+		float: left;
+	}
+	.main .preview img{
+		display: block;
+		width: 1.8rem;
+		height: 1.8rem;
+	}
+	.main .info{
+		float: left;
+		width: 5rem;
+		margin-left: 0.3rem;
+	}
+	.main .info .info-top{
+		font-size: 0.28rem;
+		line-height: 0.46rem;
+		color: #000;
+	}
+	.main .info .info-top .title{
+		float: left;
+	}
+	.main .info .info-top .number{
+		float: right;
+	}
+	.main .info .info-middle{
+		font-size: 0.26rem;
+		line-height: 0.74rem;
+		color: #000;
+	}
+	.main .info .info-middle .format{
+		float: left;
+	}
+	.main .info .info-middle .color{
+		float: left;
+		margin-left: 0.54rem;
+	}
+	.main .info .info-middle .size{
+		float: left;
+		margin-left: 0.68rem;
+	}
+	.main .info .info-bottom{
+		font-size: 0.26rem;
+		line-height: 0.7rem;
+		color: #000;
+	}
+	.main .info .info-bottom .price{
+		float: left;
+	}
+	.main .info .info-bottom .service{
+		float: right;
+		padding: 0 0.24rem;
+		border: 1px solid #333;
+		color: #000;
+	}
+	.mail-fare{
+		font-size: 0.26rem;
+		line-height: 0.9rem;
+		color: #333;
+		border-bottom: 1px solid #e3e3e3;
+	}
+	.mail-fare .mail-fare-name{
+		float: left;
+	}
+	.mail-fare .mail-fare-price{
+		float: right;
+	}
+	.coupon{
+		font-size: 0.26rem;
+		line-height: 0.9rem;
+		color: #333;
+		border-bottom: 1px solid #e3e3e3;
+	}
+	.coupon .coupon-name{
+		float: left;
+	}
+	.coupon .coupon-price{
+		float: right;
+		color: #e72424;
+	}
+	.total{
+		border-bottom: 1px solid #e3e3e3;
+	}
+	.total .total-name{
+		float: right;
+		font-size: 0.3rem;
+		line-height: 1.18rem;
+		color: #000;
+		margin-right: 0.5rem;
+	}
+	.total .total-price{
+		float: right;
+		font-size: 0.3rem;
+		line-height: 1.18rem;
+		color: #000;
+		font-weight: 900;
+	}
+	.total .total-price i{
+		font-size: 0.2rem;
+		font-style: normal;
+	}
+	.footer{
+		padding: 0.16rem 0.2rem 0 0.2rem;
+	}
+	.order-info{
+		padding-top: 0.27rem;
+	}
+	.order-info li span{
+		float: left;
+		display: block;
+		width: 1.2rem;
+		height: 0.68rem;
+		font-size: 0.26rem;
+		line-height: 0.68rem;
+		color: #333;
+		text-align: justify;
+	}
+	.order-info li span i{
+		display: inline-block;
+		width: 100%;
+	}
+	.order-info li b{
+		float: left;
+		font-size: 0.26rem;
+		line-height: 0.68rem;
+		color: #000;
+		font-weight: 300;
+		margin-left: 0.2rem;
+	}
+	.refund{
+		padding-top: 0.12rem;
+		padding-bottom: 0.12rem;
+	}
+	.refund button{
+		float: right;
+		font-size: 0.28rem;
+		line-height: 0.67rem;
+		color: #333;
+		padding: 0 0.27rem;
+		border: 1px solid #333;
+		background: #fff;
+	}
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <header id="header">
+            <div class="header">
+                <i @click="goBack" tapmode></i>
+                <h4>订单详情</h4>
+            </div>
+        </header>
+        <div id="main">
+            <div class="content">
+    			<div class="state">
+    				<h4>{{status}}</h4>
+    			</div>
+    			<div class="contact">
+    				<p class="address">地址: {{addressConvert(orderList.address)}}</p>
+    				<p class="contact-info clearfix">
+    					<span class="contacter">联系人: {{orderList.name}}</span>
+    					<span class="phone">手机号：{{orderList.phone}}</span>
+    				</p>
+    			</div>
+    			<div class="main">
+    				<div class="details-info clearfix" v-for="(item,index) in orderList.list">
+    					<div class="preview">
+    						<img v-lazy="item.listimg">
+    					</div>
+    					<div class="info">
+    						<div class="info-top clearfix">
+    							<span class="title">{{unescape(item.listtit)}}</span>
+    							<span class="number">x{{item.counter}}</span>
+    						</div>
+    						<div class="info-middle clearfix">
+    							<span class="format">规格:</span>
+    							<span class="color">{{item.onevalue}}</span>
+    							<span class="size">{{item.twovalue}}</span>
+    						</div>
+    					</div>
+    				</div>
+    				<div class="mail-fare clearfix">
+    					<span class="mail-fare-name">快递费用</span>
+    					<span class="mail-fare-price">￥{{orderList.freightmoney}}</span>
+    				</div>
+    				<div class="coupon clearfix">
+    					<span class="coupon-name">优惠券</span>
+    					<span class="coupon-price">-￥{{orderList.couponmoney}}</span>
+    				</div>
+    				<div class="total clearfix">
+    					<span class="total-price"><i>￥</i>{{orderList.ordermoney}}</span>
+    					<span class="total-name">实付款:</span>
+    				</div>
+    				<div class="refund clearfix" @click="goRefundDetail(orderList.orderid)">
+    					<button>退款详情</button>
+    				</div>
+    			</div>
+    			<div class="footer">
+    				<div class="order-info">
+    					<ul>
+    						<li class="clearfix">
+    							<span>订单号:<i></i></span>
+    							<b>{{orderList.ordernumber}}</b>
+    						</li>
+    						<li class="clearfix">
+    							<span>创建时间:<i></i></span>
+    							<b>{{orderList.ordercreatetime}}</b>
+    						</li>
+    						<li class="clearfix">
+    							<span>支付时间:<i></i></span>
+    							<b>{{orderList.orderpaytime}}</b>
+    						</li>
+    						<li class="clearfix">
+    							<span>发货时间:<i></i></span>
+    							<b>{{orderList.orderdeliverytime}}</b>
+    						</li>
+    					</ul>
+    				</div>
+    			</div>
+    		</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+
+    //vue.js
+    var myapp = new Vue({
+        el: "#wrap",
+        data() {
+			return{
+				signature: '',
+				orderid: '',
+				orderList: {},
+				status: ''
+			}
+		},
+        mounted() {
+
+        },
+        methods: {
+            init() {
+                var _this = this;
+    			this.orderid = api.pageParam.orderId;
+
+                if(api.pageParam.orderStatus=='3') {
+    				this.status = '审核中...'
+    			} else if(api.pageParam.orderStatus=='4') {
+    				this.status = '审核完成'
+    			} else if (api.pageParam.orderStatus=='6') {
+    			    this.status = '审核未通过'
+    			}
+
+                //检测是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        _this.signature = ret.value;
+                        var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=myorderlist'+'&orderid='+_this.orderid+_this.signature;
+
+                        axios.post(url)
+            				 .then(function(res) {
+                                if(res.data.msg=='23'){
+            				 		_this.orderList = res.data.list[0]
+            				 	};
+            				 })
+                    } else {
+                        //未登录
+                        _this.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    }
+				})
+            },
+            goBack() {
+                api.closeWin({
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            toJump(pageName) {
+                api.openWin({
+                    name: pageName,
+                    url: pageName + '.html',
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            addressConvert(area) {
+				var arr = area.split(",");
+				var addressStr = '';
+				for(var i=0;i<arr.length;i++){
+					addressStr += arr[i]
+				}
+				return addressStr
+			},
+			unescape(str) {
+                return unescape(str)
+            },
+            goRefundDetail(orderid) {
+                api.openFrame({
+                    name: 'refund-detail',
+                    url: 'widget://html/refund-detail.html',
+                    bounces: false,
+                    animation:{
+                        type:"none",
+                    },
+                    pageParam: {
+                        orderId: orderid
+                    }
+                })
+            }
+        },
+        created() {
+
+        }
+    });
+
+    //APICloud
+    apiready = function(){
+        // $api.fixStatusBar($api.dom('header'));
+        // $api.fixStatusBar($api.byId('header'));
+        myapp.init()
+
+    }
+</script>
+</html>

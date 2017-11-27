@@ -1,0 +1,341 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>物流信息</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+            background: #fff;
+        }
+        .header i{
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+        .content{
+    		flex: 1;
+    		overflow: auto;
+    		-webkit-overflow-scrolling: touch;
+    		background:#fff;
+    	}
+        .no-logistics{
+            padding-top: 2.93rem;
+        }
+        .no-logistics img{
+            display: block;
+            width: 1.8rem;
+            height: 1.8rem;
+            margin: 0 auto;
+        }
+        .no-logistics p{
+            font-size: 0.3rem;
+            line-height: 1.06rem;
+            color: #bfbfbf;
+            text-align: center;
+        }
+	.head{
+		padding: 0.38rem 0.2rem 0.36rem 0.2rem;
+		background: #fff;
+	}
+	.head img{
+		float: left;
+		display: block;
+		width: 1.8rem;
+		height: 1.8rem;
+	}
+	.head .about{
+		float: left;
+		margin-left: 0.3rem;
+	}
+	.head .about .goods-title{
+		font-size: 0.28rem;
+		line-height: 0.45rem;
+		color: #000;
+	}
+	.head .about .company{
+		font-size: 0.28rem;
+		line-height: 0.85rem;
+		color: #333;
+	}
+	.head .about .mailNo{
+		font-size: 0.28rem;
+		line-height: 0.36rem;
+		color: #333;
+	}
+	.info{
+		margin-top: 0.2rem;
+		background: #fff;
+	}
+	.info .title{
+		font-size: 0.28rem;
+		line-height: 0.84rem;
+		color: #333;
+		padding-left: 0.2rem;
+		border-bottom: 1px solid #e3e3e3;
+	}
+	.detail ul{
+		padding-left: 0.4rem;
+		padding-top: 0.45rem;
+	}
+	.detail ul li{
+		position: relative;
+		padding-left: 0.44rem;
+		border-left: 2px dashed #a4a4a4;
+		min-height: 1.72rem;
+	}
+	.detail ul li.last{
+		border: 0;
+	}
+	.detail ul li .state{
+		font-size: 0.28rem;
+		line-height: 0.52rem;
+		color: #a5a5a5;
+	}
+	.detail ul li.first .state{
+		color: #333;
+	}
+	.detail ul li .time{
+		font-size: 0.22rem;
+		line-height: 0.22rem;
+		color: #a5a5a5;
+	}
+	.detail ul li.first .time{
+		color: #333;
+	}
+	.detail ul li .circle{
+		width: 0.42rem;
+		height: 0.42rem;
+		background: #cfcfcf;
+		border-radius: 50%;
+		position: absolute;
+		left: -0.22rem;
+		top: 0;
+	}
+	.detail ul li.first .circle{
+		background: #8b8b8b;
+	}
+	.detail ul li .circle .inner{
+		width: 0.2rem;
+		height: 0.2rem;
+		background: #a9a9a9;
+		border-radius: 50%;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		margin-left: -0.1rem;
+		margin-top: -0.1rem;
+	}
+	.detail ul li.first .circle .inner{
+		background: #525252;
+	}
+    .loadingCover{
+        position: absolute;
+        z-index: 999;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0);
+    }
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <header>
+            <div class="header">
+                <i @click="goBack" tapmode></i>
+                <h4>物流信息</h4>
+            </div>
+        </header>
+        <div id="main">
+            <div class="content">
+    			<div class="head clearfix">
+    				<img v-lazy="img">
+    				<div class="about">
+    					<p class="goods-title">{{unescape(goods_title)}}&nbsp;&nbsp;共{{goods_num}}件</p>
+    					<p class="company">快递公司:&nbsp;&nbsp;{{company}}</p>
+    					<p class="mailNo">物流单号:&nbsp;&nbsp;{{mailNo}}</p>
+    				</div>
+    			</div>
+    			<div class="info">
+    				<div class="title">物流信息</div>
+    				<div class="detail">
+                        <div class="no-logistics" v-if="onOff">
+                            <img src="../image/logistics.png">
+                            <p v-text="logisticsInfo"></p>
+                        </div>
+    					<ul v-if="!onOff">
+    						<li v-for="(item,index) in infoList" :class="{first:index==0,last:index==(infoList.length-1)}">
+    							<p class="state">{{item.context}}</p>
+    							<p class="time">{{item.time}}</p>
+    							<div class="circle">
+    								<div class="inner"></div>
+    							</div>
+    						</li>
+    					</ul>
+    				</div>
+    			</div>
+    		</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+
+    //vue.js
+    var myapp = new Vue({
+        el :"#wrap",
+        data() {
+			return{
+                loadingCover: true,
+				goods_title: "",
+				company: "",
+                mailNo: '',
+				orderid:'',
+				signature:'',
+				orderInfo:{},
+				img:'',
+				goods_num:'',
+				orderNumber:'',
+				infoList:[],//物流信息列表
+                logisticsInfo: '',
+                onOff: false
+			}
+		},
+        mounted(){
+
+        },
+        methods :{
+            init() {
+                var that = this;
+    			      this.orderid = api.pageParam.orderId;
+                //检测是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        that.signature = ret.value;
+                        var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=myorderlist&orderid='+that.orderid+that.signature;
+                        axios.post(url)
+            				 .then(function(res) {
+            				 	if(res.data.msg=='23') {
+            				 		that.orderInfo = res.data.list[0];
+            				 		that.img = that.orderInfo.list[0].listimg;
+            				 		that.goods_title = that.orderInfo.list[0].listtit;
+            				 		that.goods_num = that.orderInfo.list.length;
+            				 		that.orderNumber = that.orderInfo.courierorder;//物流单号
+            				 		that.getLogisticsInfo(that.orderNumber);
+            				 	} else {
+                                    that.$indicator.close();
+                                    that.onOff=true;
+                                    that.logisticsInfo='请重新加载'
+                                }
+            				 })
+
+                    } else {
+                        //未登录
+                        _this.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    }
+                })
+
+            },
+            goBack() {
+                api.closeFrame({
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            toJump(pageName) {
+                api.openWin({
+                    name: pageName,
+                    url: pageName + '.html',
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            unescape(str){
+                return unescape(str)
+            },
+            getLogisticsInfo(logistics){
+                var _this = this;
+            	  var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=getwuliu&danhao='+logistics+this.signature
+        				axios.get(url)
+        					 .then(function(res) {
+                        alert(JSON.stringify(res))
+                        _this.$indicator.close();
+                        if (res.data.showapi_res_code==0) {
+                            _this.company = res.data.showapi_res_body.expTextName;
+                            _this.mailNo = res.data.showapi_res_body.mailNo;
+                            _this.infoList = res.data.showapi_res_body.data;
+                            if (!res.data.showapi_res_body.flag) {
+                              _this.onOff=true;
+                              _this.logisticsInfo='获取物流信息失败'
+                            }
+                        } else {
+                            _this.onOff=true;
+                            _this.logisticsInfo='获取物流信息失败'
+                        }
+                        if (res.data.showapi_res_body.data.length==0) {
+                            _this.onOff=true;
+                            _this.logisticsInfo='暂无物流信息'
+                        }
+        					 })
+            },
+            companyConvert(type){
+            	console.log(type)
+            	var company = {
+            		'yto':'圆通',
+            		'sto':'申通',
+            		'sfexpress':'顺丰',
+            		'yunda':'韵达',
+            		'ttkdex':'天天',
+            		'ems':'EMS'
+            	}
+            	return company[type]
+            },
+            statusConvert(str){
+            	return str.replace(/&nbsp;&nbsp;/,' ')
+            }
+
+        },
+        created() {
+
+        }
+    });
+
+    //APICloud
+    apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        myapp.$indicator.open({spinnerType: 'fading-circle'});
+        myapp.init()
+    }
+</script>
+</html>

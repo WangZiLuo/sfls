@@ -1,0 +1,30 @@
+{
+  "name": "sfls",
+  "version": "0.0.1",
+  "description": "Vue与apicloud开发",
+  "main": "index.js",
+  "repository": "http://www.apicloud.com",
+  "scripts": {
+    "webpack": "webpack",
+    "sync": "apicloud wifiSync --project ./ --updateAll false",
+    "bundle": "webpack --color --progress",
+    "bundle_s": "webpack --color --progress && apicloud wifiSync --project ./ --updateAll false",
+    "bundle_d": "webpack -d --color --progress",
+    "bundle_d_s": "webpack -d --color --progress && apicloud wifiSync --project ./ --updateAll false"
+  },
+  "author": "WangZiLuo",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^6.7.2",
+    "babel-core": "^6.22.1",
+    "babel-loader": "^6.2.10",
+    "babel-plugin-transform-runtime": "^6.22.0",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-env": "^1.2.1",
+    "babel-preset-stage-2": "^6.22.0",
+    "babel-register": "^6.22.0",
+    "glob": "^7.1.1",
+    "vue": "^2.5.8",
+    "webpack": "^1.13.3"
+  }
+}

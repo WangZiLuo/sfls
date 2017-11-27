@@ -1,0 +1,316 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>身份认证</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+        }
+        .header i{
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+        .content ul li{
+		list-style: none;
+		padding: 0 0.2rem;
+		height: 0.94rem;
+		border-bottom: 1px solid #e3e3e3;
+    	}
+    	.list span{
+    		float: left;
+    		width: 1.2rem;
+    		height: 0.94rem;
+    		font-size: 0.28rem;
+    		line-height: 0.94rem;
+    		color: #333;
+    		font-weight: 900;
+    		text-align: justify;
+    	}
+    	.list span i{
+    		display: inline-block;
+    		width: 100%;
+    	}
+    	.list input{
+    		float: left;
+    		width: 5.38rem;
+    		height: 0.94rem;
+            font-size: 0.28rem;
+    		border: 0;
+    		margin-left: 0.5rem;
+    	}
+    	.list.type{
+    		height: 1.95rem;
+    	}
+    	.list.type .choice input{
+    		display: block;
+    		margin-left: 0;
+    		float: none;
+    	}
+    	.choice{
+    		float: left;
+    		margin-left: 0.5rem;
+    		width: 5.38rem;
+    	}
+    	.choice .head{
+    		height: 0.94rem;
+    	}
+    	.choice .head input.check{
+    		float: left;
+    		margin-top: 0.24rem;
+    		-webkit-appearance: none;
+    		display: block;
+    		width: 0.46rem;
+    		height: 0.46rem;
+    		background-image: url('../image/no_checked.png');
+    		background-size: 0.46rem 0.46rem;
+    		background-repeat: no-repeat;
+    	}
+    	.choice .head input:checked{
+    		background-image: url('../image/checked.png');
+    	}
+    	#web{
+    		margin-left: 1.32rem;
+    	}
+    	.choice .head label{
+    		float: left;
+    		margin-top: 0.24rem;
+    		font-size: 0.28rem;
+    		line-height: 0.46rem;
+    		color: #333;
+    		margin-left: 0.15rem;
+    	}
+    	.content button{
+    		display: block;
+    		width: 7.1rem;
+    		height: 0.94rem;
+    		border: 0;
+    		background: #000;
+    		margin: 0 auto;
+    		margin-top: 1.5rem;
+    		color: #fff;
+    		font-size: 0.28rem;
+    		line-height: 0.94rem;
+    		text-align: center;
+    		font-weight: 900;
+    	}
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <header>
+            <div class="header">
+    			<i @click="goBack"></i>
+    			<h4>{{title}}</h4>
+    		</div>
+        </header>
+        <div id="main">
+            <div class="content">
+			<ul>
+				<li class="name clearfix list">
+					<span>姓名<i></i></span>
+					<input type="text" placeholder="请输入真实姓名" v-model="name">
+				</li>
+				<li class="idcard clearfix list">
+					<span>身份证号<i></i></span>
+					<input type="text" placeholder="请输入身份证号码" v-model="idcard">
+				</li>
+				<li class="phone clearfix list">
+					<span>联系电话<i></i></span>
+					<input type="number" placeholder="请输入联系电话" v-model="phone">
+				</li>
+				<li class="type clearfix list">
+					<span>店铺类型<i></i></span>
+					<div class="choice">
+						<div class="head clearfix">
+							<input type="radio" name="shop" id="solid" class="check" checked="checked" ref="solid"><label for="solid">实体</label>
+							<input type="radio" name="shop" id="web" class="check" ref="web"><label for="web">网店</label>
+						</div>
+						<input type="text" placeholder="请输入店铺地址" v-model="address">
+					</div>
+				</li>
+			</ul>
+			<button @click="submit" tapmode>提交</button>
+		</div>
+        </div>
+
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+//加载动画
+
+    //vue.js
+    var myapp = new Vue({
+        el: "#wrap",
+        data() {
+		    return{
+                title: '认证',
+				signature: '',
+				name: '',
+				idcard: '',
+				phone: '',
+				address: '',
+				type: ''
+		    }
+	    },
+        mounted() {
+
+  		},
+        methods: {
+            init() {
+                var that = this;
+                //检测是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        that.signature = ret.value
+                    } else {
+                        //未登录
+                        that.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    }
+
+                    that.identityState = api.pageParam.identitystate;
+        			if(that.identityState == '4'){
+        				that.title = "修改认证信息"
+        				var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=agentregistered'+that.signature
+        				axios.post(url)
+        					 .then(function(res) {
+        					 	that.name = res.data.name
+        					 	that.idcard = res.data.card
+        					 	that.phone = res.data.phone
+        					 	that.address = res.data.address
+        					 	if(res.data.type==1){
+        					 		that.$refs.solid.checked = true
+        					 	}else if(res.data.type==2){
+        					 		that.$refs.web.checked = true
+        					 	}
+        					 })
+					}
+				})
+            },
+            goBack() {
+                api.closeWin({
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            submit(){
+				var that = this;
+				var reg_phone = /^1[34578]\d{9}$/;
+				var reg_idcard = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+				var name = this.name;
+				var idcard = this.idcard;
+				var phone = this.phone;
+				var address = this.address;
+				if(name&&idcard&&phone&&address){
+					if(reg_idcard.test(idcard)){
+						if(reg_phone.test(phone)){
+							var checkbox = document.getElementsByName("shop")
+							for(var i=0;i<checkbox.length;i++){
+								if(checkbox[i].checked){
+									this.type = i+1
+								}
+							};
+                            if(that.identityState=='1'){
+								var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=agentregistered'+'&name='+name+'&phone='+phone+'&type='+this.type+'&card='+idcard+'&address='+address+this.signature
+							}else if(that.identityState=='4'){
+								var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=upagent'+'&name='+name+'&phone='+phone+'&type='+this.type+'&card='+idcard+'&address='+address+this.signature
+							};
+							axios.post(url)
+								 .then(function(res) {
+								 	if(res.data.msg=='25'||res.data.msg=='26') {
+								 		that.$toast({
+											message:'提交成功',
+											duration:'2000'
+										});
+                                        api.openFrame({
+                                            name: 'identity-info',
+                                            url: 'widget://html/identityinfo.html',
+                                            bounces: false,
+                                            animation:{
+                                                type:"none",
+                                            }
+                                        });
+                                        api.sendEvent({
+                                            name: 'my',
+                                            extra: {
+                                                value: true
+                                            }
+                                        })
+								 	} else {
+                                        api.sendEvent({
+                                            name: 'my',
+                                            extra: {
+                                                value: true
+                                            }
+                                        });
+                                        that.goBack()
+								 	}
+								 })
+
+						}else{
+                            that.$toast({
+                              message: '手机号输入有误',
+                              duration: 2000
+                            })
+						}
+					}else{
+                        that.$toast({
+                          message: '身份证号输入有误',
+                          duration: 2000
+                        })
+					}
+				}else{
+                    that.$toast({
+                      message: '请填写完整',
+                      duration: 2000
+                    })
+				}
+			}
+
+        }
+    });
+
+    //APICloud
+    apiready = function(){
+
+        $api.fixStatusBar($api.dom('header'));
+        myapp.init();
+
+
+
+
+    };
+</script>
+</html>

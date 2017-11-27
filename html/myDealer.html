@@ -1,0 +1,234 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>我的经销商</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+        }
+        .header i{
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+        .dealerItem{
+            padding: .18rem .2rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .dealerItem .title>.name{
+            color: #333;
+            font-size: .3rem;
+            line-height: .5rem;
+            vertical-align: middle;
+        }
+        .dealerItem .title>.time{
+            color: #808080;
+            font-size: .2rem;
+            line-height: .4rem;
+            vertical-align: middle;
+        }
+        .dealerItem .toLink{
+            padding-left: .32rem;
+            padding-right: .32rem;
+            color: #333;
+            font-size: .26rem;
+            line-height: .52rem;
+            text-align: center;
+            border: 1px solid #8a8a8a;
+        }
+        .page-infinite-loading{
+            text-align: center;
+            line-height: 1.4rem;
+            font-size: .28rem;
+        }
+        .no-order{
+            padding-top: 2.93rem;
+        }
+        .no-order img{
+            display: block;
+            width: 1.52rem;
+            height: 1.8rem;
+            margin: 0 auto;
+        }
+        .no-order p{
+            font-size: 0.3rem;
+            line-height: 1.06rem;
+            color: #bfbfbf;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <header>
+            <div class="header">
+               <i @click="goBack"></i>
+               <h4>我的经销商</h4>
+           </div>
+        </header>
+        <div id="main">
+            <div class="no-order" v-if="onOff">
+                <img src="../image/order_bg.png">
+                <p>暂无更多</p>
+            </div>
+            <ul class="dealerList" id="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="loading" infinite-scroll-distance="10" infinite-scroll-immediate-check="loadingCheck">
+                <li class="dealerItem f-fxbox" v-for="(item,index) in dealerList" :key="index">
+                    <div class="title">
+                        <p class="name" v-text="item.name">
+
+                        </p>
+                        <div class="time" v-text="item.addtime">
+
+                        </div>
+                    </div>
+                    <div class="toLink" tapmode @click="toJump('dealerInfo',item.cmuid)">
+                        详情
+                    </div>
+                </li>
+            </ul>
+            <p class="page-infinite-loading" v-show="loading">
+                {{loadingText}}
+            </p>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    //加载动画
+
+    //vue.js
+    var myapp = new Vue({
+        el :"#wrap",
+        data(){
+            return{
+                signature: '',
+                isaccount: '',
+                dealerList: [],
+                pagNum: 1,
+                onOff: true,
+                loadingCheck: false,
+                loading: false,
+                loadingText: '加载中...',
+            }
+        },
+        watch: {
+            dealerList: function(val, oldVal) {
+                if (val.length!=0) {
+                    this.onOff = false
+                } else {
+                    this.onOff = true
+                }
+            }
+        },
+        mounted(){
+
+        },
+        methods :{
+            goBack() {
+                api.closeWin({
+                    animation:{
+                        type:"none",
+                    },
+              })
+            },
+            toJump(pageName,cmuid) {
+                api.openWin({
+                    name: pageName,
+                    url: pageName + '.html',
+                    pageParam: {
+                        cmuid: cmuid
+                    },
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            loadMore() {
+                this.loading = true;
+                this.init()
+            },
+            init() {
+                this.isaccount = api.pageParam.isaccount;
+                var _this = this;
+                //检测是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        _this.signature = ret.value;
+                       var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=doxiajijx&p='+ _this.pagNum +_this.signature;
+                        axios.post(url)
+                                .then(function(res) {
+                                    if (res.data.msg==60) {
+                                        if(res.data.list.length==0){
+                                            if (_this.loadingText != '没有更多了...') {
+                                                _this.loadingText = '没有更多了...'
+                                            };
+                                            // setTimeout(function() {
+                                            //     _this.loading = false;
+                                            // },500)
+
+
+                                        }else{
+                                            if (_this.loadingText != '加载中...') {
+                                                _this.loadingText = '加载中...'
+                                            };
+                                            _this.dealerList = _this.dealerList.concat(res.data.list);
+                                            _this.loading = false;
+                                            _this.pagNum = _this.pagNum + 1;
+                                        }
+                                    }
+                                })
+                                .catch(function(err){
+                                    // _this.goBack()
+                                })
+                    } else {
+                        //未登录
+                        _this.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    }
+                })
+            }
+        },
+        created() {
+
+        }
+
+    });
+    //APICloud
+    apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        myapp.init();
+    }
+
+
+
+</script>
+</html>

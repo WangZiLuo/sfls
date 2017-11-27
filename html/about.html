@@ -1,0 +1,178 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>关于丽身伴</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+            background: #fff;
+        }
+        .header i{
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+        .content{
+            width: 100%;
+            height: 15rem;
+            background-size: cover;
+            background-color: #dafcf4;
+        }
+        .title{
+            padding-top: 4.1rem;
+            display: flex;
+            justify-content: flex-start;
+        }
+        .title .line1{
+            width: 0.73rem;
+            height: 0.03rem;
+            background: #232033;
+            margin-left: 0.2rem;
+        }
+        .title h4{
+            font-size: 0.46rem;
+            line-height: 1.4rem;
+            padding: 0 0.2rem;
+            margin-top: -0.7rem;
+            color: #222134;
+        }
+        .title .line2{
+            width: 0.73rem;
+            height: 0.03rem;
+            background: #232033;
+        }
+        .description{
+            padding: 0 0.5rem;
+        }
+        .description p{
+            font-size: 0.28rem;
+            line-height: 0.52rem;
+            color: #3d3862;
+            margin-bottom: 0.52rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <header id="header">
+            <div class="header">
+    			<i @click="goBack"></i>
+    			<h4>关于私服旅舍</h4>
+    		</div>
+        </header>
+        <div id="main">
+            <div class="content" :style="{ backgroundImage: 'url('+ unescape(bgImg) + ')' }">
+    			<div class="title">
+    				<div class="line1"></div>
+    				<h4>关于私服旅舍</h4>
+    				<div class="line2"></div>
+    			</div>
+    			<div class="description">
+                    <p v-text="unescape(aboutText)"></p>
+
+                </div>
+    		</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    //加载动画
+
+    var myapp = new Vue({
+        el :"#wrap",
+        data(){
+            return{
+                bgImg: '',
+                aboutText: ''
+            }
+        },
+        mounted() {
+
+        },
+        methods :{
+            goBack() {
+                api.closeWin({
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            init() {
+                var that = this;
+                //登陆状态
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        that.signature = ret.value;
+                        that.about();
+
+                    } else {
+                        //未登录
+                        that.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f';
+                        that.about();
+                    }
+                })
+            },
+            about() {
+                var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=guanyuwomen'+this.signature;
+                var _this = this;
+                axios.post(url)
+                     .then(function(res) {
+
+                         if(res.data.msg=='58'){
+                            _this.bgImg = res.data.img;
+                            _this.aboutText = res.data.text;
+                        } else {
+                            _this.about()
+                        }
+                    })
+            },
+            unescape(str){
+                return unescape(str)
+            }
+        },
+        created() {
+
+        }
+    });
+
+    //APICloud
+    apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        myapp.init()
+    }
+
+
+
+</script>
+</html>

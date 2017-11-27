@@ -1,0 +1,394 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>我的收藏</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+        }
+        .header i{
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+        .container{
+    		width: 100%;
+    		height: 100%;
+    		background: #f6f6f6;
+    	}
+    	.no-record{
+    		width: 100%;
+    		height: 100%;
+    		background: #fff;
+    	}
+    	.no-record img{
+    		display: block;
+    		width: 2.35rem;
+    		height: 2.24rem;
+    		margin: 0 auto;
+    		margin-top: 2.63rem;
+    	}
+    	.no-record p{
+    		font-size: 0.3rem;
+    		line-height: 0.7rem;
+    		color: #9f9e9e;
+    		text-align: center;
+    	}
+    	.record .header{
+    		width: 100%;
+    		height: 0.88rem;
+    		position: relative;
+    		box-shadow: 0 5px 10px #eee;
+    		background: #fff;
+    	}
+    	.record .header i{
+    		position: absolute;
+    		left: 0.2rem;
+    		top: 0;
+    		display: block;
+    		width: 0.2rem;
+    		height: 0.88rem;
+    		background-image: url("../image/arrow_l.png");
+    		background-size: 0.2rem 0.3rem;
+    		background-repeat: no-repeat;
+    		background-position: left center;
+    	}
+    	.record .header h4{
+    		font-size: 0.32rem;
+    		line-height: 0.88rem;
+    		color: #333;
+    		text-align: center;
+    	}
+    	.record .header span.edit{
+    		display: block;
+    		position: absolute;
+    		right: 1.18rem;
+    		top: 0;
+    		font-size: 0.28rem;
+    		line-height: 0.88rem;
+    		color: #333333;
+    	}
+    	.record .header span.complete{
+    		display: block;
+    		position: absolute;
+    		right: 1.18rem;
+    		top: 0;
+    		font-size: 0.28rem;
+    		line-height: 0.88rem;
+    		color: #333333;
+    	}
+    	.record .header span.remove{
+    		display: block;
+    		position: absolute;
+    		right: 0.2rem;
+    		top: 0;
+    		font-size: 0.28rem;
+    		line-height: 0.88rem;
+    		color: #777;
+    	}
+    	.content .list{
+    		list-style: none;
+    		padding: 0.18rem 0.2rem;
+    		position: relative;
+    		background: #fff;
+    		margin-top: 0.15rem;
+    	}
+    	.content .list .goods{
+    		display: block;
+    		width: 1.8rem;
+    		height: 1.8rem;
+    		float: left;
+    	}
+    	.content .list .detail{
+    		width: 5rem;
+    		float: left;
+    		padding-left: 0.3rem;
+    	}
+    	.detail .title{
+    		font-size: 0.28rem;
+    		line-height: 0.76rem;
+    		color: #000;
+    		font-weight: 900;
+    	}
+    	.info{
+    		margin-top: 0.6rem;
+    	}
+    	.info span{
+    		font-size: 0.24rem;
+    		line-height: 0.44rem;
+    	}
+    	.info span.price{
+    		float: left;
+    		color: #000;
+    		font-weight: 900;
+    	}
+    	.info span.saled{
+    		float: right;
+    		color: #333;
+    		margin-right: 2.8rem;
+    	}
+    	.info span.saled i{
+    		font-style: normal;
+    	}
+    	.content ul li label{
+    		display: block;
+    	}
+    	.content ul li input{
+    		-webkit-appearance: none;
+    		position: absolute;
+    		width: 0.46rem;
+    		height: 100%;
+    		background-image: url('../image/no_checked.png');
+    		background-size: 0.46rem 0.46rem;
+    		background-repeat: no-repeat;
+    		background-position: left center;
+    		right: 0.2rem;
+    		top: 0;
+    	}
+    	.content ul li input:checked{
+    		background-image: url('../image/checked.png');
+    	}
+        .detail .out{
+    		display: block;
+    		height: 0.6rem;
+    		font-size: 0.24rem;
+    		line-height: 0.6rem;
+    		color: #888;
+    	}
+    </style>
+</head>
+<body style="background-color:#F6F6F6">
+    <div id="wrap">
+
+
+            <div class="no-record" v-if="!onOff">
+                <header id="header">
+                    <div class="header">
+            			<i @click="goBack()" tapmode></i>
+            			<h4>我的收藏</h4>
+            		</div>
+                </header>
+                <div id="main">
+                    <img src="../image/collection.png">
+        			<p>暂无收藏</p>
+                </div>
+
+    		</div>
+    		<div class="record" v-if="onOff">
+                <header>
+                    <div class="header">
+        				<i @click="goBack()" tapmode></i>
+        				<h4>我的收藏</h4>
+        				<span class="edit" @click="edit" v-if="onOff_edit">编辑</span>
+        				<span class="complete" @click="complete" v-if="!onOff_edit">完成</span>
+        				<span class="remove" @click="del" ref="del">删除</span>
+        			</div>
+                </header>
+            </div>
+            <div id="main">
+                <div class="content">
+                    <ul>
+                        <li class="list" v-for="(item,index) in collectionList" :key='index'>
+                            <label :for="item.wpid" class="clearfix" @click="toDetail(item.wpid,item.wpstatus)" tapmode>
+                                <img v-lazy="unescape(item.listimg)" class="goods">
+                                <div class="detail">
+                                    <p class="title">{{unescape(item.listtit)}}</p>
+                                    <span class="out">{{outConvert(item.wpstatus)}}</span>
+                                    <div class="info clearfix">
+                                        <span class="price">￥{{item.listpre}}</span>
+                                        <span class="saled">销售<i>{{item.listpeos}}</i></span>
+                                    </div>
+                                </div>
+                            </label>
+                            <input type="checkbox" :id="item.wpid" name="check" v-if="onOff_collect">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+
+
+apiready = function(){
+
+    $api.fixStatusBar($api.dom('header'))
+
+    var myapp = new Vue({
+        el :"#wrap",
+        data(){
+            return{
+                onOff: true,
+				title: "我的收藏",
+				price: 300,
+				saled: 120,
+				onOff_collect:false,
+				onOff_edit:true,
+                signature:'',
+				collectionList:[]
+            }
+        },
+        mounted() {
+            var that = this;
+            //登陆状态
+            api.getPrefs({
+                key: 'lsb_sign'
+            }, function(ret, err) {
+                //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                if (ret.value && ret.value != "") {
+                    //已登录
+                    that.signature = ret.value;
+                    that.doshoucangproduct();
+                } else {
+                    //未登录
+                    that.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f';
+                }
+            })
+        },
+        methods :{
+            doshoucangproduct(){
+                var that = this;
+                var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=doshoucangproduct'+this.signature
+                axios.post(url)
+                     .then(function(res) {
+                        if(res.data.msg=='31'){
+                            that.collectionList = res.data.lisg
+                            if(that.collectionList.length>0){
+                                that.onOff = true
+                            }else{
+                                that.onOff = false
+                            }
+                        }
+                     })
+                 $api.fixStatusBar($api.dom('header'))
+            },
+            goBack() {
+                api.closeWin({
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            outConvert(status){
+				if(status=='1'){
+					return ''
+				}else if(status=='2'){
+					return '已下架'
+				}
+			},
+            toDetail(id,status) {
+                if(this.onOff_edit){
+            		if(status=='1') {
+                        api.openWin({
+                            name: 'goods-detail',
+                            url: 'goods-detail.html',
+                            animation:{
+                                type:"none",
+                            },
+                            pageParam: {
+                                query: {
+                                    uid:id,
+                                }
+                            }
+                        })
+            		} else if(status=='2') {
+            			this.$toast({
+						    message: '商品已下架',
+						    position: 'middle',
+						    duration: 2000
+						})
+            		}
+            	}
+
+
+
+
+            },
+            edit(){
+				this.onOff_collect = !this.onOff_collect
+				this.onOff_edit = !this.onOff_edit
+				this.$refs.del.style.color = "#333"
+			},
+			complete(){
+				this.onOff_collect = false
+				this.onOff_edit = !this.onOff_edit
+				this.$refs.del.style.color = "#777"
+            },
+            del(){
+    			var that = this
+    			if(!this.onOff_edit){
+    				that.$messagebox.confirm("确定删除收藏吗？").then(function(action) {
+    					var checkbox = document.getElementsByName("check")
+    					var checkedArr = []
+    					for(var i=0;i<checkbox.length;i++){
+    						if(checkbox[i].checked){
+    							checkedArr.push(i)
+    						}
+    					}
+    					if(checkedArr.length!=0){
+    						//生成要删除收藏下标的字符串
+    						var delStr = ''
+    						for(var i=0;i<checkedArr.length;i++){
+    							delStr = delStr +','+this.collectionList[checkedArr[i]].wpid
+    						}
+    						delStr = delStr.substring(1)
+    						//删除数组中的数据
+    						for(var i=0;i<checkedArr.length;i++){
+    							this.collectionList.splice((checkedArr[i]-i),1)
+    						}
+    						//要删除的数据提交数据库
+    						var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=shoucang&token=ajiuqian&wpid='+delStr+this.signature
+    						axios.post(url)
+    							 .then(function(res) {
+    							 	if(res.data.msg=='-13'){
+    							 		if(that.collectionList.length==0){
+    							 			that.onOff = false
+    							 		}
+    							 	}
+    							 })
+    						this.onOff_collect = !this.onOff_collect
+    						this.onOff_edit = !this.onOff_edit
+    						this.$refs.del.style.color = "#777"
+    					}
+    				}).catch(function(action) {
+
+    				})
+
+    			}
+    		},
+            unescape(str){
+                return unescape(str)
+            }
+        }
+    })
+}
+
+</script>
+</html>

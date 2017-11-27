@@ -1,0 +1,298 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>我的收入</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+        }
+        .header i{
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+        .widthdraw{
+    		width: 100%;
+    		height: 2.32rem;
+    		background: #eeeeee;
+    		padding-top: 0.72rem;
+    		position: relative;
+    	}
+    	.widthdraw h4{
+    		font-size: 0.26rem;
+    		line-height: 0.56rem;
+    		color: #333;
+    		text-align: center;
+    		font-weight: 100;
+    	}
+    	.widthdraw .money{
+    		height: 0.58rem;
+    		text-align: center;
+    		font-size: 0.28rem;
+    		line-height: 0.58rem;
+    	}
+    	.widthdraw .money i{
+    		font-size: 0.2rem;
+    		line-height: 0.58rem;
+    		font-style: normal;
+    		font-weight: 900;
+    	}
+    	.widthdraw .money span{
+    		font-size: 0.28rem;
+    		line-height: 0.58rem;
+    		color: #333;
+    		font-weight: 900;
+    	}
+    	.widthdraw .cash{
+    		position: absolute;
+    		display: block;
+    		height: 0.54rem;
+    		font-size: 0.26rem;
+    		line-height: 0.54rem;
+    		border: 1px solid #151515;
+    		padding: 0 0.4rem;
+    		right: 0.2rem;
+    		top: 2.14rem;
+    		color: #2375c2;
+    	}
+    	.commission ul{
+    		padding-top: 0.5rem;
+    		padding-bottom: 0.48rem;
+    		height: 0.71rem;
+    		display: flex;
+    		justify-content: space-around;
+    		border-bottom: 1px solid #e0e0e0;
+    	}
+    	.commission ul li{
+    		list-style: none;
+    		width: 33.3%;
+    	}
+    	.commission ul li .title{
+    		font-size: 0.24rem;
+    		line-height: 0.24rem;
+    		color: #333;
+    		text-align: center;
+    	}
+    	.commission ul li.no-cash{
+    		border-right: 1px solid #c8c8c8;
+    	}
+    	.commission ul li.no_settle{
+    		border-right: 1px solid #c8c8c8;
+    	}
+    	.commission ul li .value{
+    		font-size: 0.24rem;
+    		line-height: 0.24rem;
+    		color: #333;
+    		text-align: center;
+    		margin-top: 0.25rem;
+    	}
+    	.log ul li{
+    		padding: 0 0.2rem;
+    		height: 0.94rem;
+    		border-bottom: 1px solid #c8c8c8;
+    	}
+    	.log ul li.income i.icon{
+    		display: block;
+    		float: left;
+    		width: 0.42rem;
+    		height: 0.94rem;
+    		background-image: url("../image/income_icon.png");
+    		background-size: 0.42rem 0.42rem;
+    		background-repeat: no-repeat;
+    		background-position: left center;
+    	}
+    	.log ul li.deposit i.icon{
+    		display: block;
+    		float: left;
+    		width: 0.42rem;
+    		height: 0.94rem;
+    		background-image: url("../image/deposit_icon.png");
+    		background-size: 0.42rem 0.42rem;
+    		background-repeat: no-repeat;
+    		background-position: left center;
+    	}
+    	.log ul li span{
+    		float: left;
+    		font-size: 0.28rem;
+    		line-height: 0.94rem;
+    		color: #333333;
+    		margin-left: 0.2rem;
+    	}
+    	.log ul li i.arrow{
+    		float: right;
+    		display: block;
+    		width: 0.16rem;
+    		height: 0.94rem;
+    		background-image: url("../image/arrow_r.png");
+    		background-size: 0.16rem 0.3rem;
+    		background-position: right center;
+    		background-repeat: no-repeat;
+    	}
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <header>
+            <div class="header">
+    			<i @click="goBack"></i>
+    			<h4>我的收入</h4>
+    		</div>
+        </header>
+        <div id="main">
+            <div class="widthdraw">
+    			<h4>可提现金额</h4>
+    			<div class="money">
+    				<i>￥</i><span>{{sum}}</span>
+    			</div>
+    			<span class="cash" @click="toJump('widthdraw',sum)">提现</span>
+    		</div>
+    		<div class="commission">
+    			<ul>
+    				<li class="no-cash">
+    					<p class="title">待提现佣金</p>
+    					<p class="value">￥{{no_cash}}</p>
+    				</li>
+    				<li class="no_settle">
+    					<p class="title">待结算佣金</p>
+    					<p class="value">￥{{no_settle}}</p>
+    				</li>
+    				<li class="total">
+    					<p class="title">累计收益</p>
+    					<p class="value">￥{{total}}</p>
+    				</li>
+    			</ul>
+    		</div>
+    		<div class="log">
+    			<ul>
+    				<li class="income clearfix" @click="toJump('incomedetail')" tapmode>
+    					<i class="icon"></i>
+    					<span>收入明细</span>
+    					<i class="arrow"></i>
+    				</li>
+    				<li class="deposit clearfix" @click="toJump('widthdrawlogBank')" tapmode>
+    					<i class="icon"></i>
+    					<span>提现记录</span>
+    					<i class="arrow"></i>
+    				</li>
+    			</ul>
+    		</div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    //加载动画
+
+    //vue.js
+    var myapp = new Vue({
+        el :"#wrap",
+        data(){
+            return{
+                signature: '',
+                sum: "0.00",
+                no_cash: "0.00",
+                no_settle: "0.00",
+                total: "0.00"
+            }
+        },
+        mounted(){
+
+        },
+        methods :{
+            goBack() {
+                api.closeWin({
+                    animation:{
+                        type:"none",
+                    },
+              })
+            },
+            toJump(pageName,param) {
+                api.openWin({
+                    name: pageName,
+                    url: pageName + '.html',
+                    pageParam: {
+                        sum: param
+                    },
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            init() {
+                var _this = this;
+                //检测是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        _this.signature = ret.value;
+                       var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=doagentinfo'+_this.signature;
+                        axios.post(url)
+           				     .then(function(res) {
+           				         if(res.data.msg=="38"){
+           				 		     _this.total = res.data.earnings;
+           				 		     _this.no_settle = res.data.djsmoney;
+           				 		     _this.sum = parseFloat(res.data.earnings)-parseFloat(res.data.withdrawals);
+           				 		     _this.no_cash = _this.sum;
+           				 	     }
+           				     })
+                             .catch(function(err){
+                                 _this.goBack()
+                             })
+                    } else {
+                        //未登录
+                        _this.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    }
+                })
+            }
+        },
+        created() {
+
+        }
+
+    });
+    //APICloud
+    apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        myapp.init();
+        api.addEventListener({
+            name: 'income'
+        }, function(ret, err) {
+            if (ret) {
+                myapp.init()
+            }
+        });
+    }
+
+
+
+</script>
+</html>

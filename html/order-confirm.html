@@ -1,0 +1,864 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>确认订单</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <link rel="stylesheet" href="../swiper/swiper.css">
+    <style>
+        [v-cloak] {
+            display:none !important;
+        }
+        #main{
+            position: relative;
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+            overflow: auto;
+            -webkit-overflow-scrolling: auto;
+        }
+        .header{
+    		width: 100%;
+    		height: 0.88rem;
+    		position: relative;
+    		box-shadow: 0 5px 10px #eee;
+    		background: #fff;
+    	}
+    	.header i{
+    		display: block;
+    		position: absolute;
+    		left: 0.2rem;
+    		top: 0;
+    		width: 0.3rem;
+    		height: 0.88rem;
+    		background-image: url("../image/arrow_l.png");
+    		background-size: 0.2rem 0.3rem;
+    		background-repeat: no-repeat;
+    		background-position: left center;
+    	}
+    	.header h4{
+    		font-size: 0.32rem;
+    		line-height: 0.88rem;
+    		color: #333;
+    		text-align: center;
+    	}
+        .add-address{
+            padding: 0 0.3rem;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #e3e3e3;
+        }
+        .add-address p{
+            font-size: 0.3rem;
+            line-height: 1.4rem;
+            color: #333;
+            padding-left: 0.6rem;
+            background-image: url('../image/location.png');
+            background-size: 0.33rem 0.47rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .add-address span{
+            width: 1.5rem;
+            height: 1.4rem;
+            background-image: url('../image/arrow_r.png');
+            background-size: 0.15rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: right center;
+        }
+        .contact{
+            padding: 0.14rem 0.2rem;
+            background: #fff;
+            border-bottom: 1px solid #e3e3e3;
+            position: relative;
+        }
+        .contact .address{
+            font-weight: bold;
+        }
+        .contact p{
+            font-size: 0.26rem;
+            line-height: 0.56rem;
+            color: #333;
+        }
+        .contact .contacter{
+            float: left;
+        }
+        .contact .phone{
+            float: left;
+            margin-left: 0.48rem;
+        }
+        .contact .arrow{
+            position: absolute;
+            right: 0.2rem;
+            top: 0;
+            font-style: normal;
+            font-size: 0.4rem;
+            line-height: 1.4rem;
+            color: #666;
+        }
+
+        .main{
+            padding: 0.3rem 0.2rem 0 0.2rem;
+            border-bottom: 1px solid #e3e3e3;
+        }
+        .main-title{
+            font-size: 0.3rem;
+            line-height: 0.3rem;
+        }
+        .main .details-info{
+            border-bottom: 1px solid #e3e3e3;
+            padding-bottom: 0.25rem;
+            padding-top: 0.25rem;
+        }
+        .main .preview{
+            float: left;
+        }
+        .main .preview img{
+            display: block;
+            width: 1.8rem;
+            height: 1.8rem;
+        }
+        .main .info{
+            float: left;
+            width: 5rem;
+            margin-left: 0.3rem;
+        }
+        .main .info .info-top{
+            font-size: 0.28rem;
+            line-height: 0.46rem;
+            color: #000;
+        }
+        .main .info .info-top .title{
+            float: left;
+        }
+        .main .info .info-top .number{
+            float: right;
+        }
+        .main .info .info-middle{
+            font-size: 0.26rem;
+            line-height: 0.74rem;
+            color: #000;
+        }
+        .main .info .info-middle .format{
+            float: left;
+        }
+        .main .info .info-middle .color{
+            float: left;
+            margin-left: 0.54rem;
+        }
+        .main .info .info-middle .size{
+            float: left;
+            margin-left: 0.68rem;
+        }
+        .main .info .info-bottom{
+            font-size: 0.26rem;
+            line-height: 0.7rem;
+            color: #000;
+        }
+        .mail-fare{
+            font-size: 0.26rem;
+            line-height: 0.9rem;
+            color: #333;
+            border-bottom: 1px solid #e3e3e3;
+        }
+        .mail-fare .mail-fare-name{
+            float: left;
+        }
+        .mail-fare .mail-fare-price{
+            float: right;
+        }
+        .coupon{
+            font-size: 0.26rem;
+            line-height: 0.9rem;
+            color: #333;
+            border-bottom: 1px solid #e3e3e3;
+            position: relative;
+        }
+        .coupon .coupon-name{
+            float: left;
+        }
+        .coupon .coupon-price{
+            float: right;
+            color: #e72424;
+            margin-right: 0.3rem;
+        }
+        .coupon .tips{
+            float: right;
+            color: #808080;
+            margin-right: 0.4rem;
+        }
+        .coupon .coupon_active{
+            color:#e72424;
+        }
+        .coupon .arrow{
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-size: 0.3rem;
+            line-height: 0.9rem;
+        }
+        .total .total-name{
+            float: right;
+            font-size: 0.3rem;
+            line-height: 1.18rem;
+            color: #000;
+            margin-right: 0.5rem;
+        }
+        .total .total-price{
+            float: right;
+            font-size: 0.3rem;
+            line-height: 1.18rem;
+            color: #000;
+            font-weight: 900;
+        }
+        .total .total-price i{
+            font-size: 0.2rem;
+            font-style: normal;
+        }
+        .footer{
+            padding: 0.16rem 0.2rem 1.7rem 0.2rem;
+        }
+        .pay .pay-title{
+            font-size: 0.26rem;
+            line-height: 0.64rem;
+            color: #333;
+        }
+        .pay-choice li{
+            display: flex;
+            justify-content: space-between;
+            padding: 0.24rem 0;
+        }
+        .pay-choice li label{
+            width: 6rem;
+            font-size: 0.28rem;
+            line-height: 0.46rem;
+            color: #333;
+            padding-left: 0.58rem;
+        }
+        .pay-choice li.wx label{
+            background-image: url('../image/logo_wx.png');
+            background-size: 0.46rem 0.46rem;
+            background-repeat: no-repeat;
+        }
+        .pay-choice li.zfb label{
+            background-image: url('../image/logo_zfb.png');
+            background-size: 0.46rem 0.46rem;
+            background-repeat: no-repeat;
+        }
+        .pay-choice li input{
+            -webkit-appearance: none;
+            flex: 1;
+            width: 0.46rem;
+            height: 0.46rem;
+            background-image: url('../image/no_checked.png');
+            background-size: 0.46rem 0.46rem;
+            background-repeat: no-repeat;
+            background-position: right center;
+        }
+        .pay-choice li input:checked{
+            background-image: url('../image/checked.png');
+        }
+        .bottom{
+            position:fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #000;
+            background: #fff;
+        }
+        .bottom p{
+            padding-left: 0.2rem;
+            font-size: 0.3rem;
+            line-height: 0.93rem;
+            color: #000;
+            font-weight: 900;
+        }
+        .bottom p i{
+            font-size: 0.2rem;
+            line-height: 0.93rem;
+            font-style: normal;
+        }
+        .bottom span{
+            font-size: 0.3rem;
+            line-height: 0.93rem;
+            color: #fff;
+            font-weight: 900;
+            width: 2rem;
+            text-align: center;
+            background: #000;
+        }
+        .loadingCover{
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap" v-cloak>
+        <div id="goods_header">
+            <div class="header">
+        		<i @click="goBack()" tapmode></i>
+        		<h4>确认订单</h4>
+        	</div>
+        </div>
+        <div class="loadingCover" v-show="loadingCover">
+
+        </div>
+        <div id="main" v-cloak>
+
+            <div class="add-address" v-if="no_address" @click="addAddress">
+				<p>请输入收货地址</p>
+				<span></span>
+			</div>
+
+			<div class="contact" v-if="!no_address" @click="addAddress">
+				<p class="address">地址: {{address}}</p>
+				<p class="contact-info clearfix">
+					<span class="contacter">联系人: {{contacter}}</span>
+					<span class="phone">手机号：{{phone}}</span>
+				</p>
+				<i class="arrow">&gt;</i>
+			</div>
+
+			<div class="main">
+				<div class="main-title">商品信息</div>
+				<div class="details-info clearfix" v-for="(item,index) in goodsList" :key="index">
+					<div class="preview">
+						<img v-lazy="item.listimg">
+					</div>
+					<div class="info">
+						<div class="info-top clearfix">
+							<span class="title">{{unescape(item.listtit)}}</span>
+							<span class="number">x{{item.counter}}</span>
+						</div>
+						<div class="info-middle clearfix">
+							<span class="format">规格:</span>
+							<span class="color">{{item.onevalue}}</span>
+							<span class="size">{{item.twovalue}}</span>
+						</div>
+						<div class="info-bottom clearfix">
+							<span class="price">￥{{parseFloat(item.listpre)*parseFloat(item.counter)}}</span>
+						</div>
+					</div>
+				</div>
+				<div class="mail-fare clearfix">
+					<span class="mail-fare-name">快递费用</span>
+					<span class="mail-fare-price">￥{{mail_fare_price}}</span>
+				</div>
+
+				<div class="coupon clearfix" @click="couponChoice(totalPrice)">
+					<span class="coupon-name">优惠券</span>
+					<span class="coupon-price" v-if="hasCoupon">-￥{{coupon_price}}</span>
+					<span v-if="!hasCoupon" :class="{tips:true,coupon_active:avaiCoupon}">{{tips}}</span>
+					<span class="arrow">&gt;</span>
+				</div>
+
+				<div class="total clearfix">
+					<span class="total-price"><i>￥</i>{{totalPay}}</span>
+					<span class="total-name">实付款:</span>
+				</div>
+			</div>
+			<div class="footer">
+				<div class="pay">
+					<div class="pay-title">支付方式</div>
+					<div class="pay-choice">
+						<ul>
+							<li class="wx clearfix">
+								<label for="wx">微信</label>
+								<input type="radio" name="pay" id="wx" checked="checked" @click="orderPayType=1" tapmode>
+							</li>
+							<li class="zfb clearfix">
+								<label for="zfb">支付宝</label>
+								<input type="radio" name="pay" id="zfb" @click="orderPayType=2" tapmode>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="bottom">
+				<p>总计:<i>￥</i>{{totalPay}}</p>
+				<span @click="submit">提交订单</span>
+			</div>
+		</div>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript" src="../swiper/swiper.min.js"></script>
+<script type="text/javascript" src="../script/jquery.min.js"></script>
+<script type="text/javascript">
+
+    var wxPay;
+    var aliPayPlus;
+    var indicator;
+    //VueJs
+    var myapp = new Vue({
+        el :"#wrap",
+        data(){
+            return{
+                loadingCover: true,
+				no_address: true,
+				address: "",
+				contacter: "",
+				phone: "",
+				mail_fare_price: "",
+				coupon_price: 0,
+				signature:'',
+				tips:"无可用",
+				hasCoupon:false,
+				avaiCoupon:false,
+				goodsList:[],
+				totalPrice:0,
+				url_goods:"",
+                orderPayType: 1
+            }
+        },
+        mounted(){
+
+
+		},
+        methods:{
+            goBack() {
+                api.closeWin({
+                    animation:{
+                        type:"none",
+                    }
+                });
+                api.removePrefs({
+                    key: 'goods_order_couponid'
+                })
+            },
+            init() {
+                var that = this;
+
+                //已登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    if( ret.value && ret.value != "" ) {
+                        that.signature = ret.value;
+
+                        //请求获取收货地址列表
+                        var goods_order_addressId = api.getPrefs({
+                            sync: true,
+                            key: 'goods_order_addressId'
+                        });
+                        // var goods_order_addressId = false;
+                        if(goods_order_addressId) {
+                        	url_address = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=doaddress'+'&addressid='+goods_order_addressId+that.signature
+                        } else {
+                        	url_address = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=doaddress'+that.signature
+                        }
+                        that.initAddress(url_address)
+                    } else {
+
+                    }
+                })
+
+            },
+            submit() {
+                var _this = this;
+				if(this.no_address) {
+					this.$toast({
+					  	message: '您还没有选择地址',
+					  	position: 'middle',
+					  	duration: 2000
+					});
+				} else {
+                    myapp.$indicator.open({spinnerType: 'fading-circle'});
+					var url_submit = ''
+                    var goods_order_entrance = api.getPrefs({
+                        sync: true,
+                        key: 'goods_order_entrance'
+                    });
+                    //获取优惠券列表
+                    var goods_order_couponid = api.getPrefs({
+                        sync: true,
+                        key: 'goods_order_couponid'
+                    });
+                    var goods_detail_id = api.getPrefs({
+                        sync: true,
+                        key: 'goods_detail_id'
+                    });
+                    var goods_order_wsid = api.getPrefs({
+                        sync: true,
+                        key: 'goods_order_wsid'
+                    });
+                    var goods_order_num = api.getPrefs({
+                        sync: true,
+                        key: 'goods_order_num'
+                    });
+                    //请求获取收货地址列表
+                    var goods_order_addressId = api.getPrefs({
+                        sync: true,
+                        key: 'goods_order_addressId'
+                    });
+                    var goods_cart_id = api.getPrefs({
+                        sync: true,
+                        key: 'goods_cart_id'
+                    });
+					if(goods_order_entrance=='detail') {
+						if(goods_order_couponid) {
+							url_submit = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=addorder'+'&wpid='+goods_detail_id+'&wsid='+goods_order_wsid+'&number='+goods_order_num+'&addressid='+goods_order_addressId+'&couponid='+goods_order_couponid+'&app=1'+'&orderpaytype='+this.orderPayType +this.signature
+						} else {
+							url_submit = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=addorder'+'&wpid='+goods_detail_id+'&wsid='+goods_order_wsid+'&number='+goods_order_num+'&addressid='+goods_order_addressId+'&app=1'+'&orderpaytype='+this.orderPayType +this.signature
+						}
+					} else if(goods_order_entrance=='cart') {
+						if (goods_order_couponid) {
+							url_submit = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=addcartorder'+'&wcid='+goods_cart_id+'&addressid='+goods_order_addressId+'&couponid='+goods_order_couponid+'&app=1'+'&orderpaytype='+this.orderPayType +this.signature
+						} else {
+							url_submit = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=addcartorder'+'&wcid='+goods_cart_id+'&addressid='+goods_order_addressId+'&app=1'+'&orderpaytype='+this.orderPayType +this.signature
+						}
+					};
+					axios.post(url_submit)
+						 .then(function(res) {
+                             api.sendEvent({
+                                 name: 'initCart',
+                                 extra: {
+                                     value: true
+                                 }
+                             });
+						 	if(res.data.msg=='21') {
+                                if (_this.orderPayType==1) {
+                                    //获取微信支付参数
+                                    _this.getWXPayId(res.data);
+                                } else if (_this.orderPayType==2) {
+                                    //支付宝参数
+                                    _this.aliPay(res.data);
+
+                                }
+
+						 	}
+                            api.removePrefs({
+                                key: 'goods_order_addressId'
+                            });
+                            api.removePrefs({
+                                key: 'goods_order_couponid'
+                            });
+                            if (res.data.msg== '-21_5') {
+                                _this.$toast({
+								    message: '该商品库存不足',
+								    position: 'middle',
+								    duration: 2000
+								});
+                            };
+                            if (res.data.msg== "-21_3") {
+                                _this.$toast({
+								    message: '优惠券不在使用范围内',
+								    position: 'middle',
+								    duration: 2000
+								});
+                            }
+						 })
+				}
+			},
+            aliPay(payInfo) {
+
+                aliPayPlus.payOrder({
+                    orderInfo: payInfo.zhifubaosign
+                }, function(ret, err) {
+                    if (ret.code==9000) {
+                        api.sendEvent({
+                            name: 'initCart',
+                            extra: {
+                                value: true
+                            }
+                        });
+                        api.openFrame({
+                            name: 'order-detail-nosend',
+                            url: 'widget://html/order-detail-nosend.html',
+                            bounces: false,
+                            animation:{
+                                type:"none",
+                            },
+                            pageParam: {
+                                orderNumber: payInfo.ordernumber,
+                                payType: 3
+                            }
+                        })
+                    } else {
+                        api.openFrame({
+                            name: 'order-detail-nopay',
+                            url: 'widget://html/order-detail-nopay.html',
+                            bounces: false,
+                            animation:{
+                                type:"none",
+                            },
+                            pageParam: {
+                                orderNumber: payInfo.ordernumber,
+                                payType: 3
+                            }
+                        })
+                    }
+                });
+                // this.goBack()
+            },
+            getWXPayId(orderInfo) {
+                var _this = this;
+                axios.post('http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=dowxpay&order_no='+orderInfo.ordernumber+this.signature)
+                     .then(function(res) {
+
+                            wxPay.payOrder({
+                                apiKey: 'wx0f725aa402687082',
+                                orderId: res.data.prepayid,
+                                mchId: res.data.mchid,
+                                nonceStr: res.data.noncestr,
+                                timeStamp: res.data.timestamp,
+                                package: res.data.package,
+                                sign: res.data.paysign
+                            }, function(ret, err) {
+
+                                if (ret.status) {
+                                    //支付成功
+                                    api.openFrame({
+                                        name: 'order-detail-nosend',
+                                        url: 'widget://html/order-detail-nosend.html',
+                                        bounces: false,
+                                        animation:{
+                                            type:"none",
+                                        },
+                                        pageParam: {
+                                            orderNumber: orderInfo.ordernumber,
+                                            payType: 2
+                                        }
+                                    })
+
+                                } else {
+                                    api.openFrame({
+                                        name: 'order-detail-nopay',
+                                        url: 'widget://html/order-detail-nopay.html',
+                                        bounces: false,
+                                        animation:{
+                                            type:"none",
+                                        },
+                                        pageParam: {
+                                            orderNumber: orderInfo.ordernumber,
+                                            payType: 2
+                                        }
+                                    })
+                                }
+                            })
+                        })
+            },
+            payOrder(data) {
+                wxPay.payOrder({
+                    apiKey: '',
+                    orderId: data.package,
+                    mchId: data.mchid,
+                    nonceStr: data.noncestr,
+                    timeStamp: data.timestamp,
+                    package: 'Sign=WXPay',
+                    sign: data.paysign
+                }, function(ret, err) {
+                    if (ret.status) {
+                        //支付成功
+                        this.goBack()
+                    } else {
+                    }
+                });
+            },
+			addAddress(){//添加地址
+                api.openFrame({
+                    name: 'address-confirm',
+                    url: 'widget://html/address-confirm.html',
+                    animation:{
+                        type:"none",
+                    }
+                })
+			},
+			addressConvert(area,detail){
+				var arr = area.split(",")
+				var addressStr = ''
+				for(var i=0;i<arr.length;i++){
+					addressStr += arr[i]
+				}
+				addressStr += detail
+				return addressStr
+			},
+			initAddress(url){
+                var that = this
+                axios.post(url)
+	             	 .then(function(res){
+	             	 	if(res.data.msg=='16'){
+	             	 		if(res.data.list.length==0){
+	             	 			that.no_address = true
+	             	 		}else{
+                                api.setPrefs({
+                                    key: 'goods_order_addressId',
+                                    value: res.data.list[0].addressid
+                                });
+                                that.no_address = false
+	             	 			that.address = that.addressConvert(res.data.list[0].area,res.data.list[0].detaile)
+	             	 			that.contacter = res.data.list[0].name
+	             	 			that.phone = res.data.list[0].phone
+	             	 		}
+	             	 		that.entrance();
+
+	             	 	}
+	             	 })
+			},
+            initGoodsInfo(url){
+				var that = this
+
+
+				axios.post(url)
+            	 .then(function(res) {
+            	 	if(res.data.msg=='20'){
+            	 		that.goodsList = res.data.list
+            	 		that.mail_fare_price = res.data.freightmoney
+
+            	 		//计算所有商品总价
+            	 		var totalPrice = 0;
+			        	for(var i=0;i<that.goodsList.length;i++){
+			        		totalPrice+=parseFloat(that.goodsList[i].listpre)*parseFloat(that.goodsList[i].counter)
+			        	}
+			        	that.totalPrice = totalPrice
+
+            	 		//获取优惠券列表
+                        var goods_order_couponid = api.getPrefs({
+                            sync: true,
+                            key: 'goods_order_couponid'
+                        });
+			        	if(goods_order_couponid){
+			        		var url_coupon = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=docoupon&couponid='+goods_order_couponid+'&money='+that.totalPrice+that.signature
+
+			        		axios.post(url_coupon)
+			        			 .then(function(res) {
+			        			 	if(res.data.msg=='19') {
+			        			 		that.hasCoupon = true
+			        			 		that.coupon_price = res.data.list[0].breamoney
+			        			 	}
+			        			 })
+			        	}else{
+				        	//获取满足商品总价的优惠券
+				        	var url_coupon = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=docoupon&money='+totalPrice+that.signature
+				   			axios.post(url_coupon)
+				   				 .then(function(res){
+				   				 	if(res.data.msg=='19'){
+				   				 		if(res.data.list.length>0) {
+				   				 			that.avaiCoupon = true
+				   				 			that.tips = '可用'
+				   				 		} else {
+				   				 			that.avaiCoupon = false
+				   				 			that.tips = '无可用'
+				   				 		}
+				   				 	}
+				   				 })
+			        	};
+                        setTimeout(function() {
+                            that.loadingCover = false;
+                            that.$indicator.close()
+                        },500)
+
+            	 	}
+            	 })
+			},
+			unescape(str){
+                return unescape(str)
+            },
+            couponChoice(totalPrice){
+
+            	if(this.avaiCoupon||this.hasCoupon){
+
+
+                    api.openFrame({
+                        name: 'coupon-choice',
+                        url: 'widget://html/coupon-choice.html',
+                        pageParam: {
+                            total: totalPrice,
+                        },
+                        animation:{
+                            type:"none",
+                        }
+                    })
+            	}
+            },
+            entrance(){
+               var goods_order_num = api.getPrefs({
+                   sync: true,
+                   key: 'goods_order_num'
+               });
+               var goods_order_wsid = api.getPrefs({
+                   sync: true,
+                   key: 'goods_order_wsid'
+               });
+               var goods_order_entrance = api.getPrefs({
+                   sync: true,
+                   key: 'goods_order_entrance'
+               });
+               var goods_detail_id = api.getPrefs({
+                   sync: true,
+                   key: 'goods_detail_id'
+               });
+               //请求获取收货地址列表
+               var goods_order_addressId = api.getPrefs({
+                   sync: true,
+                   key: 'goods_order_addressId'
+               });
+               var goods_cart_id = api.getPrefs({
+                   sync: true,
+                   key: 'goods_cart_id'
+               });
+        	    //区分入口为cart还是detail,获取商品信息
+	            if(goods_order_entrance=='detail'){
+	            	if(goods_order_addressId){
+	            		this.url_goods = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=showorderlist&wsids='+goods_order_wsid+'&nums='+goods_order_num+this.signature+'&addressid='+goods_order_addressId
+	            	}else{
+	            		this.url_goods = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=showorderlist&wsids='+goods_order_wsid+'&nums='+goods_order_num+this.signature
+	            	}
+	            }else if(goods_order_entrance=='cart'){
+	            	if(goods_order_addressId){
+	            		this.url_goods = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=showorderlist&wcids='+goods_cart_id+this.signature+'&addressid='+goods_order_addressId
+	            	}else{
+	            		this.url_goods = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=showorderlist&wcids='+goods_cart_id+this.signature
+	            	}
+	            };
+                //获取商品列表信息,快递费用
+                this.initGoodsInfo(this.url_goods)
+
+
+            }
+		},
+        computed:{
+			totalPay(){
+				return this.totalPrice-this.coupon_price+parseFloat(this.mail_fare_price)
+			}
+		}
+    });
+
+    //APICloud
+    apiready = function(){
+        $api.fixStatusBar($api.dom('#goods_header'));
+        myapp.$indicator.open('加载中...');
+        myapp.init();
+        wxPay = api.require('wxPay');
+        aliPayPlus = api.require('aliPayPlus');
+        api.addEventListener({
+            name: 'chooseAddress'
+        }, function(ret, err) {
+            if (ret) {
+                myapp.init();
+            }
+        });
+        api.addEventListener({
+            name: 'orderConfirm'
+        }, function(ret, err) {
+            if (ret) {
+                myapp.init();
+            }
+        });
+    };
+</script>
+</html>

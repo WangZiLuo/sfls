@@ -1,0 +1,324 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width"/>
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>选择收货地址</title>
+    <link rel="stylesheet" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/mintui.css">
+    <style>
+        .mint-msgbox-cancel{
+            color: #666;
+        }
+        .header{
+            width: 100%;
+            height: 0.88rem;
+            position: relative;
+            box-shadow: 0 5px 10px #eee;
+        }
+        .header i{
+            display: block;
+            position: absolute;
+            left: 0.2rem;
+            top: 0;
+            width: 0.3rem;
+            height: 0.88rem;
+            background-image: url("../image/arrow_l.png");
+            background-size: 0.2rem 0.3rem;
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .header h4{
+            font-size: 0.32rem;
+            line-height: 0.88rem;
+            color: #333;
+            text-align: center;
+        }
+    	.content ul li{
+    		padding-top: 0.3rem;
+    		padding-left: 0.2rem;
+    		padding-right: 0.2rem;
+    		margin-top: 0.1rem;
+    		background: #fff;
+    		border-bottom: 1px solid #dfdfdf;
+    	}
+    	.content ul li p.address{
+    		font-size: 0.3rem;
+    		line-height: 0.3rem;
+    		color: #333;
+    		font-weight: 900;
+    	}
+    	.content ul li p.address i{
+    		font-style: normal;
+    	}
+    	.content ul li .contact{
+    		font-size: 0.28rem;
+    		line-height: 0.88rem;
+    		color: #333;
+    		padding-bottom: 0.1rem;
+    		border-bottom: 1px solid #dfdfdf;
+    	}
+    	.content ul li .contact .contacter{
+    		float: left;
+    	}
+    	.content ul li .contact .contacter i{
+    		font-style: normal;
+    	}
+    	.content ul li .contact .phone{
+    		float: left;
+    		margin-left: 0.5rem;
+    	}
+    	.content ul li .contact .phone i{
+    		font-style: normal;
+    	}
+    	.edit{
+    		height: 0.72rem;
+    	}
+    	.edit .check{
+    		-webkit-appearance: none;
+    		float: left;
+    		display: block;
+    		width: 0.46rem;
+    		height: 0.46rem;
+    		margin-top: 0.13rem;
+    		background-image: url('../image/no_checked.png');
+    		background-size: 0.46rem 0.46rem;
+    		background-repeat: no-repeat;
+    	}
+    	.edit .check:checked{
+    		background-image: url('../image/checked.png');
+    	}
+    	.edit .editing{
+    		float: right;
+    		background-image: url("../image/edit.png");
+    		background-size: 0.39rem 0.42rem;
+    		background-repeat: no-repeat;
+    		background-position: 0 center;
+    		font-size: 0.28rem;
+    		line-height: 0.72rem;
+    		padding-left: 0.6rem;
+    		color: #6f6f6f;
+    		margin-right: 0.6rem;
+    	}
+    	.edit .delete{
+    		float: right;
+    		background-image: url("../image/delete.png");
+    		background-size: 0.43rem 0.43rem;
+    		background-repeat: no-repeat;
+    		background-position: 0 center;
+    		font-size: 0.28rem;
+    		line-height: 0.72rem;
+    		padding-left: 0.62rem;
+    		color: #6f6f6f;
+    	}
+    	button{
+    		width: 100%;
+    		height: 0.95rem;
+    		text-align: center;
+    		font-size: 0.28rem;
+    		line-height: 0.95rem;
+    		color: #fff;
+    		background: #161616;
+    		border: 0;
+    		left: 0;
+    		bottom: 0;
+    	};
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <header>
+            <div class="header">
+    			<i @click="goBack"></i>
+    			<h4>选择收货地址</h4>
+    		</div>
+        </header>
+        <div id="main">
+            <div class="content">
+    			<ul>
+    				<li v-for="(item,index) in addressList">
+    					<p class="address">地址: <i>{{addressConvert(item.area,item.detaile)}}</i></p>
+    					<div class="contact clearfix">
+    						<span class="contacter">联系人: <i>{{item.name}}</i></span>
+    						<span class="phone">手机号： <i>{{item.phone}}</i></span>
+    					</div>
+    					<div class="edit clearfix">
+                            <input type="radio" name="check" class="check" @click="choose($event,item.addressid)">
+    						<span class="delete" @click="del($event,item.addressid,index)">删除</span>
+    						<span class="editing" @click="edit($event,item.addressid)">编辑</span>
+    					</div>
+    				</li>
+    			</ul>
+            </div>
+        </div>
+        <button @click="toJump('address')">添加收货地址</button>
+    </div>
+</body>
+<script type="text/javascript" src="../script/rem.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/axios.min.js"></script>
+<script type="text/javascript" src="../script/mintui.js"></script>
+<script type="text/javascript">
+    //加载动画
+
+    //vue.js
+    var myapp = new Vue({
+        el :"#wrap",
+        data() {
+            return{
+                title: "管理收货地址",
+				signature:'',
+				addressList:[]
+            }
+        },
+        mounted() {
+
+        },
+        methods: {
+            init() {
+                var that = this;
+    			//检测是否登录
+                api.getPrefs({
+                    key: 'lsb_sign'
+                }, function(ret, err) {
+                    //当偏好设置尚未设置或者曾设置后被移除后，返回值(ret.value)均为空。
+                    if (ret.value && ret.value != "") {
+                        //已登录
+                        that.login_status = true;
+                        that.signature = ret.value;
+                    } else {
+                        //未登录
+                        that.login_status = false
+                        that.signature = '&nonce=123456&timestamp=123456&signature=6ad7d67d9e03869cd3b395b63d7fe9418aee175f'
+                    };
+                    //获取地址列表
+                    var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=doaddress'+that.signature;
+                    axios.post(url)
+                    	.then(function(res) {
+          						    that.addressList = res.data.list
+          						})
+                })
+                this.orderAddressId = api.getPrefs({
+                    sync: true,
+                    key: 'goods_order_addressId'
+                });
+            },
+            goBack() {
+                api.closeFrame({
+                    name: 'address-confirm',
+                    animation:{
+                        type:"none",
+                    },
+                });
+            },
+            toJump(pageName) {
+                api.openFrame({
+                    name: pageName,
+                    url: 'widget://html/' + pageName + '.html',
+                    animation:{
+                        type:"none",
+                    },
+                })
+            },
+            edit($event,_addressid){
+                api.openFrame({
+                    name: 'editress',
+                    url: 'widget://html/editress.html',
+                    animation:{
+                        type:"none",
+                    },
+                    pageParam: {
+                        addressid: _addressid
+                    }
+                })
+			},
+			del($event,addressid,index){
+				var that = this;
+				this.$messagebox.confirm("确定删除该地址?").then(function(action) {
+
+					var url = 'http://lishenban.ajiuqian.com/api/apiAjax.aspx?ak=deladdress&addressid='+addressid+that.signature;
+					axios.post(url)
+						.then(function(res) {
+						 	if(res.data.msg=='18') {
+						 		that.addressList.splice(index,1)
+                                if (addressid == that.orderAddressId) {
+                                    api.removePrefs({
+                                        key: 'goods_order_addressId'
+                                    });
+                                    api.sendEvent({
+                                        name: 'chooseAddress',
+                                        extra: {
+                                            success: 'true'
+                                        }
+                                    })
+                                }
+						 	}
+						})
+
+
+				}).catch(function(action) {
+
+				})
+			},
+			choose($event,addressid){
+
+				//设置商品地址id
+				// localStorage.setItem('goods_order_addressId',addressid)
+                api.setPrefs({
+                    key: 'goods_order_addressId',
+                    value: addressid
+                });
+                api.sendEvent({
+                    name: 'chooseAddress',
+                    extra: {
+                        success: 'true'
+                    }
+                });
+                api.closeFrame({
+                    name: 'address-confirm',
+                    animation:{
+                        type:"none",
+                    },
+                });
+
+			},
+			addressConvert(area,detail){
+				var arr = area.split(",")
+				var addressStr = ''
+				for(var i=0;i<arr.length;i++){
+					addressStr += arr[i]
+				}
+				addressStr += detail
+				return addressStr
+			}
+        },
+        created() {
+
+        }
+
+    });
+    //APICloud
+    apiready = function(){
+        $api.fixStatusBar($api.dom('header'));
+        myapp.init();
+        api.addEventListener({
+            name: 'address'
+        }, function(ret, err) {
+            if (ret) {
+                myapp.init();
+            }
+        });
+        api.addEventListener({
+            name: 'editress'
+        }, function(ret, err) {
+            myapp.init();
+        });
+    }
+
+
+
+</script>
+</html>
